@@ -21,14 +21,16 @@
             </div>
 
             <!-- Secondary Content -->
+                
             <div class="navbar-nav-wrap-content-right">
                 <!-- Navbar -->
                 <ul class="navbar-nav align-items-center flex-row">
+                @if (Request::route()->getName() != 'client.dashboard')
                     <li class="nav-item d-sm-inline-block mr-6">
                         <!-- Notification -->
                         <div class="hs-unfold">
                             <a class="js-hs-unfold-invoker btn btn-icon btn-ghost-secondary" href="{{route('admin.customer.listWithLoyalty')}}">
-                                <span class="m-3 text-white">{{\App\CPU\translate('LOYALTY')}}</span>
+                                <span class="m-3 text-white btn color-one rounded">{{\App\CPU\translate('LOYALTY')}}</span>
                             </a>
                         </div>
                         <!-- End Notification -->
@@ -38,7 +40,7 @@
                         <!-- Notification -->
                         <div class="hs-unfold">
                             <a class="js-hs-unfold-invoker btn btn-icon btn-ghost-secondary" href="{{route('admin.pos.index')}}" target="_blank">
-                                <span class="m-3 text-white">{{\App\CPU\translate('POS')}}</span>
+                                <span class="m-3 text-white btn color-three rounded">POS</span>
                             </a>
                         </div>
                         <!-- End Notification -->
@@ -54,6 +56,7 @@
                         </div>
                         <!-- End Notification -->
                     </li>
+                @endif
 
 
                     <li class="nav-item">

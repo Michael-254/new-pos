@@ -18,6 +18,8 @@ Route::fallback(function(){
     return redirect('admin/auth/login');
 });
 
+Route::get('/client-dashboard','ClientController@index')->name('client.dashboard');
+
 Route::get('authentication-failed', function () {
     $errors = [];
     array_push($errors, ['code' => 'auth-001', 'message' => 'Invalid credential! or unauthenticated.']);

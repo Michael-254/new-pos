@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
@@ -51,6 +52,15 @@ class CustomerController extends Controller
             $customer->address = $request->address;
             $customer->balance = $request->balance;
             $customer->save();
+
+            $mytime = Carbon::now();
+            if ($request->is_loyalty_enrolled == 'yes') {
+                $customer->update([
+                    'loyalty_points' => 100,
+                    'loyalty_expire_date' => $mytime->addMonth(3),
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Customer saved successfully',

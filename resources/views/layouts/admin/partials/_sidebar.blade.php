@@ -34,6 +34,7 @@
                                 class="nav-subtitle">{{\App\CPU\translate('dashboard_section')}}</small>
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                         </li>
+                    @if (Request::route()->getName() != 'client.dashboard')
                         <li class="navbar-vertical-aside-has-menu {{Request::is('admin')?'show':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link"
                                href="{{route('admin.dashboard')}}" title="{{\App\CPU\translate('dashboards')}}">
@@ -44,6 +45,7 @@
                             </a>
                         </li>
                         <!-- End Dashboards -->
+                    
                         <li class="nav-item">
                             <small
                                 class="nav-subtitle">{{\App\CPU\translate('pos_section')}}</small>
@@ -394,6 +396,17 @@
                         <li class="nav-item pt-8">
 
                         </li>
+                        @else
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('client-dashboard*')?'active':''}}">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link"
+                                href="{{route('client.dashboard')}}" title="{{\App\CPU\translate('dashboards')}}">
+                                    <i class="tio-home-vs-1-outlined nav-icon"></i>
+                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                        {{\App\CPU\translate('dashboard')}}
+                                    </span>
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
                 <!-- End Content -->

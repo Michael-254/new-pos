@@ -580,4 +580,13 @@
   'Loyalty' => 'Loyalty',
   'loyalty_expiry_date' => 'Loyalty expiry date',
   'Product Added Successfully' => 'Product Added Successfully',
+  'customer_dashboard' => 'Customer dashboard',
+  'recently_earned' => 'Recently earned',
+  'recently_spent' => 'Recently spent',
+  'equivalent_cash' => 'Equivalent cash',
+  'your_purchases' => 'Your purchases',
+  'loyalty_points_earned' => 'Loyalty points earned',
+  'amount_spent' => 'Amount spent',
+  'Zone' => 'Zone',
+  'zone' => 'Zone',
 );

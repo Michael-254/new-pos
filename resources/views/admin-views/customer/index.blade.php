@@ -63,30 +63,15 @@
                                     </div>
                                     <div class="col-12 col-sm-6">
                                         <div class="form-group">
-                                            <label class="input-label" >{{\App\CPU\translate('state')}}</label>
-                                            <input type="text" name="state" class="form-control" value="{{ old('state') }}"  placeholder="{{\App\CPU\translate('state')}}" >
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row pl-2" >
-                                    <div class="col-12 col-sm-6">
-                                        <div class="form-group">
                                             <label class="input-label">{{\App\CPU\translate('city')}} </label>
                                             <input type="text"  name="city" class="form-control" value="{{ old('city') }}"  placeholder="{{\App\CPU\translate('city')}}" >
                                         </div>
                                     </div>
-                                    <div class="col-12 col-sm-6">
-                                        <div class="form-group">
-                                            <label class="input-label">{{\App\CPU\translate('zip_code')}} </label>
-                                            <input type="text"  name="zip_code" class="form-control" value="{{ old('zip_code') }}"  placeholder="{{\App\CPU\translate('zip_code')}}" >
-                                        </div>
-                                    </div>
                                 </div>
                                 <div class="row pl-2" >
-
                                     <div class="col-12 col-sm-6">
                                         <div class="form-group">
-                                            <label class="input-label">{{\App\CPU\translate('address')}} </label>
+                                            <label class="input-label">{{\App\CPU\translate('Zone')}} </label>
                                             <input type="text"  name="address" class="form-control" value="{{ old('address') }}"  placeholder="{{\App\CPU\translate('address')}}" >
                                         </div>
                                     </div>
