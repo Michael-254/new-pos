@@ -67,7 +67,7 @@
                                      "type": "css-animation"
                                    }'>
                                 <div class="avatar avatar-sm avatar-circle">
-                                    <img class="avatar-img" onerror="this.src='{{asset('assets/admin/img/160x160/img1.jpg')}}'" src="{{asset('storage/app/public/admin')}}/{{auth('admin')->user()->image}}" alt="{{\App\CPU\translate('image_description')}}">
+                                    <img class="avatar-img" onerror="this.src='{{asset('assets/admin/img/160x160/img1.jpg')}}'" src="{{asset('storage/app/public/admin')}}/{{auth('admin')->user()->image ?? ''}}" alt="{{\App\CPU\translate('image_description')}}">
                                     <span class="avatar-status avatar-sm-status avatar-status-success"></span>
                                 </div>
                             </a>
@@ -76,11 +76,11 @@
                                 <div class="dropdown-item-text">
                                     <div class="media align-items-center">
                                         <div class="avatar avatar-sm avatar-circle mr-2">
-                                            <img class="avatar-img" onerror="this.src='{{asset('assets/admin/img/160x160/img1.jpg')}}'" src="{{asset('storage/app/public/admin')}}/{{auth('admin')->user()->image}}" alt="{{\App\CPU\translate('image_description')}}">
+                                            <img class="avatar-img" onerror="this.src='{{asset('assets/admin/img/160x160/img1.jpg')}}'" src="{{asset('storage/app/public/admin')}}/{{auth('admin')->user()->image ?? ''}}" alt="{{\App\CPU\translate('image_description')}}">
                                         </div>
                                         <div class="media-body">
-                                            <span class="card-title h5">{{auth('admin')->user()->f_name}}</span>
-                                            <span class="card-text">{{auth('admin')->user()->email}}</span>
+                                            <span class="card-title h5">{{auth('admin')->user()->f_name ?? ''}}</span>
+                                            <span class="card-text">{{auth('admin')->user()->email ?? ''}}</span>
                                         </div>
                                     </div>
                                 </div>
