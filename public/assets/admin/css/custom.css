@@ -565,9 +565,9 @@ hr.line-dot{
 }
 
 
-@media (min-width: 340px) {
+@media (min-width: 560px) {
      .navbar-brand-logo {
-       display: block;
+       display: none;
     }
 }
 @media (max-width: 340px) {

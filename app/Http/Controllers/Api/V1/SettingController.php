@@ -91,11 +91,11 @@ class SettingController extends Controller
             'business_info' => $config_key_value_array,
             'currency_symbol' => Currency::where(['currency_code' => Helpers::currency_code()])->first()->currency_symbol,
             'base_urls' => [
-                'category_image_url' => asset('storage/app/public/category'),
-                'brand_image_url' => asset('storage/app/public/brand'),
-                'product_image_url' => asset('storage/app/public/product'),
-                'supplier_image_url' => asset('storage/app/public/supplier'),
-                'shop_image_url' => asset('storage/app/public/shop'),
+                'category_image_url' => asset('storage/category'),
+                'brand_image_url' => asset('storage/brand'),
+                'product_image_url' => asset('storage/product'),
+                'supplier_image_url' => asset('storage/supplier'),
+                'shop_image_url' => asset('storage/shop'),
             ]
         ], 200);
     }

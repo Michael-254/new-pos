@@ -45,7 +45,7 @@
             ?>
             <tr>
                 <td class="media align-items-center">
-                    <img class="avatar avatar-sm mr-1" src="{{ asset('storage/app/public/product') }}/{{ $cartItem['image'] }}" onerror="this.src='{{ asset('public/assets/admin/img/160x160/img2.jpg') }}'" alt="{{ $cartItem['name'] }} image">
+                    <img class="avatar avatar-sm mr-1" src="{{ asset('storage/product') }}/{{ $cartItem['image'] }}" onerror="this.src='{{ asset('public/assets/admin/img/160x160/img2.jpg') }}'" alt="{{ $cartItem['name'] }} image">
                     <div class="media-body">
                         <h5 class="text-hover-primary mb-0">{{ Str::limit($cartItem['name'], 10) }}</h5>
 

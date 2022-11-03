@@ -428,5 +428,5 @@
         }
     </script>
 
-    <script src="{{asset('public/assets/admin/js/global.js')}}"></script>
+    <script src="{{asset('assets/admin/js/global.js')}}"></script>
 @endpush
