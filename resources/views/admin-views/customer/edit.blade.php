@@ -48,8 +48,8 @@
                                                     class="input-label-secondary text-danger">*</span> </label>
                                             <select name="is_loyalty_enrolled"  class="form-control" required>
                                                 <option value="">-- Select --</option>
-                                                <option value="yes" {{ $customer->is_loyalty_enrolled == 'yes'  ? 'selected' : '' }}>Yes</option>
-                                                <option value="no" {{ $customer->is_loyalty_enrolled == 'no'  ? 'selected' : '' }}>No</option>
+                                                <option value="Yes" {{ $customer->is_loyalty_enrolled == 'Yes'  ? 'selected' : '' }}>Yes</option>
+                                                <option value="No" {{ $customer->is_loyalty_enrolled == 'No'  ? 'selected' : '' }}>No</option>
                                             </select>
                                         </div>
                                     </div>

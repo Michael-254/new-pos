@@ -84,7 +84,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    @if ($customer->type != 0)
+                                    @if ($customer->id != 1)
                                     {{ $customer->mobile }}
                                     @else
                                     {{\App\CPU\translate('no_phone')}}
@@ -94,14 +94,14 @@
                                     {{ $customer->is_loyalty_enrolled }}
                                 </td>
                                 <td>
-                                    @if($customer->is_loyalty_enrolled == 'yes')
+                                    @if($customer->is_loyalty_enrolled == 'Yes')
                                     {{ $customer->loyalty_points }}
                                     @else
                                     {{\App\CPU\translate('not_a_loyalty_member')}}
                                     @endif
                                 </td>
                                 <td>
-                                    @if($customer->is_loyalty_enrolled == 'yes')
+                                    @if($customer->is_loyalty_enrolled == 'Yes')
                                     {{ $customer->loyalty_expire_date }}
                                     @else
                                     {{\App\CPU\translate('not_a_loyalty_member')}}
@@ -109,7 +109,7 @@
                                 </td>
                                 <td>{{ $customer->orders->count() }}</td>
                                 <td class="text-center p-5">
-                                    @if ($customer->type != 0)
+                                    @if ($customer->id != 1)
                                     <div class="row">
                                         <div class="col-5">
                                             {{ $customer->balance. ' ' . \App\CPU\Helpers::currency_symbol() }}

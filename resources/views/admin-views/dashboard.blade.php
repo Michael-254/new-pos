@@ -93,7 +93,7 @@
                         "type": "line",
                         "data": {
                             "labels": [<?php for ($i=1;$i<=$month;$i++) {
-                                if($month ==$i )
+                                if($month == $i )
                                 {
                                     echo $i;
                                 }else{
@@ -156,7 +156,7 @@
                                 },
                                 "ticks": {
                                 "beginAtZero": true,
-                                "stepSize": {{ ($account['total_income']/10)+1000 }},
+                                "stepSize": {{ ($account["total_income"]/10)+1000 }},
                                 "fontSize": 12,
                                 "fontColor": "#97a4af",
                                 "fontFamily": "Open Sans, sans-serif",
@@ -237,7 +237,7 @@
                                 },
                                 "ticks": {
                                 "beginAtZero": true,
-                                "stepSize": {{ ($account['total_income']/10)+1000 }},
+                                "stepSize": {{ ($account["total_income"]/10)+1000 }},
                                 "fontSize": 12,
                                 "fontColor": "#97a4af",
                                 "fontFamily": "Open Sans, sans-serif",
@@ -428,5 +428,5 @@
         }
     </script>
 
-    <script src={{asset("public/assets/admin/js/global.js")}}></script>
+    <script src="{{asset('public/assets/admin/js/global.js')}}"></script>
 @endpush

@@ -40,7 +40,7 @@
                         <!-- Notification -->
                         <div class="hs-unfold">
                             <a class="js-hs-unfold-invoker btn btn-icon btn-ghost-secondary" href="{{route('admin.pos.index')}}" target="_blank">
-                                <span class="m-3 text-white btn color-three rounded">POS</span>
+                                <span class="m-3 text-white btn color-seven rounded">POS</span>
                             </a>
                         </div>
                         <!-- End Notification -->

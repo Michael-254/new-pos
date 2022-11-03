@@ -47,7 +47,7 @@ class CustomerController extends Controller
         $customer->save();
 
         $mytime = Carbon::now();
-        if ($request->is_loyalty_enrolled == 'yes') {
+        if ($request->is_loyalty_enrolled == 'Yes') {
             $customer->update([
                 'loyalty_points' => 100,
                 'loyalty_expire_date' => $mytime->addMonth(3),
@@ -97,7 +97,7 @@ class CustomerController extends Controller
             $customers = new Customer;
         }
         //$walk_customer = $customers->where('type',0)->get();
-        $customers = $customers->where('is_loyalty_enrolled','yes')->paginate(Helpers::pagination_limit())->appends($query_param);
+        $customers = $customers->where('is_loyalty_enrolled','Yes')->paginate(Helpers::pagination_limit())->appends($query_param);
         return view('admin-views.customer.list', compact('customers', 'accounts', 'search'));
     }
 

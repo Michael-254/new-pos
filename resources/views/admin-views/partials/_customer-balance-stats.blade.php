@@ -1,5 +1,5 @@
 <div class="col-sm-12 col-lg-4 mb-3 mt-3 mb-lg-5"><!-- Card -->
-    <a class="card card-hover-shadow h-100 color-one" href="/admin/account/list-transaction">
+    <a class="card card-hover-shadow h-100 color-five" href="#">
         <div class="card-body">
             <div class="flex-between align-items-center mb-1">
                 <div>
@@ -19,7 +19,7 @@
 </div>
 <div class="col-sm-6 col-lg-4 mb-3 mt-3 mb-lg-5">
 <!-- Card -->
-<a class="card card-hover-shadow h-100 color-two" href="/admin/account/add-income">
+<a class="card card-hover-shadow h-100 color-eight" href="#">
     <div class="card-body">
         <div class="flex-between align-items-center mb-1">
             <div>
@@ -39,7 +39,7 @@
 </div>
 <div class="col-sm-6 col-lg-4 mb-3 mt-3 mb-lg-5">
 <!-- Card -->
-<a class="card card-hover-shadow h-100 color-three" href="/admin/account/add-expense">
+<a class="card card-hover-shadow h-100 color-three" href="#">
     <div class="card-body">
         <div class="flex-between align-items-center mb-1">
             <div>
@@ -64,7 +64,7 @@
 
 <div class="col-sm-6 col-lg-6 mb-3 mt-3 mb-lg-5">
 <!-- Card -->
-<a class="card card-hover-shadow h-100 color-four" href="/admin/account/list">
+<a class="card card-hover-shadow h-100 color-two" href="#">
     <div class="card-body">
         <div class="flex-between align-items-center mb-1">
             <div>
@@ -84,7 +84,7 @@
 </div>
 <div class="col-sm-6 col-lg-6 mb-3 mt-3 mb-lg-5">
 <!-- Card -->
-<a class="card card-hover-shadow h-100 color-five" href="admin/account/list">
+<a class="card card-hover-shadow h-100 color-seven" href="#">
     <div class="card-body">
         <div class="flex-between align-items-center mb-1">
             <div>

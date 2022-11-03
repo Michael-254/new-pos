@@ -619,7 +619,7 @@ class POSController extends Controller
             $customer_details = Customer::findOrFail($user_id);
             $mytime = Carbon::now();
 
-            if ($customer_details->is_loyalty_enrolled == 'yes') {
+            if ($customer_details->is_loyalty_enrolled == 'Yes') {
                 $customer_details->loyalty_points = $customer_details->loyalty_points + ($order->collected_cash / 10);
                 $customer_details->loyalty_expire_date = $mytime->addMonth(3);
                 $customer_details->save();

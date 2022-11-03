@@ -304,16 +304,22 @@ input:checked + .slider:before {
     font-size: 15px;
 }
 .color-two{
-    background: #292C6D
+    background: #28a745
 }
 .color-three{
-    background:#9A0680
+    background:#dc143c
 }
 .color-four{
-    background: #082032
+    background: #00c9db
 }
 .color-five{
-    background: #334756
+    background: #055099
+}
+.color-seven{
+    background: #ff4040
+}
+.color-eight{
+    background: #32cd32
 }
 /*invoice*/
 hr.line-dot{
