@@ -1,0 +1,26 @@
+{
+  "name": "vancha/mpesa",
+  "description": "A PHP package for Mpesa API",
+  "type": "package",
+ "minimum-stability": "dev", 
+ 
+"require": {
+    "php": ">=5.3.0"
+  },
+  "license": "mit",
+  "authors": [
+    {
+      "name": "Evans Wanguba",
+      "email": "ewanguba@gmail.com"
+    }
+  ],
+ 
+  "autoload": {
+    "psr-4": {
+      "Vancha\\Mpesa\\": "src/"
+    }
+  },
+  "require-dev": {
+    "symfony/dotenv": "^4.3@dev"
+  }
+}
