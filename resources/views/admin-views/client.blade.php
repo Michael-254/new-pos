@@ -15,23 +15,6 @@
                 <div class="col-md-9">
                     <h4><i class="font-one-dash tio-chart-bar-4"></i>{{$customer->name.' '.\App\CPU\translate('dashboard')}}</h4>
                 </div>
-                <div class="col-md-3 float-right">
-                    <select class="custom-select" name="statistics_type"
-                            onchange="account_stats_update(this.value)">
-                        <option
-                            value="overall" >
-                            {{\App\CPU\translate('overall_statistics')}}
-                        </option>
-                        <option
-                            value="today" >
-                            {{\App\CPU\translate("today's_statistics")}}
-                        </option>
-                        <option
-                            value="month" >
-                            {{\App\CPU\translate("this_month's_statistics")}}
-                        </option>
-                    </select>
-                </div>
             </div>
             <div class="row gx-2 gx-lg-3" id="account_stats">
                 @include('admin-views.partials._customer-balance-stats',['customer'=>$customer])
@@ -44,7 +27,7 @@
             <div class="card ">
                 <div class="card-header">
                     <h3>{{\App\CPU\translate('your_purchases')}}
-                        <span class="badge badge-soft-dark ml-2">{{$customer->orders->count()}}</span>
+                        <span class="badge badge-soft-dark ml-2">{{$orders->count()}}</span>
                     </h3>
                 </div>
                 <div class="card-body">
@@ -63,7 +46,7 @@
                             </thead>
 
                             <tbody>
-                                @foreach ($customer->orderDetails as $order)
+                                @foreach ($orders as $order)
                                   
                                     <tr>
                                         @php
@@ -81,14 +64,14 @@
                             </tbody>
                         </table>
 
-                        <div class="page-area">
+                        <div class="page-area float-right mt-3">
                             <table>
                                 <tfoot class="border-top">
-                                  
+                                     {{ $orders->links() }}
                                 </tfoot>
                             </table>
                         </div>
-                        @if(count($customer->orderDetails)==0)
+                        @if(count($orders)==0)
                             <div class="text-center p-4">
                                 <img class="mb-3 img-one-dash" src="{{asset('assets/admin')}}/svg/illustrations/sorry.svg" alt="Image Description">
                                 <p class="mb-0">{{ \App\CPU\translate('No_data_to_show')}}</p>

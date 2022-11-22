@@ -171,8 +171,8 @@ $total_tax_amount = $product_tax;
                                 <label class="input-label">{{\App\CPU\translate('enroll_to_DUKAPAQ_Loyalty')}} <span class="input-label-secondary text-danger">*</span> </label>
                                 <select name="is_loyalty_enrolled" class="form-control" required>
                                     <option value="">-- Select --</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
                                 </select>
                             </div>
                         </div>

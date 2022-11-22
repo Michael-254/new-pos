@@ -17,6 +17,6 @@ class Customer extends Model
     }
 
     public function orderDetails(){
-        return $this->hasManyThrough(OrderDetail::class,Order::class,'user_id','order_id');
+        return $this->hasManyThrough(OrderDetail::class,Order::class,'user_id','order_id')->latest();
     }
 }

@@ -11,8 +11,9 @@ class ClientController extends Controller
     public function index(){
         $customer = Customer::findOrFail(5);
 
-        $customer->load('orderDetails.product');
+        $orders = $customer->orderDetails()->paginate(10);
 
-        return view('admin-views.client',compact('customer'));
+
+        return view('admin-views.client',compact('customer','orders'));
     }
 }

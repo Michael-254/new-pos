@@ -54,7 +54,7 @@ class CustomerController extends Controller
             $customer->save();
 
             $mytime = Carbon::now();
-            if ($request->is_loyalty_enrolled == 'yes') {
+            if ($request->is_loyalty_enrolled == 'Yes') {
                 $customer->update([
                     'loyalty_points' => 100,
                     'loyalty_expire_date' => $mytime->addMonth(3),

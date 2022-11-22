@@ -223,7 +223,7 @@
                         </div>
                     </div>
 
-                    @if ($customer->is_loyalty_enrolled == 'yes')
+                    @if ($customer->is_loyalty_enrolled == 'Yes')
                     <div class="media align-items-center mt-1" href="javascript:">
                         <div class="icon icon-soft-info icon-circle mr-3">
                             <i class="tio-money"></i>
