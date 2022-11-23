@@ -9,8 +9,10 @@ use App\Models\Order;
 use Brian2694\Toastr\Facades\Toastr;
 use App\CPU\Helpers;
 use App\Models\Account;
+use App\Models\CustomerLogin;
 use App\Models\Transaction;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 use function App\CPU\translate;
 
@@ -46,11 +48,25 @@ class CustomerController extends Controller
         $customer->balance = $request->balance;
         $customer->save();
 
+        $check_if_customer_exists_in_our_db = CustomerLogin::where(['phone' => $request->mobile])->first();
+
+        if (!$check_if_customer_exists_in_our_db) {
+            $new_customer = CustomerLogin::Create(
+                [
+                    'phone' => $request->mobile,
+                    'f_name' => $request->name,
+                    'l_name' => $request->name,
+                    'phone' => $request->mobile,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->mobile)
+                ]
+            );
+        }
+
         $mytime = Carbon::now();
         if ($request->is_loyalty_enrolled == 'Yes') {
-            $customer->update([
+            $new_customer->update([
                 'loyalty_points' => 100,
-                'loyalty_expire_date' => $mytime->addMonth(3),
             ]);
         }
 

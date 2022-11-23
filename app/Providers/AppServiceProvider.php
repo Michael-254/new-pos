@@ -29,10 +29,10 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
 
         try {
-            $timezone = BusinessSetting::where(['key' => 'time_zone'])->first();
+            $timezone = BusinessSetting::first();
             if (isset($timezone)) {
-                config(['app.timezone' => $timezone->value]);
-                date_default_timezone_set($timezone->value);
+                config(['app.timezone' => $timezone->time_zone]);
+                date_default_timezone_set($timezone->time_zone);
             }
         } catch (\Exception $exception) {
         }

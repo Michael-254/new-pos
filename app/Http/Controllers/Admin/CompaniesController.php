@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Company;
 use App\Models\BusinessSetting;
 use App\Models\MpesaCredential;
 use Illuminate\Support\Facades\DB;
@@ -11,11 +12,17 @@ use App\CPU\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
 use function App\CPU\translate;
 
-class BusinessSettingsController extends Controller
+class CompaniesController extends Controller
 {
+    public function index()
+    {
+        $companies = Company::all();
+        
+        return view('admin-views.companies.index', compact('companies'));
+    }
     public function shop_index()
     {
-        return view('admin-views.business-settings.shop-index');
+        return view('admin-views.companies.shop-index');
     }
     public function shop_setup(Request $request)
     {
@@ -58,6 +65,6 @@ class BusinessSettingsController extends Controller
     }
     public function shortcut_key()
     {
-        return view('admin-views.business-settings.shortcut-key-index');
+        return view('admin-views.companies.shortcut-key-index');
     }
 }

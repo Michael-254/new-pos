@@ -16,16 +16,16 @@ class MpesaCredentialController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $mpesa= new \Vancha\Mpesa\Mpesa();
 
-        $userid = 1; //auth()->user()->id;
+        $userid = auth()->guard('admin')->user()->id;
         $mpesaapi = MpesaCredential::whereAdminId($userid)->first();
 
-        $amount = 5; //$request->amount;
+        $amount = $request->amount;
         $accountid = Carbon::now()->timestamp;
-        $phone = '+254703780985'; //$request->phone
+        $phone = $request->phone;
         $userphonenumber = ltrim($phone, '+');
 
         $BusinessShortCode = $mpesaapi->shortcode;

@@ -17,7 +17,8 @@ class Helpers
     }
     public static function currency_code()
     {
-        $currency_code = BusinessSetting::where(['key' => 'currency'])->first()->value;
+        $company_id = auth()->guard('admin')->user()->company_id;
+        $currency_code = BusinessSetting::where(['company_id' => $company_id])->value('currency');
         return $currency_code;
     }
 
@@ -75,12 +76,13 @@ class Helpers
     }
     public static function get_business_settings($name)
     {
+        $company_id = auth()->guard('admin')->user()->company_id;
         $config = null;
-        $data = BusinessSetting::where(['key' => $name])->first();
+        $data = BusinessSetting::where(['company_id' => $company_id])->first();
         if (isset($data)) {
-            $config = json_decode($data['value'], true);
+            $config = json_decode($data->$name, true);
             if (is_null($config)) {
-                $config = $data['value'];
+                $config = $data->$name;
             }
         }
         return $config;
@@ -235,8 +237,9 @@ class Helpers
     }
     public static function pagination_limit()
     {
-        $pagination_limit = BusinessSetting::where('key', 'pagination_limit')->first();
-        return (int)$pagination_limit->value;
+        $company_id = auth()->guard('admin')->user()->company_id;
+        $pagination_limit = BusinessSetting::where('company_id', $company_id)->first();
+        return (int)$pagination_limit->pagination_limit;
     }
 
     public static function remove_invalid_charcaters($str)

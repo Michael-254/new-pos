@@ -17,26 +17,7 @@
     </a>
     <!-- End Card -->
 </div>
-<div class="col-sm-6 col-lg-4 mb-3 mt-3 mb-lg-5">
-<!-- Card -->
-<a class="card card-hover-shadow h-100 color-eight" href="#">
-    <div class="card-body">
-        <div class="flex-between align-items-center mb-1">
-            <div>
-                <h6 class="card-subtitle text-white">{{\App\CPU\translate('expiry_date')}}</h6>
-                <span class="card-title h2 text-white">
-                    {{ $customer->loyalty_expire_date}}
-                </span>
-            </div>
-            <div class="mt-2">
-                <i class="tio-money-vs text-white font-one"></i>
-            </div>
-        </div>
-        <!-- End Row -->
-    </div>
-</a>
-<!-- End Card -->
-</div>
+
 <div class="col-sm-6 col-lg-4 mb-3 mt-3 mb-lg-5">
 <!-- Card -->
 <a class="card card-hover-shadow h-100 color-three" href="#">

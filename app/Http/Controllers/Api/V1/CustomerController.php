@@ -10,7 +10,9 @@ use App\Models\Customer;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\CustomerLogin;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
@@ -53,13 +55,27 @@ class CustomerController extends Controller
             $customer->balance = $request->balance;
             $customer->save();
 
-            $mytime = Carbon::now();
-            if ($request->is_loyalty_enrolled == 'yes') {
-                $customer->update([
-                    'loyalty_points' => 100,
-                    'loyalty_expire_date' => $mytime->addMonth(3),
-                ]);
-            }
+            $check_if_customer_exists_in_our_db = CustomerLogin::where(['phone' => $request->mobile])->first();
+
+        if (!$check_if_customer_exists_in_our_db) {
+            $new_customer = CustomerLogin::Create(
+                [
+                    'phone' => $request->mobile,
+                    'f_name' => $request->name,
+                    'l_name' => $request->name,
+                    'phone' => $request->mobile,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->mobile)
+                ]
+            );
+        }
+
+        $mytime = Carbon::now();
+        if ($request->is_loyalty_enrolled == 'Yes') {
+            $new_customer->update([
+                'loyalty_points' => 100,
+            ]);
+        }
 
             return response()->json([
                 'success' => true,

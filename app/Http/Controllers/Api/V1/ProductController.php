@@ -153,9 +153,10 @@ class ProductController extends Controller
 
     public function categoryWiseProduct(Request $request)
     {
+        $company_id = auth()->guard('admin')->user()->company_id;
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
-        $stock_limit = BusinessSetting::where('key', 'stock_limit')->first()->value;
+        $stock_limit = BusinessSetting::where('company_id', $company_id)->value('stock_limit');
 
         $category_wise_product = Product::with('supplier')->active()
             ->when($request->has('category_id') && $request['category_id'] != 0, function ($query) use ($request) {

@@ -135,7 +135,7 @@
                     @endif --}}
             <div class="item style24">
                 <span
-                    class="barcode_site text-capitalize">{{ \App\Models\BusinessSetting::where('key', 'shop_name')->first()->value }}</span>
+                    class="barcode_site text-capitalize">{{ \App\Models\BusinessSetting::where('company_id', auth()->guard('admin')->user()->company_id)->value('shop_name') }}</span>
                 <span class="barcode_name text-capitalize">{{ Str::limit($product->name, 30) }}</span>
                 <span class="barcode_price text-capitalize">
                     {{ $product['selling_price'] . ' ' . \App\CPU\Helpers::currency_symbol() }}
@@ -146,7 +146,7 @@
             </div>
             <div class="item style24">
                 <span
-                    class="barcode_site text-capitalize">{{ \App\Models\BusinessSetting::where('key', 'shop_name')->first()->value }}</span>
+                    class="barcode_site text-capitalize">{{ \App\Models\BusinessSetting::where('company_id', auth()->guard('admin')->user()->company_id)->value('shop_name') }}</span>
                 <span class="barcode_name text-capitalize">{{ Str::limit($product->name, 30) }}</span>
                 <span class="barcode_price text-capitalize">
                     {{ $product['selling_price'] . ' ' . \App\CPU\Helpers::currency_symbol() }}
@@ -157,7 +157,7 @@
             </div>
             <div class="item style24">
                 <span
-                    class="barcode_site text-capitalize">{{ \App\Models\BusinessSetting::where('key', 'shop_name')->first()->value }}</span>
+                    class="barcode_site text-capitalize">{{ \App\Models\BusinessSetting::where('company_id', auth()->guard('admin')->user()->company_id)->value('shop_name') }}</span>
                 <span class="barcode_name text-capitalize">{{ Str::limit($product->name, 30) }}</span>
                 <span class="barcode_price text-capitalize">
                     {{ $product['selling_price'] . ' ' . \App\CPU\Helpers::currency_symbol() }}
@@ -168,7 +168,7 @@
             </div><br/>
             <div class="item style24">
                 <span
-                    class="barcode_site text-capitalize">{{ \App\Models\BusinessSetting::where('key', 'shop_name')->first()->value }}</span>
+                    class="barcode_site text-capitalize">{{ \App\Models\BusinessSetting::where('company_id', auth()->guard('admin')->user()->company_id)->value('shop_name') }}</span>
                 <span class="barcode_name text-capitalize">{{ Str::limit($product->name, 30) }}</span>
                 <span class="barcode_price text-capitalize">
                     {{ $product['selling_price'] . ' ' . \App\CPU\Helpers::currency_symbol() }}
@@ -179,7 +179,7 @@
             </div>
             <div class="item style24">
                 <span
-                    class="barcode_site text-capitalize">{{ \App\Models\BusinessSetting::where('key', 'shop_name')->first()->value }}</span>
+                    class="barcode_site text-capitalize">{{ \App\Models\BusinessSetting::where('company_id', auth()->guard('admin')->user()->company_id)->value('shop_name') }}</span>
                 <span class="barcode_name text-capitalize">{{ Str::limit($product->name, 30) }}</span>
                 <span class="barcode_price text-capitalize">
                     {{ $product['selling_price'] . ' ' . \App\CPU\Helpers::currency_symbol() }}
@@ -190,7 +190,7 @@
             </div>
             <div class="item style24">
                 <span
-                    class="barcode_site text-capitalize">{{ \App\Models\BusinessSetting::where('key', 'shop_name')->first()->value }}</span>
+                    class="barcode_site text-capitalize">{{ \App\Models\BusinessSetting::where('company_id', auth()->guard('admin')->user()->company_id)->value('shop_name') }}</span>
                 <span class="barcode_name text-capitalize">{{ Str::limit($product->name, 30) }}</span>
                 <span class="barcode_price text-capitalize">
                     {{ $product['selling_price'] . ' ' . \App\CPU\Helpers::currency_symbol() }}

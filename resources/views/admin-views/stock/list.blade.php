@@ -166,5 +166,5 @@
 @endsection
 
 @push('script_2')
-    <script src={{asset("public/assets/admin/js/global.js")}}></script>
+    <script src="{{asset('public/assets/admin/js/global.js')}}"></script>
 @endpush

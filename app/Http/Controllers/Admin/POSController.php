@@ -13,6 +13,7 @@ use App\Models\Account;
 use App\Models\OrderDetail;
 use App\Models\Customer;
 use App\CPU\Helpers;
+use App\Models\CustomerLogin;
 use App\Models\User;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
@@ -616,12 +617,11 @@ class POSController extends Controller
             }
             OrderDetail::insert($order_details);
 
-            $customer_details = Customer::findOrFail($user_id);
-            $mytime = Carbon::now();
+            $customer_mobile = Customer::findOrFail($user_id)->mobile;
+            $customer_details = CustomerLogin::where(['phone' => $customer_mobile])->first();
 
             if ($customer_details->is_loyalty_enrolled == 'Yes') {
                 $customer_details->loyalty_points = $customer_details->loyalty_points + ($order->collected_cash / 10);
-                $customer_details->loyalty_expire_date = $mytime->addMonth(3);
                 $customer_details->save();
             }
 

@@ -1,20 +1,20 @@
 <div class="width-inone">
     <div class="text-center pt-4 mb-3">
-        <h2 class="line-inone">{{ \App\Models\BusinessSetting::where(['key' => 'shop_name'])->first()->value }}</h2>
+        <h2 class="line-inone">{{ \App\Models\BusinessSetting::where('company_id', auth()->guard('admin')->user()->company_id)->value('shop_name') }}</h2>
         <h5 class="style-inone">
-            {{ \App\Models\BusinessSetting::where(['key' => 'shop_address'])->first()->value }}
+            {{ \App\Models\BusinessSetting::where('company_id', auth()->guard('admin')->user()->company_id)->value('shop_address') }}
         </h5>
         <h5 class="style-intwo">
             {{ \App\CPU\translate('Phone') }}
-            : {{ \App\Models\BusinessSetting::where(['key' => 'shop_phone'])->first()->value }}
+            : {{ \App\Models\BusinessSetting::where('company_id', auth()->guard('admin')->user()->company_id)->value('shop_phone') }}
         </h5>
         <h5 class="style-intwo">
             {{ \App\CPU\translate('Email') }}
-            : {{ \App\Models\BusinessSetting::where(['key' => 'shop_email'])->first()->value }}
+            : {{ \App\Models\BusinessSetting::where('company_id', auth()->guard('admin')->user()->company_id)->value('shop_email') }}
         </h5>
         <h5 class="style-intwo">
             {{ \App\CPU\translate('Vat_registration_number') }}
-            : {{ \App\Models\BusinessSetting::where(['key' => 'vat_reg_no'])->first()->value }}
+            : {{ \App\Models\BusinessSetting::where('company_id', auth()->guard('admin')->user()->company_id)->value('vat_reg_no') }}
         </h5>
     </div>
 

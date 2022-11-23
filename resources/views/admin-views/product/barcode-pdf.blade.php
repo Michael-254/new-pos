@@ -35,7 +35,7 @@
     @endif
     <div class="col-xs-4">
         <span
-            class="text-capitalize text-bold">{{ \App\Models\BusinessSetting::where('key', 'shop_name')->first()->value }}</span>
+            class="text-capitalize text-bold">{{ \App\Models\BusinessSetting::where('company_id', auth()->guard('admin')->user()->company_id)->value('shop_name') }}</span>
         <br>
         <span class="product-name">{{ Str::limit($product->name, 30) }}</span> <br>
         <span class="currency">

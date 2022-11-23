@@ -9,7 +9,7 @@
             <div class="navbar-vertical-footer-offset">
                 <div class="navbar-brand-wrapper justify-content-between nav-brand-back side-logo">
                     <!-- Logo -->
-                    @php($shop_logo=\App\Models\BusinessSetting::where(['key'=>'shop_logo'])->first()->value)
+                    @php($shop_logo=\App\Models\BusinessSetting::where('company_id', auth()->guard('admin')->user()->company_id)->value('shop_logo'))
                     <a class="navbar-brand" href="{{route('admin.dashboard')}}" aria-label="Front">
                         <img class="navbar-brand-logo"
                              onerror="this.src='{{asset('assets/admin/img/logo.png')}}'"
@@ -34,7 +34,6 @@
                                 class="nav-subtitle">{{\App\CPU\translate('dashboard_section')}}</small>
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                         </li>
-                    @if (Request::route()->getName() != 'client.dashboard')
                         <li class="navbar-vertical-aside-has-menu {{Request::is('admin')?'show':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link"
                                href="{{route('admin.dashboard')}}" title="{{\App\CPU\translate('dashboards')}}">
@@ -45,7 +44,6 @@
                             </a>
                         </li>
                         <!-- End Dashboards -->
-                    
                         <li class="nav-item">
                             <small
                                 class="nav-subtitle">{{\App\CPU\translate('pos_section')}}</small>
@@ -65,15 +63,7 @@
                                     <a class="nav-link " href="{{route('admin.pos.index')}}"
                                        title="{{\App\CPU\translate('POS')}}" target="_blank">
                                         <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">{{\App\CPU\translate('POS')}}</span>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item {{Request::is('admin/customer/list/with-loyalty')?'active':''}}">
-                                    <a class="nav-link " href="{{route('admin.customer.listWithLoyalty')}}"
-                                       title="{{\App\CPU\translate('LOYALTY')}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">{{\App\CPU\translate('Loyalty')}}</span>
+                                        <span class="text-truncate">{{\App\CPU\translate('pos')}}</span>
                                     </a>
                                 </li>
 
@@ -82,6 +72,16 @@
                                        title="{{\App\CPU\translate('orders')}}">
                                         <span class="tio-circle nav-indicator-icon"></span>
                                         <span class="text-truncate">{{\App\CPU\translate('orders')}}
+                                            <span class="badge badge-success ml-2">{{ $orders }} </span>
+                                        </span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item {{Request::is('admin/pos/orders')?'active':''}}">
+                                    <a class="nav-link " href="{{route('admin.pos.orders')}}"
+                                    title="{{\App\CPU\translate('loyalty_program')}}">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate">{{\App\CPU\translate('loyalty_program')}}
                                             <span class="badge badge-success ml-2">{{ $orders }} </span>
                                         </span>
                                     </a>
@@ -370,6 +370,40 @@
                         <!-- Supplier end Pages -->
                         <li class="nav-item">
                             <small
+                                class="nav-subtitle">{{\App\CPU\translate('company_setting_section')}}</small>
+                            <small class="tio-more-horizontal nav-subtitle-replacer"></small>
+                        </li>
+                        <!-- Companies Start Pages -->
+                        <li class="navbar-vertical-aside-has-menu {{Request::is('admin/companies*')?'active':''}}">
+                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:"
+                            >
+                                <i class="tio-settings nav-icon"></i>
+                                <span
+                                    class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{\App\CPU\translate('Companies')}}</span>
+                            </a>
+                            <ul class="js-navbar-vertical-aside-submenu nav nav-sub {{Request::is('admin/companies*')?'d-block':''}}">
+                                <li class="nav-item {{Request::is('admin/companies/all')?'active':''}}">
+                                    <a class="nav-link " href="{{route('admin.business-settings.shop-setup')}}"
+                                    >
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span
+                                            class="text-truncate">{{\App\CPU\translate('shop')}} {{\App\CPU\translate('Shops List')}}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item {{Request::is('admin/companies/shop-setup')?'active':''}}">
+                                    <a class="nav-link " href="{{route('admin.business-settings.shop-setup')}}"
+                                    >
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span
+                                            class="text-truncate">{{\App\CPU\translate('shop')}} {{\App\CPU\translate('Add a Shop')}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Companies End Pages -->
+                        <!-- Companies end Pages -->
+                        <li class="nav-item">
+                            <small
                                 class="nav-subtitle">{{\App\CPU\translate('shop_setting_section')}}</small>
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                         </li>
@@ -396,17 +430,6 @@
                         <li class="nav-item pt-8">
 
                         </li>
-                        @else
-                            <li class="navbar-vertical-aside-has-menu {{Request::is('client-dashboard*')?'active':''}}">
-                                <a class="js-navbar-vertical-aside-menu-link nav-link"
-                                href="{{route('client.dashboard')}}" title="{{\App\CPU\translate('dashboards')}}">
-                                    <i class="tio-home-vs-1-outlined nav-icon"></i>
-                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                        {{\App\CPU\translate('dashboard')}}
-                                    </span>
-                                </a>
-                            </li>
-                        @endif
                     </ul>
                 </div>
                 <!-- End Content -->

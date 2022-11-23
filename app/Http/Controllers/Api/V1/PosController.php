@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\Customer;
 use App\Models\OrderDetail;
 use App\Models\Transaction;
+use App\Models\MpesaCredential;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -18,9 +19,10 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Http\Resources\ProductsResource;
-use Carbon\Carbon;
+use App\Models\CustomerLogin;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Console\Input\Input;
+use Carbon\Carbon;
 
 class PosController extends Controller
 {
@@ -72,6 +74,77 @@ class PosController extends Controller
         return response()->json([
             'success' => true,
             'invoice' => $invoice,
+        ], 200);
+    }
+
+    public function stkPush(Request $request)
+    {
+        $mpesa= new \Vancha\Mpesa\Mpesa();
+
+        $user_id = $request->user_id;
+        $mpesaapi = MpesaCredential::whereAdminId($user_id)->first();
+
+        if ($request['cart']) {
+            if (count($request['cart']) < 1) {
+                return response()->json(['message' => 'Cart empty'], 403);
+            }
+        }
+
+        $product_price = 0;
+        $product_discount = 0;
+        $product_tax = 0;
+        $ext_discount = 0;
+        $coupon_discount = $request->coupon_discount ?? 0;
+
+        foreach ($request['cart'] as $c) {
+            //dd($c);
+            if (is_array($c)) {
+                $product = Product::find($c['id']);
+                if ($product) {
+                    $price = $c['price'];
+                    $product_price += $price * $c['quantity'];
+                    $product_discount += $c['discount'] * $c['quantity'];
+                    $product_tax += $c['tax'] * $c['quantity'];
+                    if ($c['quantity'] > $product->quantity) {
+                        return response()->json([
+                            'message' => 'Please check product quantity'
+                        ], 422);
+                    }
+                }
+            }
+
+        }
+        $total_price = $product_price - $product_discount;
+        if ($request->ext_discount_type == 'percent') {
+            $ext_discount = ($product_price * $request->extra_discount) / 100;
+        } else {
+            $ext_discount = $request->extra_discount;
+        }
+
+        $amount = $total_price + $product_tax - $ext_discount - $coupon_discount;
+
+        $accountid = Carbon::now()->timestamp;
+        $phone = $request->phone;
+        $userphonenumber = ltrim($phone, '+');
+
+        $BusinessShortCode = $mpesaapi->shortcode;
+        $LipaNaMpesaPasskey = $mpesaapi->lipa_na_mpesa_passkey;
+        $TransactionType = 'CustomerPayBillOnline';
+        $Amount = floor($amount);
+        $PartyA = $userphonenumber;
+        $PartyB = $mpesaapi->shortcode;
+        $PhoneNumber = $userphonenumber;
+        $CallBackURL = env('APP_URL').'/api/payments/callbackurl';
+        $AccountReference = $accountid;
+        $TransactionDesc = 'Product purchase';
+        $Remarks = 'Product purchase';
+
+        $stkPushSimulation = $mpesa->STKPushSimulation($BusinessShortCode, $LipaNaMpesaPasskey, $TransactionType, $Amount, $PartyA, $PartyB, $PhoneNumber, $CallBackURL, $AccountReference, $TransactionDesc, $Remarks);
+        $result = json_decode($stkPushSimulation, true);
+      
+        return response()->json([
+            'message' => 'Stk push placed successfully',
+            'status' => $result
         ], 200);
     }
 
@@ -148,10 +221,11 @@ class PosController extends Controller
         $total_price = $product_price - $product_discount;
 
         if ($request->ext_discount_type == 'percent') {
-            $order->extra_discount = ($product_price * $request->extra_discount) / 100;
+            $ext_discount = ($product_price * $request->extra_discount) / 100;
         } else {
-            $order->extra_discount = $request->extra_discount;
+            $ext_discount = $request->extra_discount;
         }
+        $order->extra_discount = $ext_discount;
 
         $total_tax_amount = $product_tax;
         try {
@@ -273,15 +347,14 @@ class PosController extends Controller
             }
             OrderDetail::insert($order_details);
 
-            $customer_details = Customer::findOrFail($user_id);
-            $mytime = Carbon::now();
+            $customer_mobile = Customer::findOrFail($user_id)->mobile;
+            $customer_details = CustomerLogin::where(['phone' => $customer_mobile])->first();
 
-            if ($customer_details->is_loyalty_enrolled == 'yes') {
+            if ($customer_details->is_loyalty_enrolled == 'Yes') {
                 $customer_details->loyalty_points = $customer_details->loyalty_points + ($order->collected_cash / 10);
-                $customer_details->loyalty_expire_date = $mytime->addMonth(3);
                 $customer_details->save();
             }
-            
+
             return response()->json([
                 'message' => 'Order placed successfully',
                 'order_id' => $order_id
@@ -437,10 +510,11 @@ class PosController extends Controller
 
     public function getSearch(Request $request)
     {
+        $company_id = auth()->guard('admin')->user()->company_id;
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
         $search = $request->name;
-        $stock_limit = BusinessSetting::where('key', 'stock_limit')->first()->value;
+        $stock_limit = BusinessSetting::where('company_id', $company_id)->value('stock_limit');
         if (!empty($search)) {
             $result = Product::where('product_code', 'like', '%' . $search . '%')
                 ->orWhere('name', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
