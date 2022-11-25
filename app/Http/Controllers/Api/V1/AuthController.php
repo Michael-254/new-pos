@@ -29,7 +29,7 @@ class AuthController extends Controller
             return response()->json(['errors' => Helpers::error_processor($validator)], 403);
         }
 
-        CustomerLogin::create([
+        $customer = CustomerLogin::create([
             'f_name' => $request->f_name,
             'l_name' => $request->l_name,
             'email' => $request->email,
@@ -37,8 +37,10 @@ class AuthController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
+        $token = $customer->createToken('LaravelPassportClient')->accessToken;
+        
         return response()->json(
-            ['message' => 'You have successfully registered!', 'user_type' => $request->usertype],
+            ['message' => 'You are logged in', 'token' => $token, 'user_type' => $request->usertype, 'fname' => $customer->f_name, 'lname' => $customer->l_name, 'phone' => $customer->phone],
             200
         );
     }
