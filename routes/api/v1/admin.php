@@ -30,6 +30,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('profile', [AuthController::class, 'profile']);
         /**************** Dashboard Route Starts Here ***********************/
         Route::group(['prefix' => 'dashboard'], function () {
+            Route::get('customer/loyalty-points-summary', [DashboardController::class, 'getCustomerLoyaltyPointsSummary']);
+            Route::get('customer/purchases', [DashboardController::class, 'getCustomerPurchases']);
+
             Route::get('revenue-summary', [DashboardController::class, 'getIndex']);
             Route::get('revenue/filtering', [DashboardController::class, 'getFilter']);
             Route::get('product/limited-stock', [DashboardController::class, 'productLimitedStockList']);
