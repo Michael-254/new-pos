@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\CPU\Helpers;
 use App\Models\Admin;
+use App\Models\CustomerLogin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -13,35 +14,91 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    //Customer Register
+    public function customerRegister(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'f_name' => 'required',
+            'l_name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+            'password' => 'required',
+            'usertype' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+        }
+
+        CustomerLogin::create([
+            'f_name' => $request->f_name,
+            'l_name' => $request->l_name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password)
+        ]);
+
+        return response()->json(
+            ['message' => 'You have successfully registered!', 'user_type' => $request->usertype],
+            200
+        );
+    }
+
     //Admin Login
     public function adminLogin(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required',
-            'password' => 'required'
+            'password' => 'required',
+            'usertype' => 'required'
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => Helpers::error_processor($validator)], 403);
         }
-        //Get authenticated admin
-        $admin = Admin::where('email', $request->email)->first();
-        //Check Above Admin
-        if ($admin) {
-            if (Hash::check($request->password, $admin->password)) {
-                $token = $admin->createToken('LaravelPassportClient')->accessToken;
-                return response()->json(
-                    ['message' => 'You are logged in', 'token' => $token],
-                    200
-                );
+
+        if ($request->usertype == 'admin') {
+            //Get authenticated admin
+            $admin = Admin::where('email', $request->email)->first();
+
+            //Check Above Admin
+            if ($admin) {
+                if (Hash::check($request->password, $admin->password)) {
+                    $token = $admin->createToken('LaravelPassportClient')->accessToken;
+                    return response()->json(
+                        ['message' => 'You are logged in', 'token' => $token, 'user_type' => $request->usertype],
+                        200
+                    );
+                } else {
+                    $response = ["message" => "Password mismatch"];
+                    return response($response, 422);
+                }
             } else {
-                $response = ["message" => "Password mismatch"];
+                $response = ["message" => 'Wrong credentials! please input correct email and password'];
                 return response($response, 422);
             }
-        } else {
-            $response = ["message" => 'Wrong credentials! please input correct email and password'];
-            return response($response, 422);
+        }
+        else {
+            //Get authenticated customer
+            $customer = CustomerLogin::where('email', $request->email)->first();
+
+            //Check Above Customer
+            if ($customer) {
+                if (Hash::check($request->password, $customer->password)) {
+                    $token = $customer->createToken('LaravelPassportClient')->accessToken;
+                    return response()->json(
+                        ['message' => 'You are logged in', 'token' => $token, 'user_type' => $request->usertype],
+                        200
+                    );
+                } else {
+                    $response = ["message" => "Password mismatch"];
+                    return response($response, 422);
+                }
+            } else {
+                $response = ["message" => 'Wrong credentials! please input correct email and password'];
+                return response($response, 422);
+            }
         }
     }
+
     //Password Change
     public function passwordChange(Request $request)
     {
