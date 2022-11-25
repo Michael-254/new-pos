@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\V1\TransactionController;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::post('login', [AuthController::class, 'adminLogin']);
+    Route::post('register', [AuthController::class, 'customerRegister']);
     Route::get('config', [SettingController::class, 'configuration']);
     Route::group(['middleware' => ['auth:admin-api']], function () {
         /**************** Admin Settings Route Starts Here ***********************/
