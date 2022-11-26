@@ -316,3 +316,4 @@ function translate($key)
     }
     return $result;
 }
+
