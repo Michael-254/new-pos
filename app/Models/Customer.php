@@ -23,6 +23,6 @@ class Customer extends Model
 
     public function member()
     {
-        return $this->belongsTo(CustomerLogin::class, 'member_id');
+        return $this->belongsTo(CustomerLogin::class, 'member_id')->withDefault();
     }
 }

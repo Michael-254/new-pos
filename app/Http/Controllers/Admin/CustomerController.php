@@ -83,7 +83,7 @@ class CustomerController extends Controller
             $customers = new Customer;
         }
         //$walk_customer = $customers->where('type',0)->get();
-        $customers = $customers->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
+        $customers = $customers->with('member')->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
         return view('admin-views.customer.list', compact('customers', 'accounts', 'search'));
     }
 
@@ -105,7 +105,7 @@ class CustomerController extends Controller
             $customers = new Customer;
         }
         //$walk_customer = $customers->where('type',0)->get();
-        $customers = $customers->where('company_id', auth('admin')->user()->company_id)->load('member')->paginate(Helpers::pagination_limit())->appends($query_param);
+        $customers = $customers->with('member')->where('company_id', auth('admin')->user()->company_id)->paginate(Helpers::pagination_limit())->appends($query_param);
         return view('admin-views.customer.list', compact('customers', 'accounts', 'search'));
     }
 
