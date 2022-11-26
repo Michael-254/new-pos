@@ -13,10 +13,16 @@ class Customer extends Model
 
     public function orders()
     {
-        return $this->hasMany(Order::class,'user_id');
+        return $this->hasMany(Order::class, 'user_id');
     }
 
-    public function orderDetails(){
-        return $this->hasManyThrough(OrderDetail::class,Order::class,'user_id','order_id')->latest();
+    public function orderDetails()
+    {
+        return $this->hasManyThrough(OrderDetail::class, Order::class, 'user_id', 'order_id')->latest();
+    }
+
+    public function member()
+    {
+        return $this->belongsTo(CustomerLogin::class, 'member_id');
     }
 }

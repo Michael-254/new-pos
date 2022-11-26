@@ -15,6 +15,7 @@ class AddCompanyIdCustomers extends Migration
     {
         Schema::table('customers', function (Blueprint $table) {
             $table->bigInteger('company_id')->nullable();
+            $table->bigInteger('member_id')->nullable();
         });
     }
 

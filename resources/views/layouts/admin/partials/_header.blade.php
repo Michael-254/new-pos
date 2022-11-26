@@ -3,7 +3,7 @@
         <div class="navbar-nav-wrap">
             <div class="navbar-brand-wrapper">
                 <!-- Logo -->
-                @php($shop_logo=\App\Models\BusinessSetting::where(['company_id'=>auth()->user()->company_id])->first()->shop_logo)
+                @php($shop_logo=\App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->shop_logo)
                 <a class="navbar-brand" href="{{route('admin.dashboard')}}" aria-label="">
                     <img class="navbar-brand-logo" onerror="this.src='{{asset('assets/admin/img/logo.png')}}'" src="{{asset('storage/app/public/shop/'.$shop_logo)}}" alt="Logo">
 

@@ -43,28 +43,33 @@ class CustomerController extends Controller
             } else {
                 $image_name = 'def.png';
             }
+
+            $dukapaq_member = CustomerLogin::where('phone', $request->mobile)->first();
+
+            if ($dukapaq_member == '') {
+                $dukapaq_member = CustomerLogin::create([]);
+                if ($request->is_loyalty_enrolled == 'Yes') {
+                    $dukapaq_member->update([
+                        'loyalty_points' => 100,
+                        'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
+                    ]);
+                }
+            }
+
+            $customer = new Customer;
+            $customer->member_id = $dukapaq_member->id;
             $customer->name = $request->name;
             $customer->mobile = $request->mobile;
             $customer->email = $request->email;
+            $customer->is_loyalty_enrolled = $request->is_loyalty_enrolled;
             $customer->image = $image_name;
             $customer->state = $request->state;
             $customer->city = $request->city;
             $customer->zip_code = $request->zip_code;
             $customer->address = $request->address;
             $customer->balance = $request->balance;
+            $customer->company_id = auth('admin')->user()->company_id;
             $customer->save();
-
-            $check_if_member_exists_on_ourDB = CustomerLogin::where('phone', $request->mobile)->first();
-
-            if ($check_if_member_exists_on_ourDB == '') {
-                $member = CustomerLogin::create([]);
-                if ($request->is_loyalty_enrolled == 'Yes') {
-                    $member->update([
-                        'loyalty_points' => 100,
-                        'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
-                    ]);
-                }
-            }
 
             return response()->json([
                 'success' => true,

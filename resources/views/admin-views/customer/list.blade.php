@@ -90,14 +90,14 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if($customer->is_loyalty_enrolled == 'Yes')
+                                    @if($customer->member->is_loyalty_enrolled == 'Yes')
                                     Yes
                                     @else
                                     No
                                     @endif
                                 </td>
                                 <td>
-                                    @if($customer->is_loyalty_enrolled == 'Yes')
+                                    @if($customer->member->is_loyalty_enrolled == 'Yes')
                                     {{ $customer->loyalty_points }}
                                     @else
                                     {{\App\CPU\translate('not_a_loyalty_member')}}

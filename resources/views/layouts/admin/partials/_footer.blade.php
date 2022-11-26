@@ -2,10 +2,9 @@
     <div class="row justify-content-between align-items-center">
         <div class="col">
             <p class="font-size-sm mb-0">
-                @php($shop_name=\App\Models\BusinessSetting::where('key','shop_name')->first()->value)
-                @php($footer_text=\App\Models\BusinessSetting::where('key','footer_text')->first()->value)
-                &copy; {{ $shop_name }}. <span
-                    class="d-none d-sm-inline-block">{{ $footer_text }}</span>
+                @php($shop_name=\App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->shop_name)
+                @php($footer_text=\App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->footer_text)
+                &copy; {{ $shop_name }}. <span class="d-none d-sm-inline-block">{{ $footer_text }}</span>
             </p>
         </div>
         <div class="col-auto">
@@ -23,8 +22,7 @@
                     <li class="list-inline-item">
                         <!-- Keyboard Shortcuts Toggle -->
                         <div class="hs-unfold">
-                            <a class="js-hs-unfold-invoker btn btn-icon btn-ghost-secondary rounded-circle"
-                               href="{{route('admin.dashboard')}}">
+                            <a class="js-hs-unfold-invoker btn btn-icon btn-ghost-secondary rounded-circle" href="{{route('admin.dashboard')}}">
                                 <i class="tio-home-outlined"></i>
                             </a>
                         </div>

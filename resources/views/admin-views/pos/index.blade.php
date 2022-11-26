@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     {{--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">--}}
@@ -17,107 +18,94 @@
     <link rel="stylesheet" href="{{asset('assets/admin')}}/css/theme.minc619.css?v=1.0">
     @stack('css_or_js')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" href="{{asset('assets/admin')}}/css/custom.css"/>
-    <link rel="stylesheet" href="{{asset('assets/admin')}}/css/pos.css"/>
+    <link rel="stylesheet" href="{{asset('assets/admin')}}/css/custom.css" />
+    <link rel="stylesheet" href="{{asset('assets/admin')}}/css/pos.css" />
     <link rel="stylesheet" href="{{asset('assets/admin')}}/css/toastr.css">
 </head>
+
 <body class="footer-offset">
-{{--loader--}}
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div id="loading" class="d-none">
-                <div class="style-i1">
-                    <img width="200" src="{{asset('assets/admin/img/loader.gif')}}">
+    {{--loader--}}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="loading" class="d-none">
+                    <div class="style-i1">
+                        <img width="200" src="{{asset('assets/admin/img/loader.gif')}}">
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-{{--loader--}}
-<!-- JS Preview mode only -->
-<header id="header"
-        class="navbar navbar-expand-lg navbar-fixed navbar-height navbar-flush navbar-container navbar-bordered">
-    <div class="navbar-nav-wrap">
-        <div class="navbar-brand-wrapper">
-            <!-- Logo Div-->
-            @php($shop_logo=\App\Models\BusinessSetting::where('key','shop_logo')->first()->value)
-            <a class="navbar-brand pt-0 pb-0" href="{{route('admin.dashboard')}}" aria-label="Front">
-                <img class="navbar-brand-logo w-i1"
-                     onerror="this.src='{{asset('assets/admin/img/logo.png')}}'"
-                     src="{{asset('storage/shop/'.$shop_logo)}}"
-                     alt="Logo">
-            </a>
-        </div>
+    {{--loader--}}
+    <!-- JS Preview mode only -->
+    <header id="header" class="navbar navbar-expand-lg navbar-fixed navbar-height navbar-flush navbar-container navbar-bordered">
+        <div class="navbar-nav-wrap">
+            <div class="navbar-brand-wrapper">
+                <!-- Logo Div-->
+                @php($shop_logo = \App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->shop_logo)
+                <a class="navbar-brand pt-0 pb-0" href="{{route('admin.dashboard')}}" aria-label="Front">
+                    <img class="navbar-brand-logo w-i1" onerror="this.src='{{asset('assets/admin/img/logo.png')}}'" src="{{asset('storage/shop/'.$shop_logo)}}" alt="Logo">
+                </a>
+            </div>
 
-        <!-- Secondary Content -->
-        <div class="navbar-nav-wrap-content-right">
-            <!-- Navbar -->
-            <ul class="navbar-nav align-items-center flex-row">
-                <li class="nav-item d-sm-inline-block">
-                    <!-- short cut key -->
-                    <div class="hs-unfold">
-                        <a id="short-cut" class="js-hs-unfold-invoker btn btn-icon btn-ghost-secondary rounded-circle"
-                          data-toggle="modal" data-target="#short-cut-keys" title="{{\App\CPU\translate('short_cut_keys')}}">
-                            <i class="tio-keyboard"></i>
+            <!-- Secondary Content -->
+            <div class="navbar-nav-wrap-content-right">
+                <!-- Navbar -->
+                <ul class="navbar-nav align-items-center flex-row">
+                    <li class="nav-item d-sm-inline-block">
+                        <!-- short cut key -->
+                        <div class="hs-unfold">
+                            <a id="short-cut" class="js-hs-unfold-invoker btn btn-icon btn-ghost-secondary rounded-circle" data-toggle="modal" data-target="#short-cut-keys" title="{{\App\CPU\translate('short_cut_keys')}}">
+                                <i class="tio-keyboard"></i>
 
-                        </a>
-                    </div>
-                    <!-- End short cut key -->
-                </li>
-                <li class="nav-item d-sm-inline-block">
-                    <!-- Notification -->
-                    <div class="hs-unfold">
-                        <a data-toggle="tooltip" class="js-hs-unfold-invoker btn btn-icon btn-ghost-secondary rounded-circle"
-                           href="{{route('admin.pos.orders')}}" target="_blank" title="{{\App\CPU\translate('order_list')}}">
-                            <i class="tio-shopping-basket"></i>
-                            {{--<span class="btn-status btn-sm-status btn-status-danger"></span>--}}
-                        </a>
-                        <div class="tooltip bs-tooltip-top" role="tooltip">
-                            <div class="arrow"></div>
-                            <div class="tooltip-inner"></div>
+                            </a>
                         </div>
-                    </div>
-                    <!-- End Notification-->
-                </li>
+                        <!-- End short cut key -->
+                    </li>
+                    <li class="nav-item d-sm-inline-block">
+                        <!-- Notification -->
+                        <div class="hs-unfold">
+                            <a data-toggle="tooltip" class="js-hs-unfold-invoker btn btn-icon btn-ghost-secondary rounded-circle" href="{{route('admin.pos.orders')}}" target="_blank" title="{{\App\CPU\translate('order_list')}}">
+                                <i class="tio-shopping-basket"></i>
+                                {{--<span class="btn-status btn-sm-status btn-status-danger"></span>--}}
+                            </a>
+                            <div class="tooltip bs-tooltip-top" role="tooltip">
+                                <div class="arrow"></div>
+                                <div class="tooltip-inner"></div>
+                            </div>
+                        </div>
+                        <!-- End Notification-->
+                    </li>
 
-                <li class="nav-item">
-                    <!-- Account -->
-                    <div class="hs-unfold">
-                        <a class="js-hs-unfold-invoker navbar-dropdown-account-wrapper" href="javascript:;"
-                           data-hs-unfold-options='{
+                    <li class="nav-item">
+                        <!-- Account -->
+                        <div class="hs-unfold">
+                            <a class="js-hs-unfold-invoker navbar-dropdown-account-wrapper" href="javascript:;" data-hs-unfold-options='{
                                      "target": "#accountNavbarDropdown",
                                      "type": "css-animation"
                                    }'>
-                            <div class="avatar avatar-sm avatar-circle">
-                                <img class="avatar-img"
-                                     onerror="this.src='{{asset('assets/admin/img/160x160/img1.jpg')}}'"
-                                     src="{{asset('storage/admin')}}/{{auth('admin')->user()->image}}"
-                                     alt="Image">
-                                <span class="avatar-status avatar-sm-status avatar-status-success"></span>
-                            </div>
-                        </a>
+                                <div class="avatar avatar-sm avatar-circle">
+                                    <img class="avatar-img" onerror="this.src='{{asset('assets/admin/img/160x160/img1.jpg')}}'" src="{{asset('storage/admin')}}/{{auth('admin')->user()->image}}" alt="Image">
+                                    <span class="avatar-status avatar-sm-status avatar-status-success"></span>
+                                </div>
+                            </a>
 
-                        <div id="accountNavbarDropdown"
-                             class="w-i2 hs-unfold-content dropdown-unfold dropdown-menu dropdown-menu-right navbar-dropdown-menu navbar-dropdown-account">
-                            <div class="dropdown-item-text">
-                                <div class="media align-items-center">
-                                    <div class="avatar avatar-sm avatar-circle mr-2">
-                                        <img class="avatar-img"
-                                             onerror="this.src='{{asset('assets/admin/img/160x160/img1.jpg')}}'"
-                                             src="{{asset('storage/admin')}}/{{auth('admin')->user()->image}}"
-                                             alt="Owner image">
-                                    </div>
-                                    <div class="media-body">
-                                        <span class="card-title h5">{{auth('admin')->user()->f_name}}</span>
-                                        <span class="card-text">{{auth('admin')->user()->email}}</span>
+                            <div id="accountNavbarDropdown" class="w-i2 hs-unfold-content dropdown-unfold dropdown-menu dropdown-menu-right navbar-dropdown-menu navbar-dropdown-account">
+                                <div class="dropdown-item-text">
+                                    <div class="media align-items-center">
+                                        <div class="avatar avatar-sm avatar-circle mr-2">
+                                            <img class="avatar-img" onerror="this.src='{{asset('assets/admin/img/160x160/img1.jpg')}}'" src="{{asset('storage/admin')}}/{{auth('admin')->user()->image}}" alt="Owner image">
+                                        </div>
+                                        <div class="media-body">
+                                            <span class="card-title h5">{{auth('admin')->user()->f_name}}</span>
+                                            <span class="card-text">{{auth('admin')->user()->email}}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="dropdown-divider"></div>
+                                <div class="dropdown-divider"></div>
 
-                            <a class="dropdown-item" href="javascript:" onclick="Swal.fire({
+                                <a class="dropdown-item" href="javascript:" onclick="Swal.fire({
                                 title: 'Do you want to logout?',
                                 showDenyButton: true,
                                 showCancelButton: true,
@@ -132,157 +120,150 @@
                                 Swal.fire('Canceled', '', 'info')
                                 }
                                 })">
-                                <span class="text-truncate pr-2"
-                                      title="Sign out">{{\App\CPU\translate('sign_out')}}</span>
-                            </a>
+                                    <span class="text-truncate pr-2" title="Sign out">{{\App\CPU\translate('sign_out')}}</span>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <!-- End Account -->
-                </li>
-            </ul>
-            <!-- End Navbar -->
+                        <!-- End Account -->
+                    </li>
+                </ul>
+                <!-- End Navbar -->
+            </div>
+            <!-- End Secondary Content -->
         </div>
-        <!-- End Secondary Content -->
-    </div>
-</header>
-<!-- END ONLY DEV -->
-<main id="content" role="main" class="main pointer-event">
-    <!-- Content -->
-    <!-- ========================= SECTION CONTENT ========================= -->
-    <section class="section-content padding-y-sm bg-default mt-1">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-8 padding-y-sm mt-2">
-                    <div class="card pr-1 pl-1">
-                        <div class="card-header pr-0 pl-0">
-                            <div class="row w-100">
-                                <div class="col-md-6 col-12 mt-2">
-                                    <form class="header-item">
-                                        <!-- Search -->
-                                        <div class="input-group-overlay input-group-merge input-group-flush w-i3">
-                                            <div class="input-group-prepend">
-                                                <div class="input-group-text">
-                                                    <i class="tio-search"></i>
+    </header>
+    <!-- END ONLY DEV -->
+    <main id="content" role="main" class="main pointer-event">
+        <!-- Content -->
+        <!-- ========================= SECTION CONTENT ========================= -->
+        <section class="section-content padding-y-sm bg-default mt-1">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-8 padding-y-sm mt-2">
+                        <div class="card pr-1 pl-1">
+                            <div class="card-header pr-0 pl-0">
+                                <div class="row w-100">
+                                    <div class="col-md-6 col-12 mt-2">
+                                        <form class="header-item">
+                                            <!-- Search -->
+                                            <div class="input-group-overlay input-group-merge input-group-flush w-i3">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <i class="tio-search"></i>
+                                                    </div>
                                                 </div>
+                                                <input id="search" autocomplete="off" type="text" name="search" class="form-control search-bar-input" placeholder="{{\App\CPU\translate('search_by_code_or_name')}}" aria-label="Search here">
+                                                <diV class="card search-card w-i4">
+                                                    <div id="search-box" class="card-body search-result-box style-i2"></div>
+                                                </diV>
                                             </div>
-                                            <input id="search" autocomplete="off" type="text" name="search"
-                                                   class="form-control search-bar-input"
-                                                   placeholder="{{\App\CPU\translate('search_by_code_or_name')}}"
-                                                   aria-label="Search here" >
-                                            <diV class="card search-card w-i4">
-                                                <div id="search-box" class="card-body search-result-box style-i2"></div>
-                                            </diV>
-                                        </div>
-                                        <!-- End Search -->
-                                    </form>
-                                </div>
-                                <div class="col-md-6 col-12 mt-2">
-                                    <div class="input-group header-item w-100">
-                                        <select name="category" id="category" class="form-control js-select2-custom mx-1"
-                                                title="select category" onchange="set_category_filter(this.value)">
-                                            <option value="">{{\App\CPU\translate('all_categories')}}</option>
-                                            @foreach ($categories as $item)
+                                            <!-- End Search -->
+                                        </form>
+                                    </div>
+                                    <div class="col-md-6 col-12 mt-2">
+                                        <div class="input-group header-item w-100">
+                                            <select name="category" id="category" class="form-control js-select2-custom mx-1" title="select category" onchange="set_category_filter(this.value)">
+                                                <option value="">{{\App\CPU\translate('all_categories')}}</option>
+                                                @foreach ($categories as $item)
                                                 <option value="{{ $item['id'] }}" {{$category==$item->id?'selected':''}}>{{ Str::limit($item['name'],15) }}</option>
-                                            @endforeach
-                                        </select>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body" id="items">
-                            <div class="row mt-2 mb-3 style-i3">
-                                @foreach($products as $product)
+                            <div class="card-body" id="items">
+                                <div class="row mt-2 mb-3 style-i3">
+                                    @foreach($products as $product)
                                     <div class="col-12 col-sm-6 col-lg-4">
                                         @include('admin-views.pos._single_product',['product'=>$product])
                                     </div>
-                                @endforeach
+                                    @endforeach
 
-                                @if(count($products)==0)
+                                    @if(count($products)==0)
                                     <div class="text-center p-4">
-                                        <img class="mb-3 w-i5" src="{{asset('assets/admin')}}/svg/illustrations/sorry.svg" alt="Image Description" >
+                                        <img class="mb-3 w-i5" src="{{asset('assets/admin')}}/svg/illustrations/sorry.svg" alt="Image Description">
                                         <p class="mb-0">{{ \App\CPU\translate('No_data_to_show')}}</p>
                                     </div>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            {!!$products->withQueryString()->links()!!}
-                        </div>
-                    </div>
-                </div>
-                @php($customers = \App\Models\Customer::get())
-                <div class="col-md-4 padding-y-sm mt-2">
-                    <div class="card pr-1 pl-1">
-                        <div class="row mt-2">
-                            <div class="form-group mt-1 col-12 w-i6">
-                                <select id='customer' name="customer_id"
-                                        class="form-control js-data-example-ajax" onchange="customer_change(this.value);">
-                                    <option>{{\App\CPU\translate('--select-customer--')}}</option>
-                                    <option value="0">{{\App\CPU\translate('walking_customer')}}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group mt-1 col-12 col-lg-6 mb-0">
-                                <button class="w-i6 d-inline-block btn btn-success rounded" id="add_new_customer" type="button" data-toggle="modal" data-target="#add-customer" title="Add Customer">
-                                   <i class="tio-add-circle-outlined"></i> {{ \App\CPU\translate('customer')}}
-                                </button>
-                            </div>
-                            <div class="form-group mt-1 col-12 col-lg-6 mb-0">
-                                <a class="w-i6 d-inline-block btn btn-warning rounded" href="{{route('admin.pos.new-cart-id')}}">
-                                    {{ \App\CPU\translate('new_order')}}
-                                </a>
-                            </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="form-group col-12 mb-0">
-                                <label class="input-label text-capitalize border p-1" >{{\App\CPU\translate('current_customer')}} : <span class="style-i4 mb-0 p-1" id="current_customer"></span></label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group mt-1 col-12 col-lg-6 mt-2 mb-0">
-                                <select id='cart_id' name="cart_id"
-                                        class=" form-control js-select2-custom" onchange="cart_change(this.value);">
-                                </select>
-                            </div>
-
-                            <div class="form-group mt-1 col-12 col-lg-6 mt-2 mb-0">
-                                <a class="w-i6 d-inline-block btn btn-danger rounded" href="{{route('admin.pos.clear-cart-ids')}}">
-                                    {{ \App\CPU\translate('clear_cart')}}
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    <center>
-                                        <div id="cartloader" class="d-none">
-                                            <img width="50" src="{{asset('assets/admin/img/loader.gif')}}">
-                                        </div>
-                                    </center>
+                                    @endif
                                 </div>
                             </div>
+                            <div class="card-footer">
+                                {!!$products->withQueryString()->links()!!}
+                            </div>
                         </div>
-                        <div class='w-100' id="cart">
-                            @include('admin-views.pos._cart',['cart_id'=>$cart_id])
+                    </div>
+                    @php($customers = \App\Models\Customer::get())
+                    <div class="col-md-4 padding-y-sm mt-2">
+                        <div class="card pr-1 pl-1">
+                            <div class="row mt-2">
+                                <div class="form-group mt-1 col-12 w-i6">
+                                    <select id='customer' name="customer_id" class="form-control js-data-example-ajax" onchange="customer_change(this.value);">
+                                        <option>{{\App\CPU\translate('--select-customer--')}}</option>
+                                        <option value="0">{{\App\CPU\translate('walking_customer')}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group mt-1 col-12 col-lg-6 mb-0">
+                                    <button class="w-i6 d-inline-block btn btn-success rounded" id="add_new_customer" type="button" data-toggle="modal" data-target="#add-customer" title="Add Customer">
+                                        <i class="tio-add-circle-outlined"></i> {{ \App\CPU\translate('customer')}}
+                                    </button>
+                                </div>
+                                <div class="form-group mt-1 col-12 col-lg-6 mb-0">
+                                    <a class="w-i6 d-inline-block btn btn-warning rounded" href="{{route('admin.pos.new-cart-id')}}">
+                                        {{ \App\CPU\translate('new_order')}}
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="form-group col-12 mb-0">
+                                    <label class="input-label text-capitalize border p-1">{{\App\CPU\translate('current_customer')}} : <span class="style-i4 mb-0 p-1" id="current_customer"></span></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group mt-1 col-12 col-lg-6 mt-2 mb-0">
+                                    <select id='cart_id' name="cart_id" class=" form-control js-select2-custom" onchange="cart_change(this.value);">
+                                    </select>
+                                </div>
+
+                                <div class="form-group mt-1 col-12 col-lg-6 mt-2 mb-0">
+                                    <a class="w-i6 d-inline-block btn btn-danger rounded" href="{{route('admin.pos.clear-cart-ids')}}">
+                                        {{ \App\CPU\translate('clear_cart')}}
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <center>
+                                            <div id="cartloader" class="d-none">
+                                                <img width="50" src="{{asset('assets/admin/img/loader.gif')}}">
+                                            </div>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='w-100' id="cart">
+                                @include('admin-views.pos._cart',['cart_id'=>$cart_id])
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div><!-- container //  -->
-    </section>
+            </div><!-- container //  -->
+        </section>
 
-    <!-- End Content -->
-    <div class="modal fade" id="quick-view" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content" id="quick-view-modal">
+        <!-- End Content -->
+        <div class="modal fade" id="quick-view" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content" id="quick-view-modal">
 
+                </div>
             </div>
         </div>
-    </div>
-    @php($order=\App\Models\Order::find(session('last_order')))
-    @if($order)
+        @php($order=\App\Models\Order::find(session('last_order')))
+        @if($order)
         @php(session(['last_order'=> false]))
         <div class="modal fade" id="print-invoice" tabindex="-1">
             <div class="modal-dialog">
@@ -296,11 +277,8 @@
                     <div class="modal-body row font-i1">
                         <div class="col-md-12">
                             <center>
-                                <input id="print_invoice" type="button" class="mt-2 btn btn-primary non-printable"
-                                       onclick="printDiv('printableArea')"
-                                       value="Proceed, If thermal printer is ready."/>
-                                <a id="invoice_close" onclick='location.href="{{url()->previous()}}"'
-                                   class="mt-2 btn btn-danger non-printable">{{\App\CPU\translate('back')}}</a>
+                                <input id="print_invoice" type="button" class="mt-2 btn btn-primary non-printable" onclick="printDiv('printableArea')" value="Proceed, If thermal printer is ready." />
+                                <a id="invoice_close" onclick='location.href="{{url()->previous()}}"' class="mt-2 btn btn-danger non-printable">{{\App\CPU\translate('back')}}</a>
                             </center>
                             <hr class="non-printable">
                         </div>
@@ -312,33 +290,33 @@
                 </div>
             </div>
         </div>
-    @endif
+        @endif
 
 
-</main>
-<!-- ========== END MAIN CONTENT ========== -->
-<!-- ========== END SECONDARY CONTENTS ========== -->
+    </main>
+    <!-- ========== END MAIN CONTENT ========== -->
+    <!-- ========== END SECONDARY CONTENTS ========== -->
 
-<!-- JS Front -->
-<script src="{{asset('assets/admin')}}/js/vendor.min.js"></script>
-<script src="{{asset('assets/admin')}}/js/theme.min.js"></script>
-<script src="{{asset('assets/admin')}}/js/sweet_alert.js"></script>
-<script src="{{asset('assets/admin')}}/js/toastr.js"></script>
-{!! Toastr::message() !!}
+    <!-- JS Front -->
+    <script src="{{asset('assets/admin')}}/js/vendor.min.js"></script>
+    <script src="{{asset('assets/admin')}}/js/theme.min.js"></script>
+    <script src="{{asset('assets/admin')}}/js/sweet_alert.js"></script>
+    <script src="{{asset('assets/admin')}}/js/toastr.js"></script>
+    {!! Toastr::message() !!}
 
-@if ($errors->any())
+    @if ($errors->any())
     <script>
         "use strict";
-        @foreach($errors->all() as $error)
+        @foreach($errors-> all() as $error)
         toastr.error('{{$error}}', Error, {
             CloseButton: true,
             ProgressBar: true
         });
         @endforeach
     </script>
-@endif
+    @endif
 
-<script>
+   <script>
     $(document).on('ready', function () {
         "use strict";
         $('.js-hs-unfold-invoker').each(function () {
@@ -348,7 +326,6 @@
         $.ajax({
             url: '{{route('admin.pos.get-cart-ids')}}',
             type: 'GET',
-
             dataType: 'json', // added data type
             beforeSend: function () {
                 $('#loading').removeClass('d-none');
@@ -396,7 +373,6 @@
             $("#balance").addClass('d-none');
             $("#remaining_balance").addClass('d-none');
             console.log($(val).val());
-
         } else if($(val).val() == 0){
             $("#balance").removeClass('d-none');
             $("#remaining_balance").removeClass('d-none');
@@ -517,14 +493,12 @@
                             CloseButton: true,
                             ProgressBar: true
                         });
-
                     }else{
                         toastr.warning('{{ \App\CPU\translate('this_discount_is_not_applied_for_this_amount') }}', {
                             CloseButton: true,
                             ProgressBar: true
                         });
                     }
-
                     $('.modal-backdrop').addClass('d-none');
                     $('#cart').empty().html(data.view);
                     if(data.user_type === 'sc')
@@ -557,7 +531,6 @@
         let  coupon_code = $('#coupon_code').val();
         //let  cart_id = $('#cart_id').val();
         //console.log(user_id);
-
         $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -601,7 +574,6 @@
                             ProgressBar: true
                         });
                     }
-
                     $('#cart').empty().html(data.view);
                     if(data.user_type === 'sc')
                     {
@@ -616,7 +588,6 @@
                     $('#loading').addClass('d-none');
                 }
             });
-
     }
 </script>
 <script>
@@ -626,13 +597,11 @@
         $('#print-invoice').modal('show');
         @endif
     });
-
     function set_category_filter(id) {
         var nurl = new URL('{!!url()->full()!!}');
         nurl.searchParams.set('category_id', id);
         location.href = nurl;
     }
-
     $('#search-form').on('submit', function (e) {
         e.preventDefault();
         var keyword = $('#datatableSearch').val();
@@ -640,7 +609,6 @@
         nurl.searchParams.set('keyword', keyword);
         location.href = nurl;
     });
-
     function quickView(product_id) {
         //console.log(product_id);
         $.ajax({
@@ -657,10 +625,8 @@
             success: function (data) {
                 //console.log("success...");
                 //console.log(data);
-
                 // $("#quick-view").removeClass('fade');
                 // $("#quick-view").addClass('show');
-
                 $('#quick-view').modal('show');
                 $('#quick-view-modal').empty().html(data.view);
             },
@@ -669,7 +635,6 @@
             },
         });
     }
-
     function addToCart(form_id) {
         //console.log(form_id);
         // let  user_id = $('#customer').val();
@@ -707,7 +672,6 @@
                         ProgressBar: true
                     });
                     }
-
                     $('#cart').empty().html(data.view);
                     if(data.user_type === 'sc')
                     {
@@ -720,14 +684,11 @@
                     $('#cartloader').addClass('d-none');
                 }
             });
-
     }
-
     function removeFromCart(key) {
         // let  user_id = $('#customer').val();
         // let  cart_id = $('#cart_id').val();
         $.post('{{ route('admin.pos.remove-from-cart') }}', {_token: '{{ csrf_token() }}', key: key}, function (data) {
-
                 $('#cart').empty().html(data.view);
                 if(data.user_type === 'sc')
                 {
@@ -739,10 +700,8 @@
                     ProgressBar: true
                 });
             $('#search').focus();
-
         });
     }
-
     function emptyCart() {
         Swal.fire({
             title: '{{\App\CPU\translate('Are_you_sure?')}}',
@@ -772,21 +731,16 @@
                 });
             }
         })
-
     }
-
     function updateCart() {
         $.post('<?php echo e(route('admin.pos.cart_items')); ?>', {_token: '<?php echo e(csrf_token()); ?>'}, function (data) {
             $('#cart').empty().html(data);
-
         });
     }
-
     function updateQuantity(id,qty) {
         // let  user_id = $('#customer').val();
         // let  cart_id = $('#cart_id').val();
         //console.log(user_id)
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -819,7 +773,6 @@
                             ProgressBar: true
                         });
                     }
-
                     $('#search').focus();
                     $('#cart').empty().html(data.view);
                     if(data.user_type === 'sc')
@@ -831,17 +784,12 @@
                     $('#loading').addClass('d-none');
                 }
             });
-
-
-
     }
-
     // INITIALIZATION OF SELECT2
     // =======================================================
     $('.js-select2-custom').each(function () {
         var select2 = $.HSCore.components.HSSelect2.init($(this));
     });
-
     $('.js-data-example-ajax').select2({
         ajax: {
             url: '{{route('admin.pos.customers')}}',
@@ -858,15 +806,12 @@
             },
             __port: function (params, success, failure) {
                 var $request = $.ajax(params);
-
                 $request.then(success);
                 $request.fail(failure);
-
                 return $request;
             }
         }
     });
-
     jQuery(".search-bar-input").on('keyup',function () {
         //$('#search-box').removeClass('d-none');
         $(".search-card").removeClass('d-none').show();
@@ -885,9 +830,7 @@
                 },
                 success: function (data) {
                     //console.log(data.count);
-
                         $('.search-result-box').empty().html(data.result);
-
                 },
                 complete: function () {
                     $('#loading').addClass('d-none');
@@ -897,7 +840,6 @@
             $('.search-result-box').empty();
         }
     });
-
     jQuery(".search-bar-input").on('keyup',delay(function () {
         //$('#search-box').removeClass('d-none');
         $(".search-card").removeClass('d-none').show();
@@ -928,8 +870,8 @@
             $('.search-result-box').empty();
         }
     },1000));
-
 </script>
-@stack('script_2')
+    @stack('script_2')
 </body>
+
 </html>
