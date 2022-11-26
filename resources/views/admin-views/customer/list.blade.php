@@ -62,7 +62,6 @@
                                 <th>{{\App\CPU\translate('phone')}}</th>
                                 <th>{{\App\CPU\translate('is_loyalty_enrolled')}}</th>
                                 <th>{{\App\CPU\translate('loyalty_points')}}</th>
-                                <th>{{\App\CPU\translate('loyalty_expiry_date')}}</th>
                                 <th>{{ \App\CPU\translate('orders') }}</th>
                                 <th class="text-center">{{ \App\CPU\translate('balance') }}</th>
                                 <th>{{\App\CPU\translate('action')}}</th>
@@ -91,18 +90,15 @@
                                     @endif
                                 </td>
                                 <td>
-                                    {{ $customer->is_loyalty_enrolled }}
-                                </td>
-                                <td>
                                     @if($customer->is_loyalty_enrolled == 'Yes')
-                                    {{ $customer->loyalty_points }}
+                                    Yes
                                     @else
-                                    {{\App\CPU\translate('not_a_loyalty_member')}}
+                                    No
                                     @endif
                                 </td>
                                 <td>
                                     @if($customer->is_loyalty_enrolled == 'Yes')
-                                    {{ $customer->loyalty_expire_date }}
+                                    {{ $customer->loyalty_points }}
                                     @else
                                     {{\App\CPU\translate('not_a_loyalty_member')}}
                                     @endif

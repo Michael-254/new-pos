@@ -9,6 +9,7 @@ use App\Models\Order;
 use Brian2694\Toastr\Facades\Toastr;
 use App\CPU\Helpers;
 use App\Models\Account;
+use App\Models\CustomerLogin;
 use App\Models\Transaction;
 use Carbon\Carbon;
 
@@ -46,12 +47,16 @@ class CustomerController extends Controller
         $customer->balance = $request->balance;
         $customer->save();
 
-        $mytime = Carbon::now();
-        if ($request->is_loyalty_enrolled == 'Yes') {
-            $customer->update([
-                'loyalty_points' => 100,
-                'loyalty_expire_date' => $mytime->addMonth(3),
-            ]);
+        $check_if_member_exists_on_ourDB = CustomerLogin::where('phone', $request->mobile)->first();
+
+        if ($check_if_member_exists_on_ourDB == '') {
+            $member = CustomerLogin::create([]);
+            if ($request->is_loyalty_enrolled == 'Yes') {
+                $member->update([
+                    'loyalty_points' => 100,
+                    'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
+                ]);
+            }
         }
 
         Toastr::success(translate('Customer Added successfully'));
@@ -97,7 +102,7 @@ class CustomerController extends Controller
             $customers = new Customer;
         }
         //$walk_customer = $customers->where('type',0)->get();
-        $customers = $customers->where('is_loyalty_enrolled','Yes')->paginate(Helpers::pagination_limit())->appends($query_param);
+        $customers = $customers->where('is_loyalty_enrolled', 'Yes')->paginate(Helpers::pagination_limit())->appends($query_param);
         return view('admin-views.customer.list', compact('customers', 'accounts', 'search'));
     }
 

@@ -618,7 +618,7 @@ class POSController extends Controller
             OrderDetail::insert($order_details);
 
             $customer_mobile = Customer::findOrFail($user_id)->mobile;
-            $customer_details = CustomerLogin::where('mobile', $customer_mobile)->first();
+            $customer_details = CustomerLogin::where('phone', $customer_mobile)->first();
 
             if ($customer_details->is_loyalty_enrolled == 'Yes') {
                 $customer_details->loyalty_points = $customer_details->loyalty_points + ($order->collected_cash / 10);

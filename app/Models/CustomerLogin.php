@@ -9,6 +9,8 @@ class CustomerLogin extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+
     public function orders()
     {
         return $this->hasMany(Order::class, 'user_id');

@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\CustomerLogin;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,7 +21,7 @@ class CustomerController extends Controller
     {
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
-        $customers = Customer::withCount('orders')->orderBy('id','asc')->paginate($limit, ['*'], 'page', $offset);
+        $customers = Customer::withCount('orders')->orderBy('id', 'asc')->paginate($limit, ['*'], 'page', $offset);
         $data = [
             'total' => $customers->total(),
             'limit' => $limit,
@@ -53,12 +54,16 @@ class CustomerController extends Controller
             $customer->balance = $request->balance;
             $customer->save();
 
-            $mytime = Carbon::now();
-            if ($request->is_loyalty_enrolled == 'Yes') {
-                $customer->update([
-                    'loyalty_points' => 100,
-                    'loyalty_expire_date' => $mytime->addMonth(3),
-                ]);
+            $check_if_member_exists_on_ourDB = CustomerLogin::where('phone', $request->mobile)->first();
+
+            if ($check_if_member_exists_on_ourDB == '') {
+                $member = CustomerLogin::create([]);
+                if ($request->is_loyalty_enrolled == 'Yes') {
+                    $member->update([
+                        'loyalty_points' => 100,
+                        'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
+                    ]);
+                }
             }
 
             return response()->json([
@@ -121,7 +126,7 @@ class CustomerController extends Controller
     public function delete(Request $request)
     {
         try {
-            $customer = Customer::where('id' ,'!=', '0')->find($request->id);
+            $customer = Customer::where('id', '!=', '0')->find($request->id);
             Helpers::delete('customer/' . $customer['image']);
             $customer->delete();
             return response()->json([
@@ -140,14 +145,14 @@ class CustomerController extends Controller
         $offset = $request['offset'] ?? 1;
         $search = $request->name;
         // if (!empty($search)) {
-            $result = Customer::where('name', 'like', '%' . $search . '%')->orWhere('mobile', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
-            $data = [
-                'total' => $result->total(),
-                'limit' => $limit,
-                'offset' => $offset,
-                'customers' => $result->items(),
-            ];
-            return response()->json($data, 200);
+        $result = Customer::where('name', 'like', '%' . $search . '%')->orWhere('mobile', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
+        $data = [
+            'total' => $result->total(),
+            'limit' => $limit,
+            'offset' => $offset,
+            'customers' => $result->items(),
+        ];
+        return response()->json($data, 200);
         //}
         // else {
         //     $data = [
@@ -199,7 +204,7 @@ class CustomerController extends Controller
     {
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
-        $result = Transaction::where('customer_id', $request->customer_id)->with('account')->orderBy('id','desc')->paginate($limit, ['*'], 'page', $offset);
+        $result = Transaction::where('customer_id', $request->customer_id)->with('account')->orderBy('id', 'desc')->paginate($limit, ['*'], 'page', $offset);
         $data = [
             'total' => $result->total(),
             'limit' => $limit,
@@ -220,7 +225,7 @@ class CustomerController extends Controller
             $transactions = Transaction::where('tran_type', $request->transaction_type)->latest()->paginate($request['limit'], ['*'], 'page', $request['offset']);
         } elseif ($request->from && $request->to) {
             $transactions = Transaction::whereBetween('date', [$request->from . ' 00:00:00', $request->to . ' 23:59:59'])->latest()->paginate($request['limit'], ['*'], 'page', $request['offset']);
-        } else{
+        } else {
             $transactions = Transaction::latest()->paginate($request['limit'], ['*'], 'page', $request['offset']);
         }
         $data = [
@@ -234,15 +239,14 @@ class CustomerController extends Controller
     public function update_balance(Request $request)
     {
         $request->validate([
-            'customer_id'=>'required',
+            'customer_id' => 'required',
             'amount' => 'required',
-            'account_id'=> 'required',
+            'account_id' => 'required',
             'date' => 'required',
         ]);
         $customer = Customer::find($request->customer_id);
 
-        if($customer->balance >= 0)
-        {
+        if ($customer->balance >= 0) {
             $account = Account::find(2);
             $transaction = new Transaction();
             $transaction->tran_type = 'Payable';
@@ -276,13 +280,11 @@ class CustomerController extends Controller
             $receive_account->total_in = $receive_account->total_in + $request->amount;
             $receive_account->balance = $receive_account->balance + $request->amount;
             $receive_account->save();
-        }else{
+        } else {
             $remaining_balance = $customer->balance + $request->amount;
 
-            if($remaining_balance >= 0)
-            {
-                if($remaining_balance!=0)
-                {
+            if ($remaining_balance >= 0) {
+                if ($remaining_balance != 0) {
                     $payable_account = Account::find(2);
                     $payable_transaction = new Transaction();
                     $payable_transaction->tran_type = 'Payable';
@@ -335,8 +337,7 @@ class CustomerController extends Controller
                 $receivable_account->total_out = $receivable_account->total_out - $customer->balance;
                 $receivable_account->balance = $receivable_account->balance + $customer->balance;
                 $receivable_account->save();
-
-            }else{
+            } else {
 
                 $receive_account = Account::find($request->account_id);
                 $receive_transaction = new Transaction();
@@ -362,7 +363,7 @@ class CustomerController extends Controller
                 $receivable_transaction->amount = $request->amount;
                 $receivable_transaction->description = 'update customer balance';
                 $receivable_transaction->debit = 1;
-                $receivable_transaction->credit =0;
+                $receivable_transaction->credit = 0;
                 $receivable_transaction->balance = $receivable_account->balance - $request->amount;
                 $receivable_transaction->date = $request->date;
                 $receivable_transaction->customer_id = $request->customer_id;
@@ -372,7 +373,6 @@ class CustomerController extends Controller
                 $receivable_account->balance = $receivable_account->balance - $request->amount;
                 $receivable_account->save();
             }
-
         }
         $customer->balance = $customer->balance + $request->amount;
         $customer->save();
@@ -380,5 +380,4 @@ class CustomerController extends Controller
             'message' => 'Customer balance updated successfully',
         ], 200);
     }
-
 }
