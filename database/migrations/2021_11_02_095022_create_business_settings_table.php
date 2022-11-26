@@ -15,8 +15,19 @@ class CreateBusinessSettingsTable extends Migration
     {
         Schema::create('business_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('key');
-            $table->text('value')->nullable();
+            $table->foreignId('company_id');
+            $table->text('shop_logo')->nullable();
+            $table->text('pagination_limit')->nullable();
+            $table->text('currency')->nullable();
+            $table->text('shop_name')->nullable();
+            $table->text('shop_address')->nullable();
+            $table->text('shop_phone')->nullable();
+            $table->text('shop_email')->nullable();
+            $table->text('footer_text')->nullable();
+            $table->text('country')->nullable();
+            $table->text('stock_limit')->nullable();
+            $table->text('time_zone')->nullable();
+            $table->text('vat_reg_no')->nullable();
             $table->timestamps();
         });
     }
