@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Http\Resources\ProductsResource;
+use App\Models\CustomerLogin;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Console\Input\Input;
@@ -143,7 +144,6 @@ class PosController extends Controller
                     $product->save();
                 }
             }
-
         }
         $total_price = $product_price - $product_discount;
 
@@ -273,20 +273,18 @@ class PosController extends Controller
             }
             OrderDetail::insert($order_details);
 
-            $customer_details = Customer::findOrFail($user_id);
-            $mytime = Carbon::now();
+            $customer_mobile = Customer::findOrFail($user_id)->mobile;
+            $customer_details = CustomerLogin::where('mobile', $customer_mobile)->first();
 
             if ($customer_details->is_loyalty_enrolled == 'Yes') {
                 $customer_details->loyalty_points = $customer_details->loyalty_points + ($order->collected_cash / 10);
-                $customer_details->loyalty_expire_date = $mytime->addMonth(3);
                 $customer_details->save();
             }
-            
+
             return response()->json([
                 'message' => 'Order placed successfully',
                 'order_id' => $order_id
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to placed order'
