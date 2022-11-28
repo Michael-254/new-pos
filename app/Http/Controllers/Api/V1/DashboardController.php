@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StockLimitedProductsResource;
+use App\Models\CustomerLogin;
 
 class DashboardController extends Controller
 {
@@ -19,83 +20,37 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getCustomerLoyaltyPointsSummary(Request $request)
+
+    public function getCustomerLoyaltyPointsSummary()
     {
-        if ($request->statistics_type == 'overall') {
-            $total_payable_debit = Transaction::where('tran_type', 'Payable')->where('debit', 1)->sum('amount');
-            $total_payable_credit = Transaction::where('tran_type', 'Payable')->where('credit', 1)->sum('amount');
-            $total_payable = $total_payable_credit - $total_payable_debit;
+        $customer = CustomerLogin::find(auth()->id());
 
-            $total_receivable_debit = Transaction::where('tran_type', 'Receivable')->where('debit', 1)->sum('amount');
-            $total_receivable_credit = Transaction::where('tran_type', 'Receivable')->where('credit', 1)->sum('amount');
-            $total_receivable = $total_receivable_credit - $total_receivable_debit;
+        $orders = $customer->orderDetails()->paginate(10);
 
-            $revenueSummary = [
-                'totalIncome' => Transaction::where('tran_type', 'Income')->sum('amount'),
-                'totalExpense' => Transaction::where('tran_type', 'Expense')->sum('amount'),
-                'totalPayable' => $total_payable,
-                'totalReceivable' => $total_receivable,
-            ];
-            return response()->json([
-                'revenueSummary' => $revenueSummary
-            ], 200);
-        } elseif ($request->statistics_type == 'today') {
+        $data = [
+            'total' => $customer,
+            'limit' => $orders,
+        ];
 
-            $total_payable_debit = Transaction::where('tran_type', 'Payable')->whereDay('date', '=', Carbon::today())->where('debit', 1)->sum('amount');
-            $total_payable_credit = Transaction::where('tran_type', 'Payable')->whereDay('date', '=', Carbon::today())->where('credit', 1)->sum('amount');
-            $total_payable = $total_payable_credit - $total_payable_debit;
-
-            $total_receivable_debit = Transaction::where('tran_type', 'Receivable')->whereDay('date', '=', Carbon::today())->where('debit', 1)->sum('amount');
-            $total_receivable_credit = Transaction::where('tran_type', 'Receivable')->whereDay('date', '=', Carbon::today())->where('credit', 1)->sum('amount');
-            $total_receivable = $total_receivable_credit - $total_receivable_debit;
-
-            $revenueSummary = [
-                'totalIncome' => Transaction::where('tran_type', 'Income')->whereDay('date', '=', Carbon::today())->sum('amount'),
-                'totalExpense' => Transaction::where('tran_type', 'Expense')->whereDay('date', '=', Carbon::today())->sum('amount'),
-                'totalPayable' => $total_payable,
-                'totalReceivable' => $total_receivable,
-            ];
-            return response()->json([
-                'revenueSummary' => $revenueSummary
-            ], 200);
-        } elseif ($request->statistics_type == 'month') {
-
-            $total_payable_debit = Transaction::where('tran_type', 'Payable')->whereMonth('date', '=', Carbon::today())->where('debit', 1)->sum('amount');
-            $total_payable_credit = Transaction::where('tran_type', 'Payable')->whereMonth('date', '=', Carbon::today())->where('credit', 1)->sum('amount');
-            $total_payable = $total_payable_credit - $total_payable_debit;
-
-            $total_receivable_debit = Transaction::where('tran_type', 'Receivable')->whereMonth('date', '=', Carbon::today())->where('debit', 1)->sum('amount');
-            $total_receivable_credit = Transaction::where('tran_type', 'Receivable')->whereMonth('date', '=', Carbon::today())->where('credit', 1)->sum('amount');
-            $total_receivable = $total_receivable_credit - $total_receivable_debit;
-
-            $revenueSummary = [
-                'totalIncome' => Transaction::where('tran_type', 'Income')->whereMonth('date', '=', Carbon::today())->sum('amount'),
-                'totalExpense' => Transaction::where('tran_type', 'Expense')->whereMonth('date', '=', Carbon::today())->sum('amount'),
-                'totalPayable' => $total_payable,
-                'totalReceivable' => $total_receivable,
-            ];
-            return response()->json([
-                'revenueSummary' => $revenueSummary
-            ], 200);
-        }
+        return response()->json($data, 200);
     }
 
-    public function getCustomerPurchases(Request $request)
-    {
-        $limit = $request['limit'] ?? 10;
-        $offset = $request['offset'] ?? 1;
+    // public function getCustomerPurchases(Request $request)
+    // {
+    //     $limit = $request['limit'] ?? 10;
+    //     $offset = $request['offset'] ?? 1;
 
-        $stock_limit = Helpers::get_business_settings('stock_limit');
-        $stock_limited_product = Product::with('unit', 'supplier')->where('quantity', '<', $stock_limit)->orderBy('quantity')->latest()->paginate($limit, ['*'], 'page', $offset);
-        $stock_limited_products = StockLimitedProductsResource::collection($stock_limited_product);
+    //     $stock_limit = Helpers::get_business_settings('stock_limit');
+    //     $stock_limited_product = Product::with('unit', 'supplier')->where('quantity', '<', $stock_limit)->orderBy('quantity')->latest()->paginate($limit, ['*'], 'page', $offset);
+    //     $stock_limited_products = StockLimitedProductsResource::collection($stock_limited_product);
 
-        return response()->json([
-            'total' => $stock_limited_products->total(),
-            'offset' => $offset,
-            'limit' => $limit,
-            'stock_limited_products' => $stock_limited_products->items(),
-        ], 200);
-    }
+    //     return response()->json([
+    //         'total' => $stock_limited_products->total(),
+    //         'offset' => $offset,
+    //         'limit' => $limit,
+    //         'stock_limited_products' => $stock_limited_products->items(),
+    //     ], 200);
+    // }
 
     public function getIndex(Request $request)
     {

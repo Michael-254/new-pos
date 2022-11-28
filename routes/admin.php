@@ -9,16 +9,20 @@ use Illuminate\Support\Facades\Route;
     return view('test', compact('product','quantity'));
  });*/
 
-Route::group(['namespace'=>'Admin', 'as' => 'admin.', 'prefix'=>'admin'] ,function(){
-    Route::group(['namespace' => 'Auth', 'prefix' => 'auth', 'as' => 'auth.'], function(){
+Route::group(['prefix' => 'member'], function () {
+    Route::get('loyalty-points-summary', [DashboardController::class, 'getCustomerLoyaltyPointsSummary']);
+});
+
+Route::group(['namespace' => 'Admin', 'as' => 'admin.', 'prefix' => 'admin'], function () {
+    Route::group(['namespace' => 'Auth', 'prefix' => 'auth', 'as' => 'auth.'], function () {
         Route::get('login', 'LoginController@login')->name('login');
         Route::post('login', 'LoginController@submit');
         Route::get('logout', 'LoginController@logout')->name('logout');
     });
 
-    Route::group(['middleware' => ['admin']], function(){
+    Route::group(['middleware' => ['admin']], function () {
         Route::get('/', 'DashboardController@dashboard')->name('dashboard');
-        Route::post('account-status','DashboardController@account_stats')->name('account-status');
+        Route::post('account-status', 'DashboardController@account_stats')->name('account-status');
         Route::get('settings', 'SystemController@settings')->name('settings');
         Route::post('settings', 'SystemController@settings_update');
         Route::get('settings-password', 'SystemController@settings')->name('settings.password');
@@ -41,7 +45,7 @@ Route::group(['namespace'=>'Admin', 'as' => 'admin.', 'prefix'=>'admin'] ,functi
 
         Route::group(['prefix' => 'brand', 'as' => 'brand.'], function () {
             Route::get('add', 'BrandController@index')->name('add');
-            Route::post('store','BrandController@store')->name('store');
+            Route::post('store', 'BrandController@store')->name('store');
             Route::get('edit/{id}', 'BrandController@edit')->name('edit');
             Route::post('update/{id}', 'BrandController@update')->name('update');
             Route::delete('delete/{id}', 'BrandController@delete')->name('delete');
@@ -52,7 +56,7 @@ Route::group(['namespace'=>'Admin', 'as' => 'admin.', 'prefix'=>'admin'] ,functi
             Route::post('store', 'UnitController@store')->name('store');
             Route::get('edit/{id}', 'UnitController@edit')->name('edit');
             Route::post('update/{id}', 'UnitController@update')->name('update');
-             Route::delete('delete/{id}', 'UnitController@delete')->name('delete');
+            Route::delete('delete/{id}', 'UnitController@delete')->name('delete');
         });
 
         Route::group(['prefix' => 'product', 'as' => 'product.'], function () {
@@ -90,20 +94,20 @@ Route::group(['namespace'=>'Admin', 'as' => 'admin.', 'prefix'=>'admin'] ,functi
             Route::get('orders', 'POSController@order_list')->name('orders');
             Route::get('order-details/{id}', 'POSController@order_details')->name('order-details');
             Route::get('invoice/{id}', 'POSController@generate_invoice');
-            Route::get('search-products','POSController@search_product')->name('search-products');
-            Route::get('search-by-add','POSController@search_by_add_product')->name('search-by-add');
+            Route::get('search-products', 'POSController@search_product')->name('search-products');
+            Route::get('search-by-add', 'POSController@search_by_add_product')->name('search-by-add');
 
             Route::post('coupon-discount', 'POSController@coupon_discount')->name('coupon-discount');
-            Route::post('remove-coupon','POSController@remove_coupon')->name('remove-coupon');
-            Route::get('change-cart','POSController@change_cart')->name('change-cart');
-            Route::get('new-cart-id','POSController@new_cart_id')->name('new-cart-id');
-            Route::get('clear-cart-ids','POSController@clear_cart_ids')->name('clear-cart-ids');
-            Route::get('get-cart-ids','POSController@get_cart_ids')->name('get-cart-ids');
+            Route::post('remove-coupon', 'POSController@remove_coupon')->name('remove-coupon');
+            Route::get('change-cart', 'POSController@change_cart')->name('change-cart');
+            Route::get('new-cart-id', 'POSController@new_cart_id')->name('new-cart-id');
+            Route::get('clear-cart-ids', 'POSController@clear_cart_ids')->name('clear-cart-ids');
+            Route::get('get-cart-ids', 'POSController@get_cart_ids')->name('get-cart-ids');
         });
 
         //account
         Route::group(['prefix' => 'account', 'as' => 'account.'], function () {
-            Route::get('add','AccountController@add')->name('add');
+            Route::get('add', 'AccountController@add')->name('add');
             Route::post('store', 'AccountController@store')->name('store');
             Route::get('list', 'AccountController@list')->name('list');
             Route::get('view/{id}', 'AccountController@view')->name('view');
@@ -112,7 +116,7 @@ Route::group(['namespace'=>'Admin', 'as' => 'admin.', 'prefix'=>'admin'] ,functi
             Route::delete('delete/{id}', 'AccountController@delete')->name('delete');
 
             //expense
-            Route::get('add-expense','ExpenseController@add')->name('add-expense');
+            Route::get('add-expense', 'ExpenseController@add')->name('add-expense');
             Route::post('store-expense', 'ExpenseController@store')->name('store-expense');
 
             //income
@@ -128,17 +132,17 @@ Route::group(['namespace'=>'Admin', 'as' => 'admin.', 'prefix'=>'admin'] ,functi
             //payable
             Route::get('add-payable', 'PayableController@add')->name('add-payable');
             Route::post('store-payable', 'PayableController@store')->name('store-payable');
-            Route::post('payable-transfer','PayableController@transfer')->name('payable-transfer');
+            Route::post('payable-transfer', 'PayableController@transfer')->name('payable-transfer');
 
             //receivable
             Route::get('add-receivable', 'ReceivableController@add')->name('add-receivable');
             Route::post('store-receivable', 'ReceivableController@store')->name('store-receivable');
-            Route::post('receivable-transfer','ReceivableController@transfer')->name('receivable-transfer');
+            Route::post('receivable-transfer', 'ReceivableController@transfer')->name('receivable-transfer');
         });
 
         //customer
         Route::group(['prefix' => 'customer', 'as' => 'customer.'], function () {
-            Route::get('add','CustomerController@index')->name('add');
+            Route::get('add', 'CustomerController@index')->name('add');
             Route::post('store', 'CustomerController@store')->name('store');
             Route::get('list', 'CustomerController@list')->name('list');
             Route::get('list/with-loyalty', 'CustomerController@listWithLoyalty')->name('listWithLoyalty');
@@ -146,12 +150,12 @@ Route::group(['namespace'=>'Admin', 'as' => 'admin.', 'prefix'=>'admin'] ,functi
             Route::get('edit/{id}', 'CustomerController@edit')->name('edit');
             Route::post('update/{id}', 'CustomerController@update')->name('update');
             Route::delete('delete/{id}', 'CustomerController@delete')->name('delete');
-            Route::post('update-balance','CustomerController@update_balance')->name('update-balance');
+            Route::post('update-balance', 'CustomerController@update_balance')->name('update-balance');
             Route::get('transaction-list/{id}', 'CustomerController@transaction_list')->name('transaction-list');
         });
         //supplier
         Route::group(['prefix' => 'supplier', 'as' => 'supplier.'], function () {
-            Route::get('add','SupplierController@index')->name('add');
+            Route::get('add', 'SupplierController@index')->name('add');
             Route::post('store', 'SupplierController@store')->name('store');
             Route::get('list', 'SupplierController@list')->name('list');
             Route::get('view/{id}', 'SupplierController@view')->name('view');
@@ -160,8 +164,8 @@ Route::group(['namespace'=>'Admin', 'as' => 'admin.', 'prefix'=>'admin'] ,functi
             Route::delete('delete/{id}', 'SupplierController@delete')->name('delete');
             Route::get('products/{id}', 'SupplierController@product_list')->name('products');
             Route::get('transaction-list/{id}', 'SupplierController@transaction_list')->name('transaction-list');
-            Route::post('add-new-purchase','SupplierController@add_new_purchase')->name('add-new-purchase');
-            Route::post('pay-due','SupplierController@pay_due')->name('pay-due');
+            Route::post('add-new-purchase', 'SupplierController@add_new_purchase')->name('add-new-purchase');
+            Route::post('pay-due', 'SupplierController@pay_due')->name('pay-due');
         });
         //stock limit
         Route::group(['prefix' => 'stock', 'as' => 'stock.'], function () {
@@ -169,7 +173,7 @@ Route::group(['namespace'=>'Admin', 'as' => 'admin.', 'prefix'=>'admin'] ,functi
             Route::post('update-quantity', 'StocklimitController@update_quantity')->name('update-quantity');
         });
         //business settings
-        Route::group(['prefix' => 'business-settings', 'as' => 'business-settings.','middleware'=>['actch']], function () {
+        Route::group(['prefix' => 'business-settings', 'as' => 'business-settings.', 'middleware' => ['actch']], function () {
             Route::get('shop-setup', 'BusinessSettingsController@shop_index')->name('shop-setup');
             Route::post('update-setup', 'BusinessSettingsController@shop_setup')->name('update-setup');
             Route::get('shortcut-keys', 'BusinessSettingsController@shortcut_key')->name('shortcut-keys');

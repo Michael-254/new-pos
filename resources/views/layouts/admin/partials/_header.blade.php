@@ -3,7 +3,7 @@
         <div class="navbar-nav-wrap">
             <div class="navbar-brand-wrapper">
                 <!-- Logo -->
-                @php($shop_logo=\App\Models\BusinessSetting::where(['key'=>'shop_logo'])->first()->value)
+                @php($shop_logo=\App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->shop_logo)
                 <a class="navbar-brand" href="{{route('admin.dashboard')}}" aria-label="">
                     <img class="navbar-brand-logo" onerror="this.src='{{asset('assets/admin/img/logo.png')}}'" src="{{asset('storage/app/public/shop/'.$shop_logo)}}" alt="Logo">
 
@@ -21,11 +21,11 @@
             </div>
 
             <!-- Secondary Content -->
-                
+
             <div class="navbar-nav-wrap-content-right">
                 <!-- Navbar -->
                 <ul class="navbar-nav align-items-center flex-row">
-                @if (Request::route()->getName() != 'client.dashboard')
+                    @if (Request::route()->getName() != 'client.dashboard')
                     <li class="nav-item d-sm-inline-block mr-6">
                         <!-- Notification -->
                         <div class="hs-unfold">
@@ -56,7 +56,7 @@
                         </div>
                         <!-- End Notification -->
                     </li>
-                @endif
+                    @endif
 
 
                     <li class="nav-item">

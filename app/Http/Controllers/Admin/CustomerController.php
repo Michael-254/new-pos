@@ -9,6 +9,7 @@ use App\Models\Order;
 use Brian2694\Toastr\Facades\Toastr;
 use App\CPU\Helpers;
 use App\Models\Account;
+use App\Models\CustomerLogin;
 use App\Models\Transaction;
 use Carbon\Carbon;
 
@@ -33,7 +34,20 @@ class CustomerController extends Controller
             $image_name = 'def.png';
         }
 
+        $dukapaq_member = CustomerLogin::where('phone', $request->mobile)->first();
+
+        if ($dukapaq_member == '') {
+            $dukapaq_member = CustomerLogin::create([]);
+            if ($request->is_loyalty_enrolled == 'Yes') {
+                $dukapaq_member->update([
+                    'loyalty_points' => 100,
+                    'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
+                ]);
+            }
+        }
+
         $customer = new Customer;
+        $customer->member_id = $dukapaq_member->id;
         $customer->name = $request->name;
         $customer->mobile = $request->mobile;
         $customer->email = $request->email;
@@ -44,15 +58,9 @@ class CustomerController extends Controller
         $customer->zip_code = $request->zip_code;
         $customer->address = $request->address;
         $customer->balance = $request->balance;
+        $customer->company_id = auth('admin')->user()->company_id;
         $customer->save();
 
-        $mytime = Carbon::now();
-        if ($request->is_loyalty_enrolled == 'Yes') {
-            $customer->update([
-                'loyalty_points' => 100,
-                'loyalty_expire_date' => $mytime->addMonth(3),
-            ]);
-        }
 
         Toastr::success(translate('Customer Added successfully'));
         return back();
@@ -75,7 +83,7 @@ class CustomerController extends Controller
             $customers = new Customer;
         }
         //$walk_customer = $customers->where('type',0)->get();
-        $customers = $customers->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
+        $customers = $customers->with('member')->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
         return view('admin-views.customer.list', compact('customers', 'accounts', 'search'));
     }
 
@@ -97,7 +105,7 @@ class CustomerController extends Controller
             $customers = new Customer;
         }
         //$walk_customer = $customers->where('type',0)->get();
-        $customers = $customers->where('is_loyalty_enrolled','Yes')->paginate(Helpers::pagination_limit())->appends($query_param);
+        $customers = $customers->with('member')->where('company_id', auth('admin')->user()->company_id)->paginate(Helpers::pagination_limit())->appends($query_param);
         return view('admin-views.customer.list', compact('customers', 'accounts', 'search'));
     }
 

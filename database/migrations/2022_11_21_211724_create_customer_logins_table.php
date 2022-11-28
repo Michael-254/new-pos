@@ -19,6 +19,8 @@ class CreateCustomerLoginsTable extends Migration
             $table->string('l_name');
             $table->string('email');
             $table->string('phone');
+            $table->integer('loyalty_points')->nullable();
+            $table->string('is_loyalty_enrolled')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

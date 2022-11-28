@@ -20,9 +20,6 @@ class CreateCustomersTable extends Migration
             $table->string('email')->nullable();
             $table->string('image')->nullable();
             $table->string('state')->nullable();
-            $table->integer('loyalty_points')->nullable();
-            $table->string('is_loyalty_enrolled')->nullable();
-            $table->timestamp('loyalty_expire_date')->nullable();
             $table->string('city')->nullable();
             $table->string('country')->nullable();
             $table->string('zip_code')->nullable();
