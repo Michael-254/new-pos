@@ -49,7 +49,7 @@ class CustomerController extends Controller
             if ($dukapaq_member == '') {
                 $dukapaq_member = CustomerLogin::create([
                     'f_name' => $request->name,
-                    'mobile' => $request->mobile,
+                    'phone' => $request->mobile,
                     'password' => bcrypt(123456),
                 ]);
 
