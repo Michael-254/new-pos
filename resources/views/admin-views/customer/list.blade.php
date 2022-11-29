@@ -98,7 +98,7 @@
                                 </td>
                                 <td>
                                     @if($customer->member->is_loyalty_enrolled == 'Yes')
-                                    {{ $customer->loyalty_points }}
+                                    {{ $customer->member->loyalty_points }}
                                     @else
                                     {{\App\CPU\translate('not_a_loyalty_member')}}
                                     @endif
