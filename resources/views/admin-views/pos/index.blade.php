@@ -304,134 +304,132 @@
     <script src="{{asset('assets/admin')}}/js/toastr.js"></script>
     {!! Toastr::message() !!}
 
-    @if ($errors->any())
+   @if ($errors->any())
     <script>
         "use strict";
-        @foreach($errors-> all() as $error)
+        @foreach($errors->all() as $error)
         toastr.error('{{$error}}', Error, {
             CloseButton: true,
             ProgressBar: true
         });
         @endforeach
     </script>
-    @endif
+@endif
 
-    <script>
-        $(document).on('ready', function() {
-            "use strict";
-            $('.js-hs-unfold-invoker').each(function() {
-                var unfold = new HSUnfold($(this)).init();
-            });
-            $('#search').focus();
-            $.ajax({
-                url: '{{route('
-                admin.pos.get - cart - ids ')}}',
-                type: 'GET',
-                dataType: 'json', // added data type
-                beforeSend: function() {
-                    $('#loading').removeClass('d-none');
-                    //console.log("loding");
-                },
-                success: function(data) {
-                    //console.log(data.cus);
-                    var output = '';
-                    for (var i = 0; i < data.cart_nam.length; i++) {
+<script>
+    $(document).on('ready', function () {
+        "use strict";
+        $('.js-hs-unfold-invoker').each(function () {
+            var unfold = new HSUnfold($(this)).init();
+        });
+        $('#search').focus();
+        $.ajax({
+            url: '{{route('admin.pos.get-cart-ids')}}',
+            type: 'GET',
+
+            dataType: 'json', // added data type
+            beforeSend: function () {
+                $('#loading').removeClass('d-none');
+                //console.log("loding");
+            },
+            success: function (data) {
+                //console.log(data.cus);
+                var output = '';
+                    for(var i=0; i<data.cart_nam.length; i++) {
                         output += `<option value="${data.cart_nam[i]}" ${data.current_user==data.cart_nam[i]?'selected':''}>${data.cart_nam[i]}</option>`;
                     }
                     $('#cart_id').html(output);
                     $('#current_customer').text(data.current_customer);
                     $('#cart').empty().html(data.view);
-                    if (data.user_type === 'sc') {
+                    if(data.user_type === 'sc')
+                    {
                         console.log('after add');
                         customer_Balance_Append(data.user_id);
                     }
-                },
-                complete: function() {
-                    $('#loading').addClass('d-none');
-                },
-            });
+            },
+            complete: function () {
+                $('#loading').addClass('d-none');
+            },
         });
-    </script>
-    <!-- JS Plugins Init. -->
-    <script src="{{asset('assets/admin')}}/js/pos.js"></script>
+    });
+</script>
+<!-- JS Plugins Init. -->
+<script src="{{asset('assets/admin')}}/js/pos.js"></script>
 
-    <script>
-        "use strict";
+<script>
+    "use strict";
+    function payment_option(val) {
+        if ($(val).val() != 1 && $(val).val() != 0) {
+            $("#collected_cash").addClass('d-none');
+            $("#returned_amount").addClass('d-none');
+            $("#balance").addClass('d-none');
+            $("#remaining_balance").addClass('d-none');
+            $("#transaction_ref").removeClass('d-none');
+            $('#cash_amount').attr('required',false);
+            console.log($(val).val());
+        } else if ($(val).val() == 1) {
+            $("#collected_cash").removeClass('d-none');
+            $("#returned_amount").removeClass('d-none');
+            $("#transaction_ref").addClass('d-none');
+            $("#balance").addClass('d-none');
+            $("#remaining_balance").addClass('d-none');
+            console.log($(val).val());
 
-        function payment_option(val) {
-            if ($(val).val() != 1 && $(val).val() != 0) {
-                $("#collected_cash").addClass('d-none');
-                $("#returned_amount").addClass('d-none');
-                $("#balance").addClass('d-none');
-                $("#remaining_balance").addClass('d-none');
-                $("#transaction_ref").removeClass('d-none');
-                $('#cash_amount').attr('required', false);
-                console.log($(val).val());
-            } else if ($(val).val() == 1) {
-                $("#collected_cash").removeClass('d-none');
-                $("#returned_amount").removeClass('d-none');
-                $("#transaction_ref").addClass('d-none');
-                $("#balance").addClass('d-none');
-                $("#remaining_balance").addClass('d-none');
-                console.log($(val).val());
-            } else if ($(val).val() == 0) {
-                $("#balance").removeClass('d-none');
-                $("#remaining_balance").removeClass('d-none');
-                $("#collected_cash").addClass('d-none');
-                $("#returned_amount").addClass('d-none');
-                $("#transaction_ref").addClass('d-none');
-                $('#cash_amount').attr('required', false);
-                let customerId = $('#customer').val();
-                //console.log(customerId);
-                $.ajax({
-                    url: '{{route('
-                    admin.pos.customer - balance ')}}',
-                    type: 'GET',
-                    data: {
-                        customer_id: customerId
-                    },
-                    dataType: 'json', // added data type
-                    beforeSend: function() {
-                        $('#loading').removeClass('d-none');
-                        console.log("loding");
-                    },
-                    success: function(data) {
-                        console.log("success...");
-                        console.log(data.customer_balance);
-                        let balance = data.customer_balance;
-                        let order_total = $('#total_price').text();
-                        let remain_balance = parseInt(balance) - parseInt(order_total);
-                        $('#balance_customer').val(balance);
-                        $('#balance_remain').val(remain_balance);
-                    },
-                    complete: function() {
-                        $('#loading').addClass('d-none');
-                    },
-                });
-            }
+        } else if($(val).val() == 0){
+            $("#balance").removeClass('d-none');
+            $("#remaining_balance").removeClass('d-none');
+            $("#collected_cash").addClass('d-none');
+            $("#returned_amount").addClass('d-none');
+            $("#transaction_ref").addClass('d-none');
+            $('#cash_amount').attr('required',false);
+            let customerId = $('#customer').val();
+            //console.log(customerId);
+            $.ajax({
+            url: '{{route('admin.pos.customer-balance')}}',
+            type: 'GET',
+            data: {
+                customer_id: customerId
+            },
+            dataType: 'json', // added data type
+            beforeSend: function () {
+                $('#loading').removeClass('d-none');
+                console.log("loding");
+            },
+            success: function (data) {
+                console.log("success...");
+                console.log(data.customer_balance);
+                let balance = data.customer_balance;
+                let order_total = $('#total_price').text();
+                let remain_balance = parseInt(balance) - parseInt(order_total);
+                $('#balance_customer').val(balance);
+                $('#balance_remain').val(remain_balance);
+            },
+            complete: function () {
+                $('#loading').addClass('d-none');
+            },
+        });
         }
-    </script>
+    }
+</script>
 
-    <script>
-        "use strict";
-
-        function customer_change(val) {
-            //let  cart_id = $('#cart_id').val();
-            $.post({
-                url: '{{route('
-                admin.pos.remove - coupon ')}}',
+<script>
+    "use strict";
+    function customer_change(val) {
+        //let  cart_id = $('#cart_id').val();
+        $.post({
+                url: '{{route('admin.pos.remove-coupon')}}',
                 data: {
                     _token: '{{csrf_token()}}',
                     //cart_id:cart_id,
-                    user_id: val
+                    user_id:val
                 },
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#loading').removeClass('d-none');
                 },
-                success: function(data) {
+                success: function (data) {
                     console.log(data);
                     var output = '';
-                    for (var i = 0; i < data.cart_nam.length; i++) {
+                    for(var i=0; i<data.cart_nam.length; i++) {
                         output += `<option value="${data.cart_nam[i]}" ${data.current_user==data.cart_nam[i]?'selected':''}>${data.cart_nam[i]}</option>`;
                     }
                     $('#cart_id').html(output);
@@ -439,466 +437,475 @@
                     $('#cart').empty().html(data.view);
                     customer_Balance_Append(val);
                 },
-                complete: function() {
+                complete: function () {
                     $('#loading').addClass('d-none');
                 }
             });
-        }
-    </script>
+    }
+</script>
 
-    <script>
-        "use strict";
+<script>
+    "use strict";
+    function cart_change(val)
+    {
+        let  cart_id = val;
+        let url = "{{route('admin.pos.change-cart')}}"+'/?cart_id='+val;
+        document.location.href=url;
+    }
+</script>
 
-        function cart_change(val) {
-            let cart_id = val;
-            let url = "{{route('admin.pos.change-cart')}}" + '/?cart_id=' + val;
-            document.location.href = url;
-        }
-    </script>
-
-    <script>
-        "use strict";
-
-        function extra_discount() {
-            //let  user_id = $('#customer').val();
-            let discount = $('#dis_amount').val();
-            let type = $('#type_ext_dis').val();
-            //let  cart_id = $('#cart_id').val();
-            //if(discount > 0)
-            if (discount) {
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-                    }
-                });
-                $.post({
-                    url: '{{ route('
-                    admin.pos.discount ') }}',
-                    data: {
-                        _token: '{{csrf_token()}}',
-                        discount: discount,
-                        type: type,
-                        //cart_id:cart_id
-                    },
-                    beforeSend: function() {
-                        $('#loading').removeClass('d-none');
-                    },
-                    success: function(data) {
-                        // console.log(data);
-                        if (data.extra_discount === 'success') {
-                            toastr.success('{{ \App\CPU\translate('
-                                extra_discount_added_successfully ') }}', {
-                                    CloseButton: true,
-                                    ProgressBar: true
-                                });
-                        } else if (data.extra_discount === 'empty') {
-                            toastr.warning('{{ \App\CPU\translate('
-                                your_cart_is_empty ') }}', {
-                                    CloseButton: true,
-                                    ProgressBar: true
-                                });
-                        } else {
-                            toastr.warning('{{ \App\CPU\translate('
-                                this_discount_is_not_applied_for_this_amount ') }}', {
-                                    CloseButton: true,
-                                    ProgressBar: true
-                                });
-                        }
-                        $('.modal-backdrop').addClass('d-none');
-                        $('#cart').empty().html(data.view);
-                        if (data.user_type === 'sc') {
-                            console.log('after add');
-                            customer_Balance_Append(data.user_id);
-                        }
-                        $('#search').focus();
-                    },
-                    complete: function() {
-                        $('.modal-backdrop').addClass('d-none');
-                        $(".footer-offset").removeClass("modal-open");
-                        $('#loading').addClass('d-none');
-                    }
-                });
-            }
-            // else{
-            //     toastr.warning('{{ \App\CPU\translate('amount_can_not_be_negative_or_zero!') }}', {
-            //         CloseButton: true,
-            //         ProgressBar: true
-            //     });
-            // }
-        }
-    </script>
-    <script>
-        "use strict";
-
-        function coupon_discount() {
-            //let  user_id = $('#customer').val();
-            let coupon_code = $('#coupon_code').val();
-            //let  cart_id = $('#cart_id').val();
-            //console.log(user_id);
+<script>
+    "use strict";
+    function extra_discount()
+    {
+        //let  user_id = $('#customer').val();
+        let discount = $('#dis_amount').val();
+        let type = $('#type_ext_dis').val();
+        //let  cart_id = $('#cart_id').val();
+        //if(discount > 0)
+        if(discount)
+        {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                 }
             });
             $.post({
-                url: '{{route('
-                admin.pos.coupon - discount ')}}',
+                url: '{{ route('admin.pos.discount') }}',
                 data: {
                     _token: '{{csrf_token()}}',
-                    //user_id:user_id,
-                    coupon_code: coupon_code,
+                    discount:discount,
+                    type:type,
                     //cart_id:cart_id
                 },
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#loading').removeClass('d-none');
                 },
-                success: function(data) {
-                    console.log(data);
-                    if (data.coupon === 'success') {
-                        toastr.success('{{ \App\CPU\translate('
-                            coupon_added_successfully ') }}', {
-                                CloseButton: true,
-                                ProgressBar: true
-                            });
-                    } else if (data.coupon === 'amount_low') {
-                        toastr.warning('{{ \App\CPU\translate('
-                            this_discount_is_not_applied_for_this_amount ') }}', {
-                                CloseButton: true,
-                                ProgressBar: true
-                            });
-                    } else if (data.coupon === 'cart_empty') {
-                        toastr.warning('{{ \App\CPU\translate('
-                            your_cart_is_empty ') }}', {
-                                CloseButton: true,
-                                ProgressBar: true
-                            });
-                    } else {
-                        toastr.warning('{{ \App\CPU\translate('
-                            coupon_is_invalid ') }}', {
-                                CloseButton: true,
-                                ProgressBar: true
-                            });
+                success: function (data) {
+                   // console.log(data);
+                    if(data.extra_discount==='success')
+                    {
+                        toastr.success('{{ \App\CPU\translate('extra_discount_added_successfully') }}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
+                    }else if(data.extra_discount==='empty')
+                    {
+                        toastr.warning('{{ \App\CPU\translate('your_cart_is_empty') }}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
+
+                    }else{
+                        toastr.warning('{{ \App\CPU\translate('this_discount_is_not_applied_for_this_amount') }}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
                     }
+
+                    $('.modal-backdrop').addClass('d-none');
                     $('#cart').empty().html(data.view);
-                    if (data.user_type === 'sc') {
+                    if(data.user_type === 'sc')
+                    {
                         console.log('after add');
                         customer_Balance_Append(data.user_id);
                     }
                     $('#search').focus();
                 },
-                complete: function() {
+                complete: function () {
                     $('.modal-backdrop').addClass('d-none');
                     $(".footer-offset").removeClass("modal-open");
                     $('#loading').addClass('d-none');
                 }
             });
         }
-    </script>
-    <script>
-        "use strict";
-        $(document).on('ready', function() {
-            @if($order)
-            $('#print-invoice').modal('show');
-            @endif
-        });
+        // else{
+        //     toastr.warning('{{ \App\CPU\translate('amount_can_not_be_negative_or_zero!') }}', {
+        //         CloseButton: true,
+        //         ProgressBar: true
+        //     });
+        // }
+    }
+</script>
+<script>
+    "use strict";
+    function coupon_discount()
+    {
+        //let  user_id = $('#customer').val();
+        let  coupon_code = $('#coupon_code').val();
+        //let  cart_id = $('#cart_id').val();
+        //console.log(user_id);
 
-        function set_category_filter(id) {
-            var nurl = new URL('{!!url()->full()!!}');
-            nurl.searchParams.set('category_id', id);
-            location.href = nurl;
-        }
-        $('#search-form').on('submit', function(e) {
-            e.preventDefault();
-            var keyword = $('#datatableSearch').val();
-            var nurl = new URL('{!!url()->full()!!}');
-            nurl.searchParams.set('keyword', keyword);
-            location.href = nurl;
-        });
-
-        function quickView(product_id) {
-            //console.log(product_id);
-            $.ajax({
-                url: '{{route('
-                admin.pos.quick - view ')}}',
-                type: 'GET',
-                data: {
-                    product_id: product_id
-                },
-                dataType: 'json', // added data type
-                beforeSend: function() {
-                    $('#loading').removeClass('d-none');
-                    //console.log("loding");
-                },
-                success: function(data) {
-                    //console.log("success...");
-                    //console.log(data);
-                    // $("#quick-view").removeClass('fade');
-                    // $("#quick-view").addClass('show');
-                    $('#quick-view').modal('show');
-                    $('#quick-view-modal').empty().html(data.view);
-                },
-                complete: function() {
-                    $('#loading').addClass('d-none');
-                },
+        $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                }
             });
-        }
+            $.post({
+                url: '{{route('admin.pos.coupon-discount')}}',
+                data: {
+                    _token: '{{csrf_token()}}',
+                    //user_id:user_id,
+                    coupon_code:coupon_code,
+                    //cart_id:cart_id
+                },
+                beforeSend: function () {
+                    $('#loading').removeClass('d-none');
+                },
+                success: function (data) {
+                    console.log(data);
+                    if(data.coupon === 'success')
+                    {
+                        toastr.success('{{ \App\CPU\translate('coupon_added_successfully') }}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
+                    }else if(data.coupon === 'amount_low')
+                    {
+                        toastr.warning('{{ \App\CPU\translate('this_discount_is_not_applied_for_this_amount') }}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
+                    }else if(data.coupon === 'cart_empty')
+                    {
+                        toastr.warning('{{ \App\CPU\translate('your_cart_is_empty') }}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
+                    }
+                    else {
+                        toastr.warning('{{ \App\CPU\translate('coupon_is_invalid') }}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
+                    }
 
-        function addToCart(form_id) {
-            //console.log(form_id);
-            // let  user_id = $('#customer').val();
-            // let  cart_id = $('#cart_id').val();
-            let productId = form_id;
-            let productQty = $('#product_qty').val();
-            // if (checkAddToCartValidity()) {
+                    $('#cart').empty().html(data.view);
+                    if(data.user_type === 'sc')
+                    {
+                        console.log('after add');
+                        customer_Balance_Append(data.user_id);
+                    }
+                    $('#search').focus();
+                },
+                complete: function () {
+                    $('.modal-backdrop').addClass('d-none');
+                    $(".footer-offset").removeClass("modal-open");
+                    $('#loading').addClass('d-none');
+                }
+            });
+
+    }
+</script>
+<script>
+    "use strict";
+    $(document).on('ready', function () {
+        @if($order)
+        $('#print-invoice').modal('show');
+        @endif
+    });
+
+    function set_category_filter(id) {
+        var nurl = new URL('{!!url()->full()!!}');
+        nurl.searchParams.set('category_id', id);
+        location.href = nurl;
+    }
+
+    $('#search-form').on('submit', function (e) {
+        e.preventDefault();
+        var keyword = $('#datatableSearch').val();
+        var nurl = new URL('{!!url()->full()!!}');
+        nurl.searchParams.set('keyword', keyword);
+        location.href = nurl;
+    });
+
+    function quickView(product_id) {
+        //console.log(product_id);
+        $.ajax({
+            url: '{{route('admin.pos.quick-view')}}',
+            type: 'GET',
+            data: {
+                product_id: product_id
+            },
+            dataType: 'json', // added data type
+            beforeSend: function () {
+                $('#loading').removeClass('d-none');
+                //console.log("loding");
+            },
+            success: function (data) {
+                //console.log("success...");
+                //console.log(data);
+
+                // $("#quick-view").removeClass('fade');
+                // $("#quick-view").addClass('show');
+
+                $('#quick-view').modal('show');
+                $('#quick-view-modal').empty().html(data.view);
+            },
+            complete: function () {
+                $('#loading').addClass('d-none');
+            },
+        });
+    }
+
+    function addToCart(form_id) {
+        //console.log(form_id);
+        // let  user_id = $('#customer').val();
+        // let  cart_id = $('#cart_id').val();
+        let productId = form_id;
+        let productQty = $('#product_qty').val();
+        // if (checkAddToCartValidity()) {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                 }
             });
             $.post({
-                url: '{{ route('
-                admin.pos.add - to - cart ') }}',
+                url: '{{ route('admin.pos.add-to-cart') }}',
                 data: {
                     _token: '{{csrf_token()}}',
-                    id: productId,
-                    quantity: productQty,
+                    id:productId,
+                    quantity:productQty,
                     //cart_id:cart_id
                 },
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#cartloader').removeClass('d-none');
                 },
-                success: function(data) {
+                success: function (data) {
                     //console.log(data);
-                    if (data.qty == 0) {
-                        toastr.warning('{{\App\CPU\translate('
-                            product_quantity_end!')}}', {
-                                CloseButton: true,
-                                ProgressBar: true
-                            });
-                    } else {
-                        toastr.success('{{\App\CPU\translate('
-                            item_has_been_added_in_your_cart!')}}', {
-                                CloseButton: true,
-                                ProgressBar: true
-                            });
+                    if(data.qty==0)
+                    {
+                        toastr.warning('{{\App\CPU\translate('product_quantity_end!')}}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
+                    }else{
+                        toastr.success('{{\App\CPU\translate('item_has_been_added_in_your_cart!')}}', {
+                        CloseButton: true,
+                        ProgressBar: true
+                    });
                     }
+
                     $('#cart').empty().html(data.view);
-                    if (data.user_type === 'sc') {
+                    if(data.user_type === 'sc')
+                    {
                         //console.log('after add');
                         customer_Balance_Append(data.user_id);
                     }
                     $('#search').val('').focus();
                 },
-                complete: function() {
+                complete: function () {
                     $('#cartloader').addClass('d-none');
                 }
             });
-        }
 
-        function removeFromCart(key) {
-            // let  user_id = $('#customer').val();
-            // let  cart_id = $('#cart_id').val();
-            $.post('{{ route('
-                admin.pos.remove - from - cart ') }}', {
-                    _token: '{{ csrf_token() }}',
-                    key: key
-                },
-                function(data) {
+    }
+
+    function removeFromCart(key) {
+        // let  user_id = $('#customer').val();
+        // let  cart_id = $('#cart_id').val();
+        $.post('{{ route('admin.pos.remove-from-cart') }}', {_token: '{{ csrf_token() }}', key: key}, function (data) {
+
+                $('#cart').empty().html(data.view);
+                if(data.user_type === 'sc')
+                {
+                    console.log('after add');
+                    customer_Balance_Append(data.user_id);
+                }
+                toastr.info('{{\App\CPU\translate('item_has_been_removed_from_cart')}}', {
+                    CloseButton: true,
+                    ProgressBar: true
+                });
+            $('#search').focus();
+
+        });
+    }
+
+    function emptyCart() {
+        Swal.fire({
+            title: '{{\App\CPU\translate('Are_you_sure?')}}',
+            text: '{{\App\CPU\translate('You_want_to_remove_all_items_from_cart!!')}}',
+            type: 'warning',
+            showCancelButton: true,
+            cancelButtonColor: 'default',
+            confirmButtonColor: '#008758',
+            cancelButtonText: 'No',
+            confirmButtonText: 'Yes',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                // let  user_id = $('#customer').val();
+                // let  cart_id = $('#cart_id').val();
+                $.post('{{ route('admin.pos.emptyCart') }}', {_token: '{{ csrf_token() }}'}, function (data) {
                     $('#cart').empty().html(data.view);
-                    if (data.user_type === 'sc') {
-                        console.log('after add');
+                    $('#search').focus();
+                    if(data.user_type === 'sc')
+                    {
                         customer_Balance_Append(data.user_id);
                     }
-                    toastr.info('{{\App\CPU\translate('
-                        item_has_been_removed_from_cart ')}}', {
-                            CloseButton: true,
-                            ProgressBar: true
-                        });
-                    $('#search').focus();
+                    toastr.info('{{\App\CPU\translate('Item_has_been_removed_from_cart')}}', {
+                        CloseButton: true,
+                        ProgressBar: true
+                    });
                 });
-        }
+            }
+        })
 
-        function emptyCart() {
-            Swal.fire({
-                title: '{{\App\CPU\translate('
-                Are_you_sure ? ')}}',
-                text : '{{\App\CPU\translate('
-                You_want_to_remove_all_items_from_cart!!')}}',
-                type: 'warning',
-                showCancelButton: true,
-                cancelButtonColor: 'default',
-                confirmButtonColor: '#008758',
-                cancelButtonText: 'No',
-                confirmButtonText: 'Yes',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    // let  user_id = $('#customer').val();
-                    // let  cart_id = $('#cart_id').val();
-                    $.post('{{ route('
-                        admin.pos.emptyCart ') }}', {
-                            _token: '{{ csrf_token() }}'
-                        },
-                        function(data) {
-                            $('#cart').empty().html(data.view);
-                            $('#search').focus();
-                            if (data.user_type === 'sc') {
-                                customer_Balance_Append(data.user_id);
-                            }
-                            toastr.info('{{\App\CPU\translate('
-                                Item_has_been_removed_from_cart ')}}', {
-                                    CloseButton: true,
-                                    ProgressBar: true
-                                });
-                        });
-                }
-            })
-        }
+    }
 
-        function updateCart() {
-            $.post('<?php echo e(route('admin.pos.cart_items')); ?>', {
-                _token: '<?php echo e(csrf_token()); ?>'
-            }, function(data) {
-                $('#cart').empty().html(data);
-            });
-        }
+    function updateCart() {
+        $.post('<?php echo e(route('admin.pos.cart_items')); ?>', {_token: '<?php echo e(csrf_token()); ?>'}, function (data) {
+            $('#cart').empty().html(data);
 
-        function updateQuantity(id, qty) {
-            // let  user_id = $('#customer').val();
-            // let  cart_id = $('#cart_id').val();
-            //console.log(user_id)
+        });
+    }
+
+    function updateQuantity(id,qty) {
+        // let  user_id = $('#customer').val();
+        // let  cart_id = $('#cart_id').val();
+        //console.log(user_id)
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
                 }
             });
             $.post({
-                url: '{{ route('
-                admin.pos.updateQuantity ') }}',
+                url: '{{ route('admin.pos.updateQuantity') }}',
                 data: {
                     _token: '{{csrf_token()}}',
                     key: id,
                     quantity: qty,
                     //cart_id:cart_id
                 },
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#loading').removeClass('d-none');
                 },
-                success: function(data) {
+                success: function (data) {
                     //console.log(data);
-                    if (data.qty < 0) {
-                        toastr.warning('{{\App\CPU\translate('
-                            product_quantity_is_not_enough!')}}', {
-                                CloseButton: true,
-                                ProgressBar: true
-                            });
+                    if(data.qty<0)
+                    {
+                        toastr.warning('{{\App\CPU\translate('product_quantity_is_not_enough!')}}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
                     }
-                    if (data.upQty === 'zeroNegative') {
-                        toastr.warning('{{\App\CPU\translate('
-                            Product_quantity_can_not_be_zero_or_less_than_zero_in_cart!')}}', {
-                                CloseButton: true,
-                                ProgressBar: true
-                            });
+                    if(data.upQty==='zeroNegative')
+                    {
+                        toastr.warning('{{\App\CPU\translate('Product_quantity_can_not_be_zero_or_less_than_zero_in_cart!')}}', {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
                     }
+
                     $('#search').focus();
                     $('#cart').empty().html(data.view);
-                    if (data.user_type === 'sc') {
+                    if(data.user_type === 'sc')
+                    {
                         customer_Balance_Append(data.user_id);
                     }
                 },
-                complete: function() {
+                complete: function () {
                     $('#loading').addClass('d-none');
                 }
             });
+
+
+
+    }
+
+    // INITIALIZATION OF SELECT2
+    // =======================================================
+    $('.js-select2-custom').each(function () {
+        var select2 = $.HSCore.components.HSSelect2.init($(this));
+    });
+
+    $('.js-data-example-ajax').select2({
+        ajax: {
+            url: '{{route('admin.pos.customers')}}',
+            data: function (params) {
+                return {
+                    q: params.term, // search term
+                    page: params.page
+                };
+            },
+            processResults: function (data) {
+                return {
+                    results: data
+                };
+            },
+            __port: function (params, success, failure) {
+                var $request = $.ajax(params);
+
+                $request.then(success);
+                $request.fail(failure);
+
+                return $request;
+            }
         }
-        // INITIALIZATION OF SELECT2
-        // =======================================================
-        $('.js-select2-custom').each(function() {
-            var select2 = $.HSCore.components.HSSelect2.init($(this));
-        });
-        $('.js-data-example-ajax').select2({
-            ajax: {
-                url: '{{route('
-                admin.pos.customers ')}}',
-                data: function(params) {
-                    return {
-                        q: params.term, // search term
-                        page: params.page
-                    };
+    });
+
+    jQuery(".search-bar-input").on('keyup',function () {
+        //$('#search-box').removeClass('d-none');
+        $(".search-card").removeClass('d-none').show();
+        let name = $(".search-bar-input").val();
+        //console.log(name);
+        if (name.length >0) {
+            $('#search-box').removeClass('d-none').show();
+            $.get({
+                url: '{{route('admin.pos.search-products')}}',
+                dataType: 'json',
+                data: {
+                    name: name
                 },
-                processResults: function(data) {
-                    return {
-                        results: data
-                    };
+                beforeSend: function () {
+                    $('#loading').removeClass('d-none');
                 },
-                __port: function(params, success, failure) {
-                    var $request = $.ajax(params);
-                    $request.then(success);
-                    $request.fail(failure);
-                    return $request;
-                }
-            }
-        });
-        jQuery(".search-bar-input").on('keyup', function() {
-            //$('#search-box').removeClass('d-none');
-            $(".search-card").removeClass('d-none').show();
-            let name = $(".search-bar-input").val();
-            //console.log(name);
-            if (name.length > 0) {
-                $('#search-box').removeClass('d-none').show();
-                $.get({
-                    url: '{{route('
-                    admin.pos.search - products ')}}',
-                    dataType: 'json',
-                    data: {
-                        name: name
-                    },
-                    beforeSend: function() {
-                        $('#loading').removeClass('d-none');
-                    },
-                    success: function(data) {
-                        //console.log(data.count);
+                success: function (data) {
+                    //console.log(data.count);
+
                         $('.search-result-box').empty().html(data.result);
-                    },
-                    complete: function() {
-                        $('#loading').addClass('d-none');
-                    },
-                });
-            } else {
-                $('.search-result-box').empty();
-            }
-        });
-        jQuery(".search-bar-input").on('keyup', delay(function() {
-            //$('#search-box').removeClass('d-none');
-            $(".search-card").removeClass('d-none').show();
-            let name = $(".search-bar-input").val();
-            //console.log(name);
-            if (name.length > 0 || isNaN(name)) {
-                $.get({
-                    url: '{{route('
-                    admin.pos.search - by - add ')}}',
-                    dataType: 'json',
-                    data: {
-                        name: name
-                    },
-                    success: function(data) {
-                        if (data.count == 1) {
-                            $('#search').attr("disabled", true);
-                            addToCart(data.id);
-                            $('#search').attr("disabled", false);
-                            $('.search-result-box').empty().html(data.result);
-                            $('#search').val('');
-                            $('#search-box').addClass('d-none');
-                        }
-                    },
-                    // complete: function () {
-                    //     $('#loading').addClass('d-none');
-                    // },
-                });
-            } else {
-                $('.search-result-box').empty();
-            }
-        }, 1000));
+
+                },
+                complete: function () {
+                    $('#loading').addClass('d-none');
+                },
+            });
+        } else {
+            $('.search-result-box').empty();
+        }
+    });
+
+    jQuery(".search-bar-input").on('keyup',delay(function () {
+        //$('#search-box').removeClass('d-none');
+        $(".search-card").removeClass('d-none').show();
+        let name = $(".search-bar-input").val();
+        //console.log(name);
+        if (name.length > 0 || isNaN(name)) {
+            $.get({
+                url: '{{route('admin.pos.search-by-add')}}',
+                dataType: 'json',
+                data: {
+                    name: name
+                },
+                success: function (data) {
+                    if (data.count == 1) {
+                        $('#search').attr("disabled", true);
+                        addToCart(data.id);
+                        $('#search').attr("disabled", false);
+                        $('.search-result-box').empty().html(data.result);
+                        $('#search').val('');
+                        $('#search-box').addClass('d-none');
+                    }
+                },
+                // complete: function () {
+                //     $('#loading').addClass('d-none');
+                // },
+            });
+        } else {
+            $('.search-result-box').empty();
+        }
+    },1000));
     </script>
     @stack('script_2')
 </body>
