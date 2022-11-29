@@ -37,7 +37,11 @@ class CustomerController extends Controller
         $dukapaq_member = CustomerLogin::where('phone', $request->mobile)->first();
 
         if ($dukapaq_member == '') {
-            $dukapaq_member = CustomerLogin::create([]);
+            $dukapaq_member = CustomerLogin::create([
+                'f_name' => $request->name,
+                'mobile' => $request->mobile,
+                'password' => bcrypt(123456),
+            ]);
             if ($request->is_loyalty_enrolled == 'Yes') {
                 $dukapaq_member->update([
                     'loyalty_points' => 100,
@@ -51,7 +55,6 @@ class CustomerController extends Controller
         $customer->name = $request->name;
         $customer->mobile = $request->mobile;
         $customer->email = $request->email;
-        $customer->is_loyalty_enrolled = $request->is_loyalty_enrolled;
         $customer->image = $image_name;
         $customer->state = $request->state;
         $customer->city = $request->city;
@@ -83,7 +86,7 @@ class CustomerController extends Controller
             $customers = new Customer;
         }
         //$walk_customer = $customers->where('type',0)->get();
-        $customers = $customers->with('member')->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
+        $customers = $customers->with('member')->where('company_id', auth('admin')->user()->company_id)->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
         return view('admin-views.customer.list', compact('customers', 'accounts', 'search'));
     }
 
