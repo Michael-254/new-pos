@@ -307,7 +307,7 @@
     @if ($errors->any())
     <script>
         "use strict";
-        @foreach($errors - > all() as $error)
+        @foreach($errors-> all() as $error)
         toastr.error('{{$error}}', Error, {
             CloseButton: true,
             ProgressBar: true
