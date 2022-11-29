@@ -24,33 +24,32 @@ class DashboardController extends Controller
     public function getCustomerLoyaltyPointsSummary()
     {
         $customer = CustomerLogin::find(auth()->id());
+        $order = $customer->orderDetails()->first();
 
-        $orders = $customer->orderDetails()->paginate(10);
-
-        $data = [
-            'total' => $customer,
-            'limit' => $orders,
+        $loyaltyPointsSummary = [
+            'loyaltyPoints' => $customer->loyalty_points,
+            'recentlyEarned' => round($order->order->collected_cash / 10),
+            'recentlySpent' => 0,
+            'equivalentCash' => $customer->loyalty_points * 0.01,
         ];
+        return response()->json([
+            'loyaltyPointsSummary' => $loyaltyPointsSummary
+        ], 200);
 
         return response()->json($data, 200);
     }
 
-    // public function getCustomerPurchases(Request $request)
-    // {
-    //     $limit = $request['limit'] ?? 10;
-    //     $offset = $request['offset'] ?? 1;
+    public function getCustomerPurchases(Request $request)
+    {
+        $customer = CustomerLogin::find(auth()->id());
 
-    //     $stock_limit = Helpers::get_business_settings('stock_limit');
-    //     $stock_limited_product = Product::with('unit', 'supplier')->where('quantity', '<', $stock_limit)->orderBy('quantity')->latest()->paginate($limit, ['*'], 'page', $offset);
-    //     $stock_limited_products = StockLimitedProductsResource::collection($stock_limited_product);
+        $orders = $customer->orderDetails()->paginate(10);
 
-    //     return response()->json([
-    //         'total' => $stock_limited_products->total(),
-    //         'offset' => $offset,
-    //         'limit' => $limit,
-    //         'stock_limited_products' => $stock_limited_products->items(),
-    //     ], 200);
-    // }
+        return response()->json([
+            'total' => $orders->count(),
+            'orders' => $orders,
+        ], 200);
+    }
 
     public function getIndex(Request $request)
     {
