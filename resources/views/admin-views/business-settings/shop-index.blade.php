@@ -24,7 +24,7 @@
                         <div class="row">
                             <div class="col-sm-6 col-lg-6 mb-3 mb-lg-2">
 
-                                @php($shop_name=\App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->shop_name)
+                                @php($shop_name=$businessSetting->shop_name)
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlInput1">{{ \App\CPU\translate('shop_name') }} </label>
                                     <input type="text" name="shop_name" value="{{ $shop_name }}" class="form-control" placeholder="{{ \App\CPU\translate('shop_name') }}" required>
@@ -32,7 +32,7 @@
                             </div>
                             <div class="col-sm-6 col-lg-6 mb-3 mb-lg-2">
 
-                                @php($shop_email = \App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->shop_email)
+                                @php($shop_email = $businessSetting->shop_email)
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlInput1">{{ \App\CPU\translate('shop_email') }} </label>
                                     <input type="email" name="shop_email" value="{{ $shop_email }}" class="form-control" placeholder="{{ \App\CPU\translate('shop_email') }}" required>
@@ -42,14 +42,14 @@
                         <div class="row">
                             <div class="col-sm-6 col-lg-6 mb-3 mb-lg-2">
 
-                                @php($shop_phone = \App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->shop_phone)
+                                @php($shop_phone = $businessSetting->shop_phone)
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlInput1">{{ \App\CPU\translate('shop_phone') }} </label>
                                     <input type="text" name="shop_phone" value="{{ $shop_phone }}" class="form-control" placeholder="{{ \App\CPU\translate('shop_phone') }}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-lg-6 mb-3 mb-lg-2">
-                                @php($shop_address = \App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->shop_address)
+                                @php($shop_address = $businessSetting->shop_address)
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlInput1">{{ \App\CPU\translate('shop_address') }}
                                     </label>
@@ -59,14 +59,14 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-12">
-                                @php($pagination_limit = \App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->pagination_limit)
+                                @php($pagination_limit = $businessSetting->pagination_limit)
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlInput1">{{ \App\CPU\translate('pagination_limit') }}
                                     </label>
                                     <input min="1" type="text" name="pagination_limit" value="{{ $pagination_limit }}" class="form-control" placeholder="{{ \App\CPU\translate('pagination_limit') }}" id="pagination_limit" required>
                                 </div>
                             </div>
-                            @php($currency_code = \App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->currency)
+                            @php($currency_code = $businessSetting->currency)
                             <div class="col-md-4 col-12">
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlInput1">{{ \App\CPU\translate('currency') }}</label>
@@ -342,7 +342,7 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-5 col-lg-5 mb-3 mb-lg-2">
-                                @php($footer_text = \App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->footer_text)
+                                @php($footer_text = $businessSetting->footer_text)
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlInput1">{{ \App\CPU\translate('footer_text') }}
                                     </label>
@@ -351,7 +351,7 @@
                             </div>
                             <div class="col-sm-4 col-lg-4 mb-3 mb-lg-2">
 
-                                @php($stock_limit = \App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->stock_limt)
+                                @php($stock_limit = $businessSetting->stock_limt)
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlInput1">{{ \App\CPU\translate('minimum_stock_limit_for_warning') }}
                                     </label>
@@ -513,7 +513,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            @php($shop_logo = \App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->shop_logo)
+                            @php($shop_logo = $businessSetting->shop_logo)
                             <div class="col-sm-6 col-lg-6 mb-3 mb-lg-2">
                                 <div class="form-group ">
                                     <label>{{ \App\CPU\translate('logo') }}</label><small class="text-danger">*
@@ -529,7 +529,7 @@
                                     </center>
                                 </div>
                             </div>
-                            @php($vat_reg_no = \App\Models\BusinessSetting::where(['company_id'=>auth('admin')->user()->company_id])->first()->vat_reg_no)
+                            @php($vat_reg_no = $businessSetting->vat_reg_no)
                             <div class="col-sm-6 col-lg-6 mb-3 mb-lg-2">
                                 <div class="form-group ">
                                     <label>{{ \App\CPU\translate('vat_reg_no') }}</label>
@@ -552,11 +552,11 @@
 <script>
     "use strict";
     $(document).on('ready', function() {
-        @php($country = \App\Models\BusinessSetting::where(['company_id' => auth('admin')->user()->company_id])->first()->country)
+        @php($country = $businessSetting - > country)
         $("#country option[value='{{ $country }}']").attr('selected', 'selected').change();
     });
-    @php($time_zone = \App\Models\BusinessSetting::where(['company_id' => auth('admin')->user()->company_id])->first()->time_zone)
-    @php($time_zone = $time_zone->value ?? null)
+    @php($time_zone = $businessSetting - > time_zone)
+    @php($time_zone = $time_zone - > value ?? null)
     $('[name=time_zone]').val("{{ $time_zone }}");
 
     function enforceMinMax(el) {

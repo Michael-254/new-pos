@@ -16,7 +16,7 @@ class CreateCustomerLoginsTable extends Migration
         Schema::create('customer_logins', function (Blueprint $table) {
             $table->id();
             $table->string('f_name');
-            $table->string('l_name');
+            $table->string('l_name')->nullable();
             $table->string('email');
             $table->string('phone');
             $table->integer('loyalty_points')->nullable();

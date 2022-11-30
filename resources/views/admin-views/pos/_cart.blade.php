@@ -153,6 +153,7 @@ $total_tax_amount = $product_tax;
                                     <option value="">-- Select --</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
+                                    <option value="already member">Already Member</option>
                                 </select>
                             </div>
                         </div>

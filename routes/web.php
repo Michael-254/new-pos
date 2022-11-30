@@ -14,11 +14,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/test-mpesa', 'Admin\MpesaCredentialController@index');
 
-Route::fallback(function(){
+Route::fallback(function () {
     return redirect('admin/auth/login');
 });
-
-Route::get('/client-dashboard','ClientController@index')->name('client.dashboard');
 
 Route::get('authentication-failed', function () {
     $errors = [];

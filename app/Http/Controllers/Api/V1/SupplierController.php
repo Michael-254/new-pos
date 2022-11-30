@@ -17,7 +17,9 @@ class SupplierController extends Controller
     {
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
-        $suppliers = Supplier::withCount('products')->latest()->paginate($limit, ['*'], 'page', $offset);
+        $suppliers = Supplier::withCount('products')
+            ->where('company_id', auth('admin')->user()->company_id)
+            ->latest()->paginate($limit, ['*'], 'page', $offset);
         $data =  [
             'total' => $suppliers->total(),
             'limit' => $limit,
@@ -31,8 +33,8 @@ class SupplierController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'mobile' => 'required|unique:suppliers',
-            'email' => 'required|email|unique:suppliers',
+            'mobile' => 'required',
+            'email' => 'required',
             'state' => 'required',
             'city' => 'required',
             'zip_code' => 'required',
@@ -57,6 +59,7 @@ class SupplierController extends Controller
             $supplier->zip_code = $request->zip_code;
             $supplier->address = $request->address;
             $supplier->due_amount = $request->due_amount;
+            $supplier->company_id = auth('admin')->user()->company_id;
             $supplier->save();
             return response()->json([
                 'success' => true,
@@ -92,8 +95,8 @@ class SupplierController extends Controller
             $supplier = Supplier::findOrFail($request->id);
             $request->validate([
                 'name' => 'required',
-                'mobile' => 'required|unique:suppliers,mobile,' . $supplier->id,
-                'email' => 'required|email|unique:suppliers,email,' . $supplier->id,
+                'mobile' => 'required',
+                'email' => 'required',
                 'state' => 'required',
                 'city' => 'required',
                 'zip_code' => 'required',
@@ -145,15 +148,15 @@ class SupplierController extends Controller
         $offset = $request['offset'] ?? 1;
         $search = $request->name;
         // if (!empty($search)) {
-            $result = Supplier::where('name', 'like', '%' . $search . '%')->orWhere('mobile', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
-            $data = [
-                'total' => $result->total(),
-                'limit' => $limit,
-                'offset' => $offset,
-                'suppliers' => $result->items(),
-            ];
-            return response()->json($data, 200);
-       // }
+        $result = Supplier::where('name', 'like', '%' . $search . '%')->orWhere('mobile', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
+        $data = [
+            'total' => $result->total(),
+            'limit' => $limit,
+            'offset' => $offset,
+            'suppliers' => $result->items(),
+        ];
+        return response()->json($data, 200);
+        // }
     }
 
     public function filterByCity(Request $request)
