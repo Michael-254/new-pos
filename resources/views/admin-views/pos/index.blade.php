@@ -193,7 +193,7 @@
                             </div>
                         </div>
                     </div>
-                    @php($customers = \App\Models\Customer::get())
+                    @php($customers = \App\Models\Customer::where('company_id', auth('admin')->user()->company_id)->get())
                     <div class="col-md-4 padding-y-sm mt-2">
                         <div class="card pr-1 pl-1">
                             <div class="row mt-2">
@@ -304,19 +304,19 @@
     <script src="{{asset('assets/admin')}}/js/toastr.js"></script>
     {!! Toastr::message() !!}
 
-    @if ($errors->any())
+   @if ($errors->any())
     <script>
         "use strict";
-        @foreach($errors-> all() as $error)
+        @foreach($errors->all() as $error)
         toastr.error('{{$error}}', Error, {
             CloseButton: true,
             ProgressBar: true
         });
         @endforeach
     </script>
-    @endif
+@endif
 
-   <script>
+<script>
     $(document).on('ready', function () {
         "use strict";
         $('.js-hs-unfold-invoker').each(function () {
@@ -326,6 +326,7 @@
         $.ajax({
             url: '{{route('admin.pos.get-cart-ids')}}',
             type: 'GET',
+
             dataType: 'json', // added data type
             beforeSend: function () {
                 $('#loading').removeClass('d-none');
@@ -373,6 +374,7 @@
             $("#balance").addClass('d-none');
             $("#remaining_balance").addClass('d-none');
             console.log($(val).val());
+
         } else if($(val).val() == 0){
             $("#balance").removeClass('d-none');
             $("#remaining_balance").removeClass('d-none');
@@ -493,12 +495,14 @@
                             CloseButton: true,
                             ProgressBar: true
                         });
+
                     }else{
                         toastr.warning('{{ \App\CPU\translate('this_discount_is_not_applied_for_this_amount') }}', {
                             CloseButton: true,
                             ProgressBar: true
                         });
                     }
+
                     $('.modal-backdrop').addClass('d-none');
                     $('#cart').empty().html(data.view);
                     if(data.user_type === 'sc')
@@ -531,6 +535,7 @@
         let  coupon_code = $('#coupon_code').val();
         //let  cart_id = $('#cart_id').val();
         //console.log(user_id);
+
         $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -574,6 +579,7 @@
                             ProgressBar: true
                         });
                     }
+
                     $('#cart').empty().html(data.view);
                     if(data.user_type === 'sc')
                     {
@@ -588,6 +594,7 @@
                     $('#loading').addClass('d-none');
                 }
             });
+
     }
 </script>
 <script>
@@ -597,11 +604,13 @@
         $('#print-invoice').modal('show');
         @endif
     });
+
     function set_category_filter(id) {
         var nurl = new URL('{!!url()->full()!!}');
         nurl.searchParams.set('category_id', id);
         location.href = nurl;
     }
+
     $('#search-form').on('submit', function (e) {
         e.preventDefault();
         var keyword = $('#datatableSearch').val();
@@ -609,6 +618,7 @@
         nurl.searchParams.set('keyword', keyword);
         location.href = nurl;
     });
+
     function quickView(product_id) {
         //console.log(product_id);
         $.ajax({
@@ -625,8 +635,10 @@
             success: function (data) {
                 //console.log("success...");
                 //console.log(data);
+
                 // $("#quick-view").removeClass('fade');
                 // $("#quick-view").addClass('show');
+
                 $('#quick-view').modal('show');
                 $('#quick-view-modal').empty().html(data.view);
             },
@@ -635,6 +647,7 @@
             },
         });
     }
+
     function addToCart(form_id) {
         //console.log(form_id);
         // let  user_id = $('#customer').val();
@@ -672,6 +685,7 @@
                         ProgressBar: true
                     });
                     }
+
                     $('#cart').empty().html(data.view);
                     if(data.user_type === 'sc')
                     {
@@ -684,11 +698,14 @@
                     $('#cartloader').addClass('d-none');
                 }
             });
+
     }
+
     function removeFromCart(key) {
         // let  user_id = $('#customer').val();
         // let  cart_id = $('#cart_id').val();
         $.post('{{ route('admin.pos.remove-from-cart') }}', {_token: '{{ csrf_token() }}', key: key}, function (data) {
+
                 $('#cart').empty().html(data.view);
                 if(data.user_type === 'sc')
                 {
@@ -700,8 +717,10 @@
                     ProgressBar: true
                 });
             $('#search').focus();
+
         });
     }
+
     function emptyCart() {
         Swal.fire({
             title: '{{\App\CPU\translate('Are_you_sure?')}}',
@@ -731,16 +750,21 @@
                 });
             }
         })
+
     }
+
     function updateCart() {
         $.post('<?php echo e(route('admin.pos.cart_items')); ?>', {_token: '<?php echo e(csrf_token()); ?>'}, function (data) {
             $('#cart').empty().html(data);
+
         });
     }
+
     function updateQuantity(id,qty) {
         // let  user_id = $('#customer').val();
         // let  cart_id = $('#cart_id').val();
         //console.log(user_id)
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -773,6 +797,7 @@
                             ProgressBar: true
                         });
                     }
+
                     $('#search').focus();
                     $('#cart').empty().html(data.view);
                     if(data.user_type === 'sc')
@@ -784,12 +809,17 @@
                     $('#loading').addClass('d-none');
                 }
             });
+
+
+
     }
+
     // INITIALIZATION OF SELECT2
     // =======================================================
     $('.js-select2-custom').each(function () {
         var select2 = $.HSCore.components.HSSelect2.init($(this));
     });
+
     $('.js-data-example-ajax').select2({
         ajax: {
             url: '{{route('admin.pos.customers')}}',
@@ -806,12 +836,15 @@
             },
             __port: function (params, success, failure) {
                 var $request = $.ajax(params);
+
                 $request.then(success);
                 $request.fail(failure);
+
                 return $request;
             }
         }
     });
+
     jQuery(".search-bar-input").on('keyup',function () {
         //$('#search-box').removeClass('d-none');
         $(".search-card").removeClass('d-none').show();
@@ -830,7 +863,9 @@
                 },
                 success: function (data) {
                     //console.log(data.count);
+
                         $('.search-result-box').empty().html(data.result);
+
                 },
                 complete: function () {
                     $('#loading').addClass('d-none');
@@ -840,6 +875,7 @@
             $('.search-result-box').empty();
         }
     });
+
     jQuery(".search-bar-input").on('keyup',delay(function () {
         //$('#search-box').removeClass('d-none');
         $(".search-card").removeClass('d-none').show();
@@ -870,7 +906,7 @@
             $('.search-result-box').empty();
         }
     },1000));
-</script>
+    </script>
     @stack('script_2')
 </body>
 

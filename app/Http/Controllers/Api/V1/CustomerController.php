@@ -21,7 +21,7 @@ class CustomerController extends Controller
     {
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
-        $customers = Customer::withCount('orders')->orderBy('id', 'asc')->paginate($limit, ['*'], 'page', $offset);
+        $customers = Customer::withCount('orders')->where('company_id', auth('admin')->user()->company_id)->orderBy('id', 'asc')->paginate($limit, ['*'], 'page', $offset);
         $data = [
             'total' => $customers->total(),
             'limit' => $limit,
@@ -47,7 +47,12 @@ class CustomerController extends Controller
             $dukapaq_member = CustomerLogin::where('phone', $request->mobile)->first();
 
             if ($dukapaq_member == '') {
-                $dukapaq_member = CustomerLogin::create([]);
+                $dukapaq_member = CustomerLogin::create([
+                    'f_name' => $request->name,
+                    'phone' => $request->mobile,
+                    'password' => bcrypt(123456),
+                ]);
+
                 if ($request->is_loyalty_enrolled == 'Yes') {
                     $dukapaq_member->update([
                         'loyalty_points' => 100,
@@ -61,7 +66,6 @@ class CustomerController extends Controller
             $customer->name = $request->name;
             $customer->mobile = $request->mobile;
             $customer->email = $request->email;
-            $customer->is_loyalty_enrolled = $request->is_loyalty_enrolled;
             $customer->image = $image_name;
             $customer->state = $request->state;
             $customer->city = $request->city;
@@ -150,7 +154,7 @@ class CustomerController extends Controller
         $offset = $request['offset'] ?? 1;
         $search = $request->name;
         // if (!empty($search)) {
-        $result = Customer::where('name', 'like', '%' . $search . '%')->orWhere('mobile', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
+        $result = Customer::where('name', 'like', '%' . $search . '%')->orWhere('mobile', 'like', '%' . $search . '%')->where('company_id', auth('admin')->user()->company_id)->latest()->paginate($limit, ['*'], 'page', $offset);
         $data = [
             'total' => $result->total(),
             'limit' => $limit,

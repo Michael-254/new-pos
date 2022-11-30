@@ -146,27 +146,7 @@ $total_tax_amount = $product_tax;
                         </div>
                     </div>
                     <div class="row pl-2">
-                        <div class="col-12 col-lg-6">
-                            <div class="form-group">
-                                <label class="input-label">{{ \App\CPU\translate('email') }}</label>
-                                <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="{{ \App\CPU\translate('Ex_:_ex@example.com') }}">
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-6">
-                            <div class="form-group">
-                                <label class="input-label">{{ \App\CPU\translate('city') }} </label>
-                                <input type="text" name="city" class="form-control" value="{{ old('city') }}" placeholder="{{ \App\CPU\translate('city') }}">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row pl-2">
-                        <div class="col-12 col-lg-6">
-                            <div class="form-group">
-                                <label class="input-label">{{ \App\CPU\translate('zone') }} </label>
-                                <input type="text" name="address" class="form-control" value="{{ old('address') }}" placeholder="{{ \App\CPU\translate('address') }}">
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-6">
+                        <div class="col-12 col-lg-12">
                             <div class="form-group">
                                 <label class="input-label">{{\App\CPU\translate('enroll_to_DUKAPAQ_Loyalty')}} <span class="input-label-secondary text-danger">*</span> </label>
                                 <select name="is_loyalty_enrolled" class="form-control" required>

@@ -17,10 +17,8 @@ class CustomerLogin extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'f_name', 'l_name', 'email', 'phone', 'password', 'loyalty_points', 'is_loyalty_enrolled',
     ];
-
-    protected $guarded = ['id'];
 
     public function orders()
     {
