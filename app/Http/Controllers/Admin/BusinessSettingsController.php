@@ -60,7 +60,7 @@ class BusinessSettingsController extends Controller
             'footer_text' => $request['footer_text']
         ]);
 
-        $curr_logo = BusinessSetting::where(['key' => 'shop_logo'])->first();
+        $curr_logo = BusinessSetting::where('company_id', auth('admin')->user()->company_id)->first();
         DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
             'shop_logo' => $request->has('shop_logo') ? Helpers::update('shop/', $curr_logo->value, 'png', $request->file('shop_logo')) : $curr_logo->value
         ]);
