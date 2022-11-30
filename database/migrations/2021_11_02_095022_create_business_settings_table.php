@@ -22,6 +22,7 @@ class CreateBusinessSettingsTable extends Migration
             $table->text('shop_name')->nullable();
             $table->text('shop_address')->nullable();
             $table->text('shop_phone')->nullable();
+            $table->text('app_minimum_version_ios')->nullable();
             $table->text('shop_email')->nullable();
             $table->text('footer_text')->nullable();
             $table->text('country')->nullable();

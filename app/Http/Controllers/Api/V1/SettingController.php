@@ -54,7 +54,7 @@ class SettingController extends Controller
     }
     public function configuration()
     {
-        $company_id = auth()->user()->company_id;
+        $company_id = 1; //auth()->user()->company_id;
         // $key = [
         //     'shop_logo',
         //     'pagination_limit',
