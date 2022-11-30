@@ -19,9 +19,16 @@ class Helpers
     }
     public static function currency_code()
     {
-        $company_id = auth()->guard('admin')->user()->company_id;
-        $currency_code = BusinessSetting::where(['company_id' => $company_id])->value('currency');
-        return $currency_code;
+        if(auth()->guard('admin')->user()) {
+            $company_id = auth()->guard('admin')->user()->company_id;
+            $currency_code = BusinessSetting::where(['company_id' => $company_id])->value('currency');
+            return $currency_code;
+        }
+        else {
+            $company_id = auth()->user()->company_id;
+            $currency_code = BusinessSetting::where(['company_id' => $company_id])->value('currency');
+            return $currency_code;
+        }
     }
 
     public static function currency_symbol()

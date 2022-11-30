@@ -40,7 +40,7 @@ class AuthController extends Controller
         $token = $customer->createToken('LaravelPassportClient')->accessToken;
         
         return response()->json(
-            ['message' => 'You are logged in', 'token' => $token, 'user_type' => $request->usertype, 'fname' => $customer->f_name, 'lname' => $customer->l_name, 'phone' => $customer->phone],
+            ['message' => 'You are logged in', 'token' => $token, 'user_id' => $customer->id, 'user_type' => $request->usertype, 'fname' => $customer->f_name, 'lname' => $customer->l_name, 'phone' => $customer->phone],
             200
         );
     }
@@ -66,7 +66,7 @@ class AuthController extends Controller
                 if (Hash::check($request->password, $admin->password)) {
                     $token = $admin->createToken('LaravelPassportClient')->accessToken;
                     return response()->json(
-                        ['message' => 'You are logged in', 'token' => $token, 'user_type' => $request->usertype],
+                        ['message' => 'You are logged in', 'token' => $token, 'user_id' => $admin->id, 'user_type' => $request->usertype],
                         200
                     );
                 } else {
@@ -87,7 +87,7 @@ class AuthController extends Controller
                 if (Hash::check($request->password, $customer->password)) {
                     $token = $customer->createToken('LaravelPassportClient')->accessToken;
                     return response()->json(
-                        ['message' => 'You are logged in', 'token' => $token, 'user_type' => $request->usertype, 'fname' => $customer->f_name, 'lname' => $customer->l_name, 'phone' => $customer->phone],
+                        ['message' => 'You are logged in', 'token' => $token, 'user_id' => $customer->id, 'user_type' => $request->usertype, 'fname' => $customer->f_name, 'lname' => $customer->l_name, 'phone' => $customer->phone],
                         200
                     );
                 } else {

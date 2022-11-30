@@ -51,6 +51,12 @@ return [
             'provider' => 'admins',
             'hash' => false,
         ],
+
+        'customer' => [
+            'driver' => 'passport',
+            'provider' => 'customers',
+            'hash' => false,
+        ],
     ],
 
     /*
@@ -78,6 +84,10 @@ return [
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
+        ],
+        'customers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\CustomerLogin::class,
         ],
 
         // 'users' => [
