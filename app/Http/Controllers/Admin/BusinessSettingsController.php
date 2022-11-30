@@ -37,7 +37,7 @@ class BusinessSettingsController extends Controller
         ]);
 
         DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
-            'shop_addres' => $request['shop_address']
+            'shop_address' => $request['shop_address']
         ]);
 
         DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
