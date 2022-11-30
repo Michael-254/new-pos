@@ -24,52 +24,52 @@ class BusinessSettingsController extends Controller
             return back();
         }
 
-        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update(['key' => 'shop_name'], [
-            'value' => $request['shop_name']
+        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
+            'shop_name' => $request['shop_name']
         ]);
 
-        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update(['key' => 'shop_email'], [
-            'value' => $request['shop_email']
+        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
+            'shop_email' => $request['shop_email']
         ]);
 
-        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update(['key' => 'shop_phone'], [
-            'value' => $request['shop_phone']
+        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
+            'shop_phone' => $request['shop_phone']
         ]);
 
-        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update(['key' => 'shop_address'], [
-            'value' => $request['shop_address']
+        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
+            'shop_addres' => $request['shop_address']
         ]);
 
-        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update(['key' => 'pagination_limit'], [
-            'value' => $request['pagination_limit']
+        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
+            'pagination_limit' => $request['pagination_limit']
         ]);
 
-        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update(['key' => 'stock_limit'], [
-            'value' => $request['stock_limit']
+        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
+            'stock_limit' => $request['stock_limit']
         ]);
 
-        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update(['key' => 'currency'], [
-            'value' => $request['currency']
+        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
+            'currency' => $request['currency']
         ]);
 
-        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update(['key' => 'country'], [
-            'value' => $request['country']
+        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
+            'country' => $request['country']
         ]);
 
-        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update(['key' => 'footer_text'], [
-            'value' => $request['footer_text']
+        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
+            'footer_text' => $request['footer_text']
         ]);
 
         $curr_logo = BusinessSetting::where(['key' => 'shop_logo'])->first();
-        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update(['key' => 'shop_logo'], [
-            'value' => $request->has('shop_logo') ? Helpers::update('shop/', $curr_logo->value, 'png', $request->file('shop_logo')) : $curr_logo->value
+        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
+            'shop_logo' => $request->has('shop_logo') ? Helpers::update('shop/', $curr_logo->value, 'png', $request->file('shop_logo')) : $curr_logo->value
         ]);
 
-        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update(['key' => 'time_zone'], [
-            'value' => $request['time_zone'],
+        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
+            'time_zone' => $request['time_zone'],
         ]);
-        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update(['key' => 'vat_reg_no'], [
-            'value' => $request['vat_reg_no'],
+        DB::table('business_settings')->where('company_id', auth('admin')->user()->company_id)->update([
+            'vat_reg_no' => $request['vat_reg_no'],
         ]);
         Toastr::success(translate('Settings updated'));
         return back();
