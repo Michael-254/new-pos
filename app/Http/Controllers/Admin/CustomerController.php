@@ -97,21 +97,17 @@ class CustomerController extends Controller
         $accounts = Account::orderBy('id')->get();
         $query_param = [];
         $search = $request['search'];
-        if ($request->has('search')) {
-            $key = explode(' ', $request['search']);
-            $customers = Customer::whereHas('member', function ($q) {
-                $q->where('is_loyalty_enrolled', 'Yes');
-            })
-                ->where(function ($q) use ($key) {
-                    foreach ($key as $value) {
-                        $q->orWhere('name', 'like', "%{$value}%")
-                            ->orWhere('mobile', 'like', "%{$value}%");
-                    }
-                });
-            $query_param = ['search' => $request['search']];
-        } else {
-            $customers = new Customer;
-        }
+        
+        $customers = Customer::whereHas('member', function ($q) {
+            $q->where('is_loyalty_enrolled', 'Yes');
+        })
+            ->when($request->has('search'), function ($q) use ($key) {
+                foreach ($key as $value) {
+                    $q->orWhere('name', 'like', "%{$value}%")
+                        ->orWhere('mobile', 'like', "%{$value}%");
+                }
+            });
+        $query_param = ['search' => $request['search'] ?? ''];
         //$walk_customer = $customers->where('type',0)->get();
         $customers = $customers->where('company_id', auth('admin')->user()->company_id)
             ->paginate(Helpers::pagination_limit())->appends($query_param);
