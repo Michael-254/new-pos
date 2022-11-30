@@ -101,7 +101,7 @@ class CustomerController extends Controller
         $customers = Customer::whereHas('member', function ($q) {
             $q->where('is_loyalty_enrolled', 'Yes');
         })
-            ->when($request->has('search'), function ($q) use ($key) {
+            ->when($request['search'] != '', function ($q) use ($key) {
                 foreach ($key as $value) {
                     $q->orWhere('name', 'like', "%{$value}%")
                         ->orWhere('mobile', 'like', "%{$value}%");
