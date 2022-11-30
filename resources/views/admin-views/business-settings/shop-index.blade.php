@@ -351,7 +351,7 @@
                             </div>
                             <div class="col-sm-4 col-lg-4 mb-3 mb-lg-2">
 
-                                @php($stock_limit = $businessSetting->stock_limt)
+                                @php($stock_limit = $businessSetting->stock_limit)
                                 <div class="form-group">
                                     <label class="input-label" for="exampleFormControlInput1">{{ \App\CPU\translate('minimum_stock_limit_for_warning') }}
                                     </label>
