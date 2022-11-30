@@ -22,8 +22,8 @@ class SupplierController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'mobile'=> 'required|unique:suppliers',
-            'email' => 'required|email|unique:suppliers',
+            'mobile' => 'required',
+            'email' => 'required',
             'state' => 'required',
             'city' => 'required',
             'zip_code' => 'required',
@@ -45,6 +45,7 @@ class SupplierController extends Controller
         $supplier->city = $request->city;
         $supplier->zip_code = $request->zip_code;
         $supplier->address = $request->address;
+        $supplier->company_id = auth('admin')->user()->company_id;
 
         $supplier->save();
 
@@ -67,52 +68,51 @@ class SupplierController extends Controller
         } else {
             $suppliers = new Supplier;
         }
-        $suppliers = $suppliers->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
-        return view('admin-views.supplier.list',compact('suppliers','search'));
+        $suppliers = $suppliers->where('company_id', auth('admin')->user()->company_id)
+            ->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
+        return view('admin-views.supplier.list', compact('suppliers', 'search'));
     }
     public function view(Request $request, $id)
     {
         $supplier = Supplier::find($id);
-        return view('admin-views.supplier.view',compact('supplier'));
+        return view('admin-views.supplier.view', compact('supplier'));
     }
     public function product_list(Request $request, $id)
     {
         $supplier = Supplier::find($id);
         $query_param = [];
         $search = $request['search'];
-        $sort_oqrderQty= $request['sort_oqrderQty'];
+        $sort_oqrderQty = $request['sort_oqrderQty'];
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
-            $query = Product::where('supplier_id',$id)->
-                where(function ($q) use ($key) {
-                    foreach ($key as $value) {
-                        $q->orWhere('name', 'like', "%{$value}%")
-                            ->orWhere('product_code', 'like', "%{$value}%");
-                    }
+            $query = Product::where('supplier_id', $id)->where(function ($q) use ($key) {
+                foreach ($key as $value) {
+                    $q->orWhere('name', 'like', "%{$value}%")
+                        ->orWhere('product_code', 'like', "%{$value}%");
+                }
             });
             $query_param = ['search' => $request['search']];
         } else {
-            $query = Product::where('supplier_id',$id)
-                                ->when($request->sort_oqrderQty=='quantity_asc', function($q) use ($request){
-                                    return $q->orderBy('quantity', 'asc');
-                                })
-                                ->when($request->sort_oqrderQty=='quantity_desc', function($q) use ($request){
-                                    return $q->orderBy('quantity', 'desc');
-                                })
-                                ->when($request->sort_oqrderQty=='order_asc', function($q) use ($request){
-                                    return $q->orderBy('order_count', 'asc');
-                                })
-                                ->when($request->sort_oqrderQty=='order_desc', function($q) use ($request){
-                                    return $q->orderBy('order_count', 'desc');
-                                })
-                                ->when($request->sort_oqrderQty=='default', function($q) use ($request){
-                                    return $q->orderBy('id');
-                                });
+            $query = Product::where('supplier_id', $id)
+                ->when($request->sort_oqrderQty == 'quantity_asc', function ($q) use ($request) {
+                    return $q->orderBy('quantity', 'asc');
+                })
+                ->when($request->sort_oqrderQty == 'quantity_desc', function ($q) use ($request) {
+                    return $q->orderBy('quantity', 'desc');
+                })
+                ->when($request->sort_oqrderQty == 'order_asc', function ($q) use ($request) {
+                    return $q->orderBy('order_count', 'asc');
+                })
+                ->when($request->sort_oqrderQty == 'order_desc', function ($q) use ($request) {
+                    return $q->orderBy('order_count', 'desc');
+                })
+                ->when($request->sort_oqrderQty == 'default', function ($q) use ($request) {
+                    return $q->orderBy('id');
+                });
         }
 
-        $products = $query->latest()->paginate(Helpers::pagination_limit())->appends(['search'=>$search,'sort_oqrderQty'=>$request->sort_oqrderQty]);
-        return view('admin-views.supplier.product-list',compact('supplier','products','search','sort_oqrderQty'));
-
+        $products = $query->latest()->paginate(Helpers::pagination_limit())->appends(['search' => $search, 'sort_oqrderQty' => $request->sort_oqrderQty]);
+        return view('admin-views.supplier.product-list', compact('supplier', 'products', 'search', 'sort_oqrderQty'));
     }
     public function transaction_list(Request $request, $id)
     {
@@ -122,20 +122,20 @@ class SupplierController extends Controller
         $from = $request->from;
         $to = $request->to;
 
-            $query = Transaction::where('supplier_id',$id)
-                                ->when($from!=null, function($q) use ($request){
-                                     return $q->whereBetween('date', [$request['from'], $request['to']]);
+        $query = Transaction::where('supplier_id', $id)
+            ->when($from != null, function ($q) use ($request) {
+                return $q->whereBetween('date', [$request['from'], $request['to']]);
             });
 
 
-        $transactions = $query->latest()->paginate(Helpers::pagination_limit())->appends(['from'=>$request['from'],'to'=>$request['to']]);
-        return view ('admin-views.supplier.transaction-list',compact('supplier','accounts','transactions','from','to'));
+        $transactions = $query->latest()->paginate(Helpers::pagination_limit())->appends(['from' => $request['from'], 'to' => $request['to']]);
+        return view('admin-views.supplier.transaction-list', compact('supplier', 'accounts', 'transactions', 'from', 'to'));
     }
     public function add_new_purchase(Request $request)
     {
         $request->validate([
             'supplier_id' => 'required',
-            'purchased_amount'=> 'required',
+            'purchased_amount' => 'required',
             'paid_amount' => 'required',
             'due_amount' => 'required',
             'payment_account_id' => 'required',
@@ -143,13 +143,11 @@ class SupplierController extends Controller
 
         $payment_account = Account::find($request->payment_account_id);
 
-        if($payment_account->balance < $request->paid_amount)
-        {
+        if ($payment_account->balance < $request->paid_amount) {
             Toastr::warning(\App\CPU\translate('you_do_not_have_sufficent_balance'));
             return back();
         }
-        if($request->paid_amount > 0)
-        {
+        if ($request->paid_amount > 0) {
             $payment_transaction = new Transaction;
             $payment_transaction->tran_type = 'Expense';
             $payment_transaction->account_id = $payment_account->id;
@@ -167,8 +165,7 @@ class SupplierController extends Controller
             $payment_account->save();
         }
 
-        if($request->due_amount > 0)
-        {
+        if ($request->due_amount > 0) {
             $payable_account = Account::find(2);
             $payable_transaction = new Transaction;
             $payable_transaction->tran_type = 'Payable';
@@ -193,27 +190,24 @@ class SupplierController extends Controller
 
         Toastr::success(translate('Supplier new payment added successfully'));
         return back();
-
     }
     public function pay_due(Request $request)
     {
         $request->validate([
             'supplier_id' => 'required',
-            'total_due_amount'=> 'required',
+            'total_due_amount' => 'required',
             'pay_amount' => 'required',
             'remaining_due_amount' => 'required',
             'payment_account_id' => 'required',
         ]);
 
         $payment_account = Account::find($request->payment_account_id);
-        if($payment_account->balance < $request->pay_amount)
-        {
+        if ($payment_account->balance < $request->pay_amount) {
             Toastr::warning(\App\CPU\translate('you_do_not_have_sufficent_balance!'));
             return back();
         }
 
-        if($request->pay_amount > 0 )
-        {
+        if ($request->pay_amount > 0) {
             $payment_transaction = new Transaction;
             $payment_transaction->tran_type = 'Expense';
             $payment_transaction->account_id = $payment_account->id;
@@ -262,11 +256,11 @@ class SupplierController extends Controller
     }
     public function update(Request $request)
     {
-        $supplier = Supplier::where('id',$request->id)->first();
+        $supplier = Supplier::where('id', $request->id)->first();
         $request->validate([
             'name' => 'required',
-            'mobile'=> 'required|unique:suppliers,mobile,'.$supplier->id,
-            'email' => 'required|email|unique:suppliers,email,'.$supplier->id,
+            'mobile' => 'required|unique:suppliers,mobile,' . $supplier->id,
+            'email' => 'required|email|unique:suppliers,email,' . $supplier->id,
             'state' => 'required',
             'city' => 'required',
             'zip_code' => 'required',

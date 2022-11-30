@@ -15,7 +15,8 @@ class BusinessSettingsController extends Controller
 {
     public function shop_index()
     {
-        return view('admin-views.business-settings.shop-index');
+        $businessSetting = BusinessSetting::where(['company_id' => auth('admin')->user()->company_id])->first();
+        return view('admin-views.business-settings.shop-index', compact('businessSetting'));
     }
     public function shop_setup(Request $request)
     {

@@ -34,9 +34,10 @@ class CustomerController extends Controller
     public function postStore(Request $request, Customer $customer)
     {
         try {
+            $company_id = auth('admin')->user()->company_id;
             $request->validate([
                 'name' => 'required',
-                'mobile' => 'required|unique:customers',
+                'mobile' => 'required|unique:customers,mobile,NULL,id,company_id,' . $company_id,
             ]);
             if (!empty($request->file('image'))) {
                 $image_name = Helpers::upload('customer/', 'png', $request->file('image'));
@@ -44,21 +45,30 @@ class CustomerController extends Controller
                 $image_name = 'def.png';
             }
 
+<<<<<<< Updated upstream
             $dukapaq_member = CustomerLogin::where('phone', $request->mobile)->first();
 
             if ($dukapaq_member == '') {
                 $dukapaq_member = CustomerLogin::create([
                     'f_name' => $request->name,
                     'phone' => $request->mobile,
+=======
+            $split_name = explode(" ", $request->name);
+            $dukapaq_member = CustomerLogin::FirstOrCreate([
+                ['phone' => $request->mobile],
+                [
+                    'f_name' => $split_name[0],
+                    'l_name' => $split_name[1] ? $split_name[1] : '',
+>>>>>>> Stashed changes
                     'password' => bcrypt(123456),
-                ]);
+                    'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
+                ]
+            ]);
 
-                if ($request->is_loyalty_enrolled == 'Yes') {
-                    $dukapaq_member->update([
-                        'loyalty_points' => 100,
-                        'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
-                    ]);
-                }
+            if ($request->is_loyalty_enrolled == 'Yes') {
+                $dukapaq_member->update([
+                    'loyalty_points' => 100,
+                ]);
             }
 
             $customer = new Customer;
@@ -115,8 +125,18 @@ class CustomerController extends Controller
         $customer = Customer::where('id', $request->id)->first();
         $request->validate([
             'name' => 'required',
-            'mobile' => 'required|unique:customers,mobile,' . $customer->id,
+            'mobile' => 'required',
         ]);
+
+        $dukapaq_member = CustomerLogin::where(['phone' => $request->mobile])->first();
+
+        if ($request->is_loyalty_enrolled == 'Yes' && $dukapaq_member->is_loyalty_enrolled == 'No') {
+            $dukapaq_member->update([
+                'is_loyalty_enrolled' => 'Yes',
+                'loyalty_points' => 100,
+            ]);
+        }
+
         $customer->name = $request->name;
         $customer->mobile = $request->mobile;
         $customer->email = $request->email;

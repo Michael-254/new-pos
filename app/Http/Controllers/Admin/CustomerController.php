@@ -23,9 +23,10 @@ class CustomerController extends Controller
     }
     public function store(Request $request)
     {
+        $company_id = auth('admin')->user()->company_id;
         $request->validate([
             'name' => 'required',
-            'mobile' => 'required|unique:customers',
+            'mobile' => 'required|unique:customers,mobile,NULL,id,company_id,' . $company_id,
         ]);
 
         if (!empty($request->file('image'))) {
@@ -34,20 +35,21 @@ class CustomerController extends Controller
             $image_name = 'def.png';
         }
 
-        $dukapaq_member = CustomerLogin::where('phone', $request->mobile)->first();
-
-        if ($dukapaq_member == '') {
-            $dukapaq_member = CustomerLogin::create([
-                'f_name' => $request->name,
-                'phone' => $request->mobile,
+        $split_name = explode(" ", $request->name);
+        $dukapaq_member = CustomerLogin::FirstOrCreate([
+            ['phone' => $request->mobile],
+            [
+                'f_name' => $split_name[0],
+                'l_name' => $split_name[1] ? $split_name[1] : '',
                 'password' => bcrypt(123456),
+                'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
+            ]
+        ]);
+
+        if ($request->is_loyalty_enrolled == 'Yes') {
+            $dukapaq_member->update([
+                'loyalty_points' => 100,
             ]);
-            if ($request->is_loyalty_enrolled == 'Yes') {
-                $dukapaq_member->update([
-                    'loyalty_points' => 100,
-                    'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
-                ]);
-            }
         }
 
         $customer = new Customer;
@@ -95,20 +97,23 @@ class CustomerController extends Controller
         $accounts = Account::orderBy('id')->get();
         $query_param = [];
         $search = $request['search'];
-        if ($request->has('search')) {
-            $key = explode(' ', $request['search']);
-            $customers = Customer::where(function ($q) use ($key) {
+        
+        $key = explode(' ', $request['search']);
+
+        $customers = Customer::whereHas('member', function ($q) {
+            $q->where('is_loyalty_enrolled', 'Yes');
+        })
+            ->when($request->has('search'), function ($q) use ($key) {
                 foreach ($key as $value) {
                     $q->orWhere('name', 'like', "%{$value}%")
                         ->orWhere('mobile', 'like', "%{$value}%");
                 }
             });
-            $query_param = ['search' => $request['search']];
-        } else {
-            $customers = new Customer;
-        }
+        $query_param = ['search' => $request['search'] ?? ''];
         //$walk_customer = $customers->where('type',0)->get();
-        $customers = $customers->with('member')->where('company_id', auth('admin')->user()->company_id)->paginate(Helpers::pagination_limit())->appends($query_param);
+        $customers = $customers->where('company_id', auth('admin')->user()->company_id)
+            ->paginate(Helpers::pagination_limit())->appends($query_param);
+
         return view('admin-views.customer.list', compact('customers', 'accounts', 'search'));
     }
 
@@ -168,8 +173,17 @@ class CustomerController extends Controller
         $customer = Customer::where('id', $request->id)->first();
         $request->validate([
             'name' => 'required',
-            'mobile' => 'required|unique:customers,mobile,' . $customer->id,
+            'mobile' => 'required',
         ]);
+
+        $dukapaq_member = CustomerLogin::where(['phone' => $request->mobile])->first();
+
+        if ($request->is_loyalty_enrolled == 'Yes' && $dukapaq_member->is_loyalty_enrolled == 'No') {
+            $dukapaq_member->update([
+                'is_loyalty_enrolled' => 'Yes',
+                'loyalty_points' => 100,
+            ]);
+        }
 
         $customer->name = $request->name;
         $customer->mobile = $request->mobile;

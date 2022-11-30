@@ -38,7 +38,7 @@ class AuthController extends Controller
         ]);
 
         $token = $customer->createToken('LaravelPassportClient')->accessToken;
-        
+
         return response()->json(
             ['message' => 'You are logged in', 'token' => $token, 'user_id' => $customer->id, 'user_type' => $request->usertype, 'fname' => $customer->f_name, 'lname' => $customer->l_name, 'phone' => $customer->phone],
             200
@@ -77,10 +77,9 @@ class AuthController extends Controller
                 $response = ["message" => 'Wrong credentials! please input correct email and password'];
                 return response($response, 422);
             }
-        }
-        else {
+        } else {
             //Get authenticated customer
-            $customer = CustomerLogin::where('email', $request->email)->first();
+            $customer = CustomerLogin::where('email', $request->email)->OrWhere('phone', $request->email)->first();
 
             //Check Above Customer
             if ($customer) {
@@ -95,7 +94,7 @@ class AuthController extends Controller
                     return response($response, 422);
                 }
             } else {
-                $response = ["message" => 'Wrong credentials! please input correct email and password'];
+                $response = ["message" => 'Wrong credentials! please input correct email/phone number and password'];
                 return response($response, 422);
             }
         }
