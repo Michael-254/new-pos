@@ -25,7 +25,7 @@ class Helpers
             return $currency_code;
         }
         else {
-            $company_id = auth()->user()->company_id;
+            $company_id = 1;
             $currency_code = BusinessSetting::where(['company_id' => $company_id])->value('currency');
             return $currency_code;
         }

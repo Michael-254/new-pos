@@ -55,22 +55,22 @@ class SettingController extends Controller
     public function configuration()
     {
         $company_id = 1; //auth()->user()->company_id;
-        // $key = [
-        //     'shop_logo',
-        //     'pagination_limit',
-        //     'currency',
-        //     'shop_name',
-        //     'shop_address',
-        //     'shop_phone',
-        //     'shop_email',
-        //     'footer_text',
-        //     'app_minimum_version_ios',
-        //     'country',
-        //     'stock_limit',
-        //     'time_zone',
-        //     'vat_reg_no'
-        // ];
-        $config_key_value_array =  array_column(BusinessSetting::select('shop_logo', 'pagination_limit', 'currency', 'shop_name', 'shop_address', 'shop_phone', 'shop_email', 'footer_text', 'app_minimum_version_ios', 'country', 'stock_limit', 'time_zone', 'vat_reg_no')->where('company_id', $company_id)->get()->toArray(), 'value', 'key');
+        $key =  BusinessSetting::select('shop_logo', 'pagination_limit', 'currency', 'shop_name', 'shop_address', 'shop_phone', 'shop_email', 'footer_text', 'app_minimum_version_ios', 'country', 'stock_limit', 'time_zone', 'vat_reg_no')->where('company_id', $company_id)->first();
+        $config_key_value_array = [
+             'shop_logo' => $key->shop_logo,
+             'pagination_limit' => $key->pagination_limit,
+             'currency' => $key->currency,
+             'shop_name' => $key->shop_name,
+             'shop_address' => $key->shop_address,
+             'shop_phone' => $key->shop_phone,
+             'shop_email' => $key->shop_email,
+             'footer_text' => $key->footer_text,
+             'app_minimum_version_ios' => $key->app_minimum_version_ios,
+             'country' => $key->country,
+             'stock_limit' => $key->stock_limit,
+             'time_zone' => $key->time_zone,
+             'vat_reg_no' => $key->vat_reg_no
+         ];
         return response()->json([
             'business_info' => $config_key_value_array,
             'currency_symbol' => Currency::where(['currency_code' => Helpers::currency_code()])->first()->currency_symbol,
