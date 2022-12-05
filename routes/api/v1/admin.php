@@ -86,6 +86,7 @@ Route::group(['prefix' => 'v1'], function () {
         /********************* Customer Route Starts Here **************************/
         Route::group(['prefix' => 'customer'], function () {
             Route::get('list', [CustomerController::class, 'getIndex']);
+            Route::get('list-of-loyalty-enrolled', [CustomerController::class, 'listWithLoyalty']);
             Route::post('store', [CustomerController::class, 'postStore']);
             Route::get('details', [CustomerController::class, 'getDetails']);
             Route::put('update', [CustomerController::class, 'postUpdate']);
@@ -96,7 +97,6 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('filter', [CustomerController::class, 'dateWiseFilter']);
             Route::get('transaction', [CustomerController::class, 'totalTransaction']);
             Route::get('transaction/filter', [CustomerController::class, 'transactionFilter']);
-
         });
         /********************* Account Route Starts Here **************************/
         Route::group(['prefix' => 'account'], function () {
@@ -127,7 +127,6 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('payment', [SupplierController::class, 'payment']);
             Route::post('new/purchase', [SupplierController::class, 'newPurchase']);
             Route::get('transactions/date/filter', [SupplierController::class, 'transactionsDateFilter']);
-
         });
         /********************* Expense Route Starts Here **************************/
         Route::group(['prefix' => 'transaction'], function () {

@@ -30,6 +30,31 @@ class CustomerController extends Controller
         ];
         return response()->json($data, 200);
     }
+
+    //customers loyalty enrolled
+    public function listWithLoyalty(Request $request)
+    {
+        $limit = $request['limit'] ?? 10;
+        $offset = $request['offset'] ?? 1;
+        $search = $request['search'];
+
+        $key = explode(' ', $request['search']);
+
+        $customers = Customer::whereHas('member', function ($q) {
+            $q->where('is_loyalty_enrolled', 'Yes');
+        })
+            ->withCount('orders')
+            ->where('company_id', auth('admin')->user()->company_id)->orderBy('id', 'asc')
+            ->paginate($limit, ['*'], 'page', $offset);
+
+        $data = [
+            'total' => $customers->total(),
+            'limit' => $limit,
+            'offset' => $offset,
+            'customers' => $customers->items(),
+        ];
+        return response()->json($data, 200);
+    }
     //Save Category
     public function postStore(Request $request, Customer $customer)
     {
