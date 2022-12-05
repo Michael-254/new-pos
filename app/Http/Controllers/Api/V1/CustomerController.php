@@ -45,21 +45,12 @@ class CustomerController extends Controller
                 $image_name = 'def.png';
             }
 
-<<<<<<< Updated upstream
-            $dukapaq_member = CustomerLogin::where('phone', $request->mobile)->first();
-
-            if ($dukapaq_member == '') {
-                $dukapaq_member = CustomerLogin::create([
-                    'f_name' => $request->name,
-                    'phone' => $request->mobile,
-=======
             $split_name = explode(" ", $request->name);
             $dukapaq_member = CustomerLogin::FirstOrCreate([
                 ['phone' => $request->mobile],
                 [
                     'f_name' => $split_name[0],
                     'l_name' => $split_name[1] ? $split_name[1] : '',
->>>>>>> Stashed changes
                     'password' => bcrypt(123456),
                     'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
                 ]

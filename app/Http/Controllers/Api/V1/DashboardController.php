@@ -23,20 +23,26 @@ class DashboardController extends Controller
 
     public function getCustomerLoyaltyPointsSummary()
     {
-        $customer = CustomerLogin::find(auth()->id());
-        $order = $customer->orderDetails()->first();
+        $customer = CustomerLogin::find(1); //CustomerLogin::find(auth()->id());
+        $orders = $customer->orderDetails()->get();
+        $collected_cash = 0;
+		
+        foreach ($orders as $order) {
+            if ($loop->first) {
+                $collected_cash = round($order->order->collected_cash / 10);
+            }
+        }
 
         $loyaltyPointsSummary = [
-            'loyaltyPoints' => $customer->loyalty_points,
-            'recentlyEarned' => round($order->order->collected_cash / 10),
-            'recentlySpent' => 0,
+            'loyaltyPoints' => (float) $customer->loyalty_points,
+            'recentlyEarned' => (float)($collected_cash / 10),
+            'recentlySpent' => (float) 0.0,
             'equivalentCash' => $customer->loyalty_points * 0.01,
         ];
-        return response()->json([
-            'loyaltyPointsSummary' => $loyaltyPointsSummary
-        ], 200);
 
-        return response()->json($data, 200);
+        return response()->json([
+            'loyaltySummary' => $loyaltyPointsSummary
+        ], 200);
     }
 
     public function getCustomerPurchases(Request $request)

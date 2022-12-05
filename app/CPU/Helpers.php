@@ -25,7 +25,7 @@ class Helpers
             return $currency_code;
         }
         else {
-            $company_id = 1;
+            $company_id = 1; //auth()->user()->company_id;
             $currency_code = BusinessSetting::where(['company_id' => $company_id])->value('currency');
             return $currency_code;
         }
@@ -85,16 +85,30 @@ class Helpers
     }
     public static function get_business_settings($name)
     {
-        $company_id = auth()->guard('admin')->user()->company_id;
-        $config = null;
-        $data = BusinessSetting::where(['company_id' => $company_id])->first();
-        if (isset($data)) {
-            $config = json_decode($data->$name, true);
-            if (is_null($config)) {
-                $config = $data->$name;
+        if(auth()->guard('admin')->user()) {
+            $company_id = auth()->guard('admin')->user()->company_id;
+            $config = null;
+            $data = BusinessSetting::where(['company_id' => $company_id])->first();
+            if (isset($data)) {
+                $config = json_decode($data->$name, true);
+                if (is_null($config)) {
+                    $config = $data->$name;
+                }
             }
+            return $config;
         }
-        return $config;
+        else {
+            $company_id = 1; //auth()->user()->company_id;
+            $config = null;
+            $data = BusinessSetting::where(['company_id' => $company_id])->first();
+            if (isset($data)) {
+                $config = json_decode($data->$name, true);
+                if (is_null($config)) {
+                    $config = $data->$name;
+                }
+            }
+            return $config;
+        }
     }
     public static function get_language_name($key)
     {
