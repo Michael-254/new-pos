@@ -97,12 +97,10 @@ class CustomerController extends Controller
         $accounts = Account::orderBy('id')->get();
         $query_param = [];
         $search = $request['search'];
-        
+
         $key = explode(' ', $request['search']);
 
-        $customers = Customer::whereHas('member', function ($q) {
-            $q->where('is_loyalty_enrolled', 'Yes');
-        })
+        $customers = Customer::where('is_loyalty_enrolled', 'Yes')
             ->when($request->has('search'), function ($q) use ($key) {
                 foreach ($key as $value) {
                     $q->orWhere('name', 'like', "%{$value}%")

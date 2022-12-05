@@ -26,7 +26,7 @@ class DashboardController extends Controller
         $customer = CustomerLogin::find(1); //CustomerLogin::find(auth()->id());
         $orders = $customer->orderDetails()->get();
         $collected_cash = 0;
-		
+
         foreach ($orders as $order) {
             if ($loop->first) {
                 $collected_cash = round($order->order->collected_cash / 10);

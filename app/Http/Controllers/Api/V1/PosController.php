@@ -100,6 +100,10 @@ class PosController extends Controller
             $order_id = Order::orderBy('id', 'DESC')->first()->id + 1;
         }
 
+        $customer = Customer::where('id', $user_id)->first();
+
+        $member_details = CustomerLogin::where('phone', $customer->mobile)->first();
+
         $order = new Order();
         $order->id = $order_id;
 
@@ -273,12 +277,9 @@ class PosController extends Controller
             }
             OrderDetail::insert($order_details);
 
-            $customer_mobile = Customer::findOrFail($user_id)->mobile;
-            $customer_details = CustomerLogin::where('phone', $customer_mobile)->first();
-
-            if ($customer_details->is_loyalty_enrolled == 'Yes') {
-                $customer_details->loyalty_points = $customer_details->loyalty_points + ($order->collected_cash / 10);
-                $customer_details->save();
+            if ($member_details->is_loyalty_enrolled == 'Yes') {
+                $member_details->loyalty_points = $member_details->loyalty_points + ($order->collected_cash / 10);
+                $member_details->save();
             }
 
             return response()->json([

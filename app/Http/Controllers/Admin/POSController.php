@@ -450,11 +450,15 @@ class POSController extends Controller
             $order_id = Order::orderBy('id', 'DESC')->first()->id + 1;
         }
 
+        $customer = Customer::where('id', $user_id)->first();
+
+        $member_details = CustomerLogin::where('phone', $customer->mobile)->first();
 
         $order = new Order();
         $order->id = $order_id;
 
         $order->user_id = $user_id;
+        $order->member_id = $member_details->id;
         $order->coupon_code = $cart['coupon_code'] ?? null;
         $order->coupon_discount_title = $cart['coupon_title'] ?? null;
         $order->payment_id = $request->type;
@@ -506,7 +510,6 @@ class POSController extends Controller
             $order->collected_cash = $request->collected_cash ? $request->collected_cash : $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
             $order->save();
 
-            $customer = Customer::where('id', $user_id)->first();
             if ($user_id != 0 && $request->type == 0) {
                 $grand_total = $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
 
@@ -617,12 +620,10 @@ class POSController extends Controller
             }
             OrderDetail::insert($order_details);
 
-            $customer_mobile = Customer::findOrFail($user_id)->mobile;
-            $customer_details = CustomerLogin::where('phone', $customer_mobile)->first();
 
-            if ($customer_details->is_loyalty_enrolled == 'Yes') {
-                $customer_details->loyalty_points = $customer_details->loyalty_points + ($order->collected_cash / 10);
-                $customer_details->save();
+            if ($member_details->is_loyalty_enrolled == 'Yes') {
+                $member_details->loyalty_points = $member_details->loyalty_points + ($order->collected_cash / 10);
+                $member_details->save();
             }
 
             session()->forget($cart_id);

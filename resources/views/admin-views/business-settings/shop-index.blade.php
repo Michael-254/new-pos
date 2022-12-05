@@ -552,11 +552,11 @@
 <script>
     "use strict";
     $(document).on('ready', function() {
-        @php($country = $businessSetting->country)
+        @php($country = $businessSetting - > country)
         $("#country option[value='{{ $country }}']").attr('selected', 'selected').change();
     });
-    @php($time_zone = $businessSetting-> time_zone)
-    @php($time_zone = $time_zone-> value ?? null)
+    @php($time_zone = $businessSetting - > time_zone)
+    @php($time_zone = $time_zone - > value ?? null)
     $('[name=time_zone]').val("{{ $time_zone }}");
 
     function enforceMinMax(el) {
