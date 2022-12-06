@@ -23,6 +23,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('login', [AuthController::class, 'adminLogin']);
     Route::post('register', [AuthController::class, 'customerRegister']);
     Route::get('config', [SettingController::class, 'configuration']);
+    Route::get('dashboard/customer/loyalty-points-summary', [DashboardController::class, 'getCustomerLoyaltyPointsSummary']);
     Route::group(['middleware' => ['auth:admin-api']], function () {
         /**************** Admin Settings Route Starts Here ***********************/
         Route::post('change-password', [AuthController::class, 'passwordChange']);
@@ -30,7 +31,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('profile', [AuthController::class, 'profile']);
         /**************** Dashboard Route Starts Here ***********************/
         Route::group(['prefix' => 'dashboard'], function () {
-            Route::get('customer/loyalty-points-summary', [DashboardController::class, 'getCustomerLoyaltyPointsSummary']);
+            //Route::get('customer/loyalty-points-summary', [DashboardController::class, 'getCustomerLoyaltyPointsSummary']);
             Route::get('customer/purchases', [DashboardController::class, 'getCustomerPurchases']);
 
             Route::get('revenue-summary', [DashboardController::class, 'getIndex']);
