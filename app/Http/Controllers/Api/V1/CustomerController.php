@@ -21,7 +21,7 @@ class CustomerController extends Controller
     {
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
-        $customers = Customer::withCount('orders')->orderBy('id', 'asc')->paginate($limit, ['*'], 'page', $offset);
+        $customers = Customer::withCount('orders')->where('company_id', auth()->user()->company_id)->orderBy('id', 'asc')->paginate($limit, ['*'], 'page', $offset);
         $data = [
             'total' => $customers->total(),
             'limit' => $limit,
@@ -44,7 +44,7 @@ class CustomerController extends Controller
             $q->where('is_loyalty_enrolled', 'Yes');
         })
             ->withCount('orders')
-            ->orderBy('id', 'asc')
+            ->where('company_id', auth()->user()->company_id)->orderBy('id', 'asc')
             ->paginate($limit, ['*'], 'page', $offset);
 
         $data = [
@@ -59,10 +59,10 @@ class CustomerController extends Controller
     public function postStore(Request $request, Customer $customer)
     {
         try {
-            //$company_id = auth()->user()->company_id;
+            $company_id = auth()->user()->company_id;
             $request->validate([
                 'name' => 'required',
-                'mobile' => 'required|unique:customers,mobile',
+                'mobile' => 'required|unique:customers',
             ]);
             if (!empty($request->file('image'))) {
                 $image_name = Helpers::upload('customer/', 'png', $request->file('image'));
@@ -98,6 +98,7 @@ class CustomerController extends Controller
             $customer->zip_code = $request->zip_code;
             $customer->address = $request->address;
             $customer->balance = $request->balance;
+            $customer->company_id = auth()->user()->company_id;
             $customer->save();
 
             return response()->json([
@@ -189,7 +190,7 @@ class CustomerController extends Controller
         $offset = $request['offset'] ?? 1;
         $search = $request->name;
         // if (!empty($search)) {
-        $result = Customer::where('name', 'like', '%' . $search . '%')->orWhere('mobile', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
+        $result = Customer::where('name', 'like', '%' . $search . '%')->orWhere('mobile', 'like', '%' . $search . '%')->where('company_id', auth()->user()->company_id)->latest()->paginate($limit, ['*'], 'page', $offset);
         $data = [
             'total' => $result->total(),
             'limit' => $limit,
