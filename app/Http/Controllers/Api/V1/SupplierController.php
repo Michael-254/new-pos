@@ -18,7 +18,7 @@ class SupplierController extends Controller
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
         $suppliers = Supplier::withCount('products')
-            ->where('company_id', auth('admin')->user()->company_id)
+            ->where('company_id', auth()->user()->company_id)
             ->latest()->paginate($limit, ['*'], 'page', $offset);
         $data =  [
             'total' => $suppliers->total(),
@@ -59,7 +59,7 @@ class SupplierController extends Controller
             $supplier->zip_code = $request->zip_code;
             $supplier->address = $request->address;
             $supplier->due_amount = $request->due_amount;
-            $supplier->company_id = auth('admin')->user()->company_id;
+            $supplier->company_id = auth()->user()->company_id;
             $supplier->save();
             return response()->json([
                 'success' => true,
