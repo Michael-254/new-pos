@@ -439,7 +439,10 @@ class PosController extends Controller
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
         $search = $request->name;
-        $stock_limit = BusinessSetting::where('key', 'stock_limit')->first()->value;
+        //$stock_limit = BusinessSetting::where('key', )->first();
+        $company_id = auth()->user()->company_id;
+        $stock_limit =  BusinessSetting::where('company_id', $company_id)->value('stock_limit');
+
         if (!empty($search)) {
             $result = Product::where('product_code', 'like', '%' . $search . '%')
                 ->orWhere('name', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
