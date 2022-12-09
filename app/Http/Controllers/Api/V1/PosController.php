@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\CPU\Helpers;
 use App\Models\Order;
+use App\Models\OrderReturn;
+use App\Models\PurchaseReturn;
 use App\Models\Account;
 use App\Models\Product;
 use App\Models\Customer;
@@ -52,6 +54,36 @@ class PosController extends Controller
         $offset = $request['offset'] ?? 1;
 
         $orders = Order::with('account')->latest()->paginate($limit, ['*'], 'page', $offset);
+        $data = [
+            'total' => $orders->total(),
+            'limit' => $limit,
+            'offset' => $offset,
+            'orders' => $orders->items(),
+        ];
+        return response()->json($data, 200);
+    }
+
+    public function orderReturnList(Request $request)
+    {
+        $limit = $request['limit'] ?? 10;
+        $offset = $request['offset'] ?? 1;
+
+        $orders = OrderReturn::with('account')->latest()->paginate($limit, ['*'], 'page', $offset);
+        $data = [
+            'total' => $orders->total(),
+            'limit' => $limit,
+            'offset' => $offset,
+            'orders' => $orders->items(),
+        ];
+        return response()->json($data, 200);
+    }
+
+    public function purchaseReturnList(Request $request)
+    {
+        $limit = $request['limit'] ?? 10;
+        $offset = $request['offset'] ?? 1;
+
+        $orders = PurchaseReturn::with('account')->latest()->paginate($limit, ['*'], 'page', $offset);
         $data = [
             'total' => $orders->total(),
             'limit' => $limit,

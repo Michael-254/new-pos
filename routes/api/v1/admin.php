@@ -155,6 +155,10 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('order/search', [PosController::class, 'orderGetSearch']);
             Route::get('customer/orders', [PosController::class, 'customerOrders']);
         });
+        Route::group(['prefix' => 'returns'], function () {
+            Route::get('order-return/list', [PosController::class, 'orderReturnList']);
+            Route::get('purchase-return/list', [PosController::class, 'purchaseReturnList']);
+        });
         Route::group(['prefix' => 'product'], function () {
             Route::get('list', [PosController::class, 'getProductIndex']);
             Route::post('store', [PosController::class, 'storeProduct']);
