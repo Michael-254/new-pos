@@ -187,7 +187,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'merchant'], function () {
             Route::get('list', [RegisteredBusinessController::class, 'getIndex']);
             Route::get('search', [RegisteredBusinessController::class, 'getSearch']);
-            Route::get('merchant/products', [RegisteredBusinessController::class, 'merchantProduct']);
+            Route::get('products', [RegisteredBusinessController::class, 'merchantProduct']);
         });
     });
 });
