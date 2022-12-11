@@ -43,8 +43,8 @@
                                     <label class="input-label">{{\App\CPU\translate('enroll_to_DUKAPAQ_Loyalty')}} <span class="input-label-secondary text-danger">*</span> </label>
                                     <select name="is_loyalty_enrolled" class="form-control" required>
                                         <option value="">-- Select --</option>
-                                        <option value="Yes" {{ $customer->is_loyalty_enrolled == 'Yes'  ? 'selected' : '' }}>Yes</option>
-                                        <option value="No" {{ $customer->is_loyalty_enrolled == 'No'  ? 'selected' : '' }}>No</option>
+                                        <option value="Yes" {{ $customer->member->is_loyalty_enrolled == 'Yes'  ? 'selected' : '' }}>Yes</option>
+                                        <option value="No" {{ $customer->member->is_loyalty_enrolled == 'No'  ? 'selected' : '' }}>No</option>
                                     </select>
                                 </div>
                             </div>
