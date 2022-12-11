@@ -129,6 +129,11 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('new/purchase', [SupplierController::class, 'newPurchase']);
             Route::get('transactions/date/filter', [SupplierController::class, 'transactionsDateFilter']);
         });
+        /********************* Merchant Route Starts Here **************************/
+        Route::group(['prefix' => 'merchant'], function () {
+            Route::get('list', [SupplierController::class, 'getIndex']);
+            Route::get('search', [SupplierController::class, 'getSearch']);
+        });
         /********************* Expense Route Starts Here **************************/
         Route::group(['prefix' => 'transaction'], function () {
             Route::get('list', [TransactionController::class, 'getIndex']);
