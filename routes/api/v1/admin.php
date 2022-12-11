@@ -174,6 +174,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('sort', [ProductController::class, 'productSort']);
             Route::get('popular/filter', [ProductController::class, 'propularProductSort']);
             Route::get('supplier/wise', [ProductController::class, 'supplierWiseProduct']);
+            Route::get('merchant/wise', [ProductController::class, 'merchantWiseProduct']);
         });
     });
 });
