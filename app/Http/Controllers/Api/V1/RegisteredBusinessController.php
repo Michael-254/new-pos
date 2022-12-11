@@ -33,7 +33,7 @@ class RegisteredBusinessController extends Controller
         $search = $request->name;
         // if (!empty($search)) {
         $result = BusinessSetting::select('shop_name', 'shop_address', 'shop_phone', 'shop_email')
-            ->where('name', 'like', '%' . $search . '%')->orWhere('mobile', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
+            ->where('shop_name', 'like', '%' . $search . '%')->orWhere('shop_phone', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
         $data = [
             'total' => $result->total(),
             'limit' => $limit,
