@@ -109,6 +109,7 @@ class IncomeController extends Controller
         $transaction = new Transaction();
         $transaction->tran_type = 'Income';
         $transaction->account_id = $request->account_id;
+        $transaction->company_id = auth()->user()->id;
         $transaction->amount = $request->amount;
         $transaction->description = $request->description;
         $transaction->debit = 0;

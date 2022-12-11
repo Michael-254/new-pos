@@ -19,9 +19,9 @@ class CategoryController extends Controller
         $query_param = [];
         $search = $request['search'];
 
-        if($request->has('search')) {
+        if ($request->has('search')) {
             $key = explode(' ', $request['search']);
-            $categories=$categories->where(function ($q) use ($key) {
+            $categories = $categories->where(function ($q) use ($key) {
                 foreach ($key as $value) {
                     $q->orWhere('name', 'like', "%{$value}%");
                 }
@@ -29,8 +29,8 @@ class CategoryController extends Controller
             $query_param = ['search' => $request['search']];
         }
 
-        $categories = $categories->where(['position'=>0])->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
-        return view('admin-views.category.index',compact('categories', 'search'));
+        $categories = $categories->where(['position' => 0])->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
+        return view('admin-views.category.index', compact('categories', 'search'));
     }
     public function sub_index(Request $request)
     {
@@ -38,9 +38,9 @@ class CategoryController extends Controller
         $query_param = [];
         $search = $request['search'];
 
-        if($request->has('search')) {
+        if ($request->has('search')) {
             $key = explode(' ', $request['search']);
-            $categories=Category::where(function ($q) use ($key) {
+            $categories = Category::where(function ($q) use ($key) {
                 foreach ($key as $value) {
                     $q->orWhere('name', 'like', "%{$value}%");
                 }
@@ -48,8 +48,8 @@ class CategoryController extends Controller
             $query_param = ['search' => $request['search']];
         }
 
-        $categories = $categories->with(['parent'])->where(['position'=>1])->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
-        return view('admin-views.category.sub-index',compact('categories', 'search'));
+        $categories = $categories->with(['parent'])->where(['position' => 1])->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
+        return view('admin-views.category.sub-index', compact('categories', 'search'));
     }
     public function store(Request $request)
     {
@@ -125,11 +125,11 @@ class CategoryController extends Controller
     {
         $category = category::find($request->id);
 
-        if ($category->childes->count()==0){
+        if ($category->childes->count() == 0) {
             Helpers::delete('category/' . $category['image']);
             $category->delete();
             Toastr::success(translate('Category removed'));
-        }else{
+        } else {
             Toastr::warning(translate('Remove subcategories first'));
         }
         return back();

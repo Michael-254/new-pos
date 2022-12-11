@@ -35,10 +35,6 @@ class SupplierController extends Controller
             'name' => 'required',
             'mobile' => 'required',
             'email' => 'required',
-            'state' => 'required',
-            'city' => 'required',
-            'zip_code' => 'required',
-            'address' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => Helpers::error_processor($validator)], 403);
@@ -52,12 +48,9 @@ class SupplierController extends Controller
         try {
             $supplier->name = $request->name;
             $supplier->mobile = $request->mobile;
+            $supplier->company_id = auth()->user()->id;
             $supplier->email = $request->email;
             $supplier->image = $image_name;
-            $supplier->state = $request->state;
-            $supplier->city = $request->city;
-            $supplier->zip_code = $request->zip_code;
-            $supplier->address = $request->address;
             $supplier->due_amount = $request->due_amount;
             $supplier->company_id = auth()->user()->company_id;
             $supplier->save();
@@ -97,19 +90,11 @@ class SupplierController extends Controller
                 'name' => 'required',
                 'mobile' => 'required',
                 'email' => 'required',
-                'state' => 'required',
-                'city' => 'required',
-                'zip_code' => 'required',
-                'address' => 'required',
             ]);
             $supplier->name = $request->name;
             $supplier->mobile = $request->mobile;
             $supplier->email = $request->email;
             $supplier->image = $request->has('image') ? Helpers::update('supplier/', $supplier->image, 'png', $request->file('image')) : $supplier->image;
-            $supplier->state = $request->state;
-            $supplier->city = $request->city;
-            $supplier->zip_code = $request->zip_code;
-            $supplier->address = $request->address;
             $supplier->save();
             return response()->json([
                 'success' => true,

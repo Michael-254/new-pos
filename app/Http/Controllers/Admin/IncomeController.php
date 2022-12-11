@@ -14,35 +14,32 @@ class IncomeController extends Controller
 {
     public function add(Request $request)
     {
-        $accounts = Account::orderBy('id','desc')->get();
+        $accounts = Account::orderBy('id', 'desc')->get();
         $search = $request['search'];
         $from = $request->from;
         $to = $request->to;
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
-            $query = Transaction::where('tran_type','Income')->
-                    where(function ($q) use ($key) {
-                        foreach ($key as $value) {
-                            $q->orWhere('description', 'like', "%{$value}%");
-                        }
+            $query = Transaction::where('tran_type', 'Income')->where(function ($q) use ($key) {
+                    foreach ($key as $value) {
+                        $q->orWhere('description', 'like', "%{$value}%");
+                    }
                 });
             $query_param = ['search' => $request['search']];
-        }else
-         {
-            $query = Transaction::where('tran_type','Income')
-                                ->when($from!=null, function($q) use ($request){
-                                     return $q->whereBetween('date', [$request['from'], $request['to']]);
-            });
-
-         }
-        $incomes = $query->latest()->paginate(Helpers::pagination_limit())->appends(['search' => $request['search'],'from'=>$request['from'],'to'=>$request['to']]);
-        return view('admin-views.income.add',compact('accounts','incomes','search','from','to'));
+        } else {
+            $query = Transaction::where('tran_type', 'Income')
+                ->when($from != null, function ($q) use ($request) {
+                    return $q->whereBetween('date', [$request['from'], $request['to']]);
+                });
+        }
+        $incomes = $query->latest()->paginate(Helpers::pagination_limit())->appends(['search' => $request['search'], 'from' => $request['from'], 'to' => $request['to']]);
+        return view('admin-views.income.add', compact('accounts', 'incomes', 'search', 'from', 'to'));
     }
     public function store(Request $request)
     {
         $request->validate([
             'account_id' => 'required',
-            'description'=> 'required',
+            'description' => 'required',
             'amount' => 'required|min:1',
         ]);
 

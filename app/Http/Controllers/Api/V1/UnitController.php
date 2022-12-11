@@ -41,6 +41,7 @@ class UnitController extends Controller
     {
         try {
             $unit->unit_type = $request->unit_type;
+            $unit->company_id = auth()->user()->id;
             $unit->save();
             return response()->json([
                 'success' => true,

@@ -62,7 +62,11 @@ class CustomerController extends Controller
             $company_id = auth()->user()->company_id;
             $request->validate([
                 'name' => 'required',
+<<<<<<< Updated upstream
                 'mobile' => 'required|unique:customers',
+=======
+                'mobile' => 'required',
+>>>>>>> Stashed changes
             ]);
             if (!empty($request->file('image'))) {
                 $image_name = Helpers::upload('customer/', 'png', $request->file('image'));
@@ -71,15 +75,21 @@ class CustomerController extends Controller
             }
 
             $split_name = explode(" ", $request->name);
-            $dukapaq_member = CustomerLogin::FirstOrCreate([
-                ['phone' => $request->mobile],
-                [
-                    'f_name' => $split_name[0],
-                    'l_name' => $split_name[1] ? $split_name[1] : '',
-                    'password' => bcrypt(123456),
-                    'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
-                ]
-            ]);
+            $dukapaq_member = CustomerLogin::where(['phone' => $request->mobile])->first();
+
+            if (!$dukapaq_member) {
+                $dukapaq_member = CustomerLogin::Create(
+                    [
+                        'phone' => $request->mobile,
+                        'email' => $request->email ?? '',
+                        'f_name' => (string)$split_name[0],
+                        'l_name' => $split_name[1] ? (string)$split_name[1] : '',
+                        'password' => bcrypt(123456),
+                        'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
+                    ]
+                );
+            }
+
 
             if ($request->is_loyalty_enrolled == 'Yes') {
                 $dukapaq_member->update([
@@ -93,10 +103,6 @@ class CustomerController extends Controller
             $customer->mobile = $request->mobile;
             $customer->email = $request->email;
             $customer->image = $image_name;
-            $customer->state = $request->state;
-            $customer->city = $request->city;
-            $customer->zip_code = $request->zip_code;
-            $customer->address = $request->address;
             $customer->balance = $request->balance;
             $customer->company_id = auth()->user()->company_id;
             $customer->save();
@@ -157,10 +163,6 @@ class CustomerController extends Controller
         $customer->mobile = $request->mobile;
         $customer->email = $request->email;
         $customer->image = $request->has('image') ? Helpers::update('customer/', $customer->image, 'png', $request->file('image')) : $customer->image;
-        $customer->state = $request->state;
-        $customer->city = $request->city;
-        $customer->zip_code = $request->zip_code;
-        $customer->address = $request->address;
         $customer->balance = $request->balance;
         $customer->update();
         return response()->json([

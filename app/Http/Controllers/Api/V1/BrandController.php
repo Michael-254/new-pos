@@ -47,6 +47,7 @@ class BrandController extends Controller
             }
             $brand = new Brand();
             $brand->name = $request->name;
+            $brand->company_id = auth()->user()->id;
             $brand->image = $image_name;
             $brand->save();
             return response()->json([
@@ -142,5 +143,4 @@ class BrandController extends Controller
             'message' => 'Status updated successfully',
         ], 200);
     }
-
 }

@@ -16,6 +16,7 @@ class CreatePurchaseReturnsTable extends Migration
         Schema::create('purchase_returns', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->bigInteger('company_id')->nullable();
             $table->double('order_amount')->default(0);
             $table->double('total_tax');
             $table->double('collected_cash')->nullable();

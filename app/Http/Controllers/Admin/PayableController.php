@@ -20,29 +20,26 @@ class PayableController extends Controller
         $to = $request->to;
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
-            $query = Transaction::where('tran_type','Payable')->
-                    where(function ($q) use ($key) {
-                        foreach ($key as $value) {
-                            $q->orWhere('description', 'like', "%{$value}%");
-                        }
+            $query = Transaction::where('tran_type', 'Payable')->where(function ($q) use ($key) {
+                    foreach ($key as $value) {
+                        $q->orWhere('description', 'like', "%{$value}%");
+                    }
                 });
             $query_param = ['search' => $request['search']];
-        }else
-         {
-            $query = Transaction::where('tran_type','Payable')
-                                ->when($from!=null, function($q) use ($request){
-                                     return $q->whereBetween('date', [$request['from'], $request['to']]);
-            });
-
-         }
+        } else {
+            $query = Transaction::where('tran_type', 'Payable')
+                ->when($from != null, function ($q) use ($request) {
+                    return $q->whereBetween('date', [$request['from'], $request['to']]);
+                });
+        }
         $payables = $query->latest()->paginate(Helpers::pagination_limit());
-        return view('admin-views.account-payable.add',compact('accounts','payables','search','from','to'));
+        return view('admin-views.account-payable.add', compact('accounts', 'payables', 'search', 'from', 'to'));
     }
     public function store(Request $request)
     {
         $request->validate([
             'account_id' => 'required',
-            'description'=> 'required',
+            'description' => 'required',
             'amount' => 'required',
         ]);
 
@@ -69,15 +66,14 @@ class PayableController extends Controller
     {
         $payment_account = Account::find($request->payment_account_id);
         $remain_balance = $payment_account->balance - $request->amount;
-        if($remain_balance < 0)
-        {
+        if ($remain_balance < 0) {
             Toastr::warning(translate('Your payment account has not sufficent balance for this transaction'));
             return back();
         }
         $payable_account = Account::find($request->account_id);
         $payable_transaction = Transaction::find($request->transaction_id);
         $balance = $payable_transaction->amount - $request->amount;
-        if($balance < 0){
+        if ($balance < 0) {
             Toastr::warning(translate('You have not sufficient balance for this transaction'));
             return back();
         }

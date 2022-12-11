@@ -26,7 +26,7 @@ class CustomerController extends Controller
         $company_id = auth('admin')->user()->company_id;
         $request->validate([
             'name' => 'required',
-            'mobile' => 'required|unique:customers,mobile,NULL,id,company_id,' . $company_id,
+            'mobile' => 'required',
         ]);
 
         if (!empty($request->file('image'))) {
@@ -36,15 +36,19 @@ class CustomerController extends Controller
         }
 
         $split_name = explode(" ", $request->name);
-        $dukapaq_member = CustomerLogin::FirstOrCreate([
-            ['phone' => $request->mobile],
-            [
+        $dukapaq_member = CustomerLogin::where(['phone' => $request->mobile])->first();
+
+        if (!$dukapaq_member) {
+            $dukapaq_member = CustomerLogin::Create([
+                'phone' => $request->mobile,
+                'email' => $request->email ?? '',
                 'f_name' => $split_name[0],
                 'l_name' => $split_name[1] ? $split_name[1] : '',
                 'password' => bcrypt(123456),
                 'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
-            ]
-        ]);
+            ]);
+        }
+
 
         if ($request->is_loyalty_enrolled == 'Yes') {
             $dukapaq_member->update([
@@ -58,10 +62,6 @@ class CustomerController extends Controller
         $customer->mobile = $request->mobile;
         $customer->email = $request->email;
         $customer->image = $image_name;
-        $customer->state = $request->state;
-        $customer->city = $request->city;
-        $customer->zip_code = $request->zip_code;
-        $customer->address = $request->address;
         $customer->balance = $request->balance;
         $customer->company_id = auth('admin')->user()->company_id;
         $customer->save();
@@ -120,6 +120,9 @@ class CustomerController extends Controller
     public function view(Request $request, $id)
     {
         $customer = Customer::where('id', $id)->first();
+
+        $this->authorize('viewAny', $customer);
+
         if (isset($customer)) {
             $query_param = [];
             $search = $request['search'];

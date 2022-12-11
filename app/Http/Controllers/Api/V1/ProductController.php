@@ -155,7 +155,7 @@ class ProductController extends Controller
     {
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
-        $stock_limit = BusinessSetting::where('key', 'stock_limit')->first()->value;
+        $stock_limit = BusinessSetting::where('company_id', auth()->user()->company_id)->first()->value('stock_limit');
 
         $category_wise_product = Product::with('supplier')->active()
             ->when($request->has('category_id') && $request['category_id'] != 0, function ($query) use ($request) {

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\StockLimitedProductsResource;
 use App\Models\CustomerLogin;
+use App\Models\Order;
 
 class DashboardController extends Controller
 {
@@ -28,7 +29,7 @@ class DashboardController extends Controller
         $collected_cash = 0;
 
         foreach ($orders as $order) {
-            if ($loop->first) {
+            if ($orders->last()) {
                 $collected_cash = round($order->order->collected_cash / 10);
             }
         }
@@ -47,14 +48,17 @@ class DashboardController extends Controller
 
     public function getCustomerPurchases(Request $request)
     {
-        $customer = CustomerLogin::find(auth()->id());
+        $limit = $request['limit'] ?? 10;
+        $offset = $request['offset'] ?? 1;
 
-        $orders = $customer->orderDetails()->paginate(10);
-
-        return response()->json([
-            'total' => $orders->count(),
-            'orders' => $orders,
-        ], 200);
+        $orders = Order::with('account')->where('member_id', auth()->id())->latest()->paginate($limit, ['*'], 'page', $offset);
+        $data = [
+            'total' => $orders->total(),
+            'limit' => $limit,
+            'offset' => $offset,
+            'orders' => $orders->items(),
+        ];
+        return response()->json($data, 200);
     }
 
     public function getIndex(Request $request)

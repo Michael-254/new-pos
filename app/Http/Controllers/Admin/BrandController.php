@@ -21,7 +21,7 @@ class BrandController extends Controller
 
         $request->validate([
             'name' => 'required',
-            'image'=>'required'
+            'image' => 'required'
         ], [
             'name.required' => translate('Name is required'),
         ]);
@@ -42,7 +42,7 @@ class BrandController extends Controller
     public function edit($id)
     {
         $brand = Brand::find($id);
-        return view('admin-views.brand.edit',compact('brand'));
+        return view('admin-views.brand.edit', compact('brand'));
     }
     public function update(Request $request, $id)
     {

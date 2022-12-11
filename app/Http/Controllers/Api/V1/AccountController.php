@@ -51,6 +51,7 @@ class AccountController extends Controller
         try {
             $account->account = $request->account;
             $account->description = $request->description;
+            $account->company_id = auth()->user()->id;
             $account->balance = $request->balance;
             $account->account_number = $request->account_number;
             $account->save();
@@ -74,7 +75,7 @@ class AccountController extends Controller
      */
     public function accountUpdate(Request $request)
     {
-        
+
         $acc = Account::findOrFail($request->id);
         $request->validate([
             'account' => 'required|unique:accounts,account,' . $acc->id,

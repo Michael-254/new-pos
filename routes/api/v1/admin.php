@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\V1\SupplierController;
 use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\SubCategoryController;
 use App\Http\Controllers\Api\V1\TransactionController;
+use App\Http\Controllers\Api\V1\RegisteredBusinessController;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::post('login', [AuthController::class, 'adminLogin']);
@@ -180,6 +181,11 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('popular/filter', [ProductController::class, 'propularProductSort']);
             Route::get('supplier/wise', [ProductController::class, 'supplierWiseProduct']);
             Route::get('merchant/wise', [ProductController::class, 'merchantWiseProduct']);
+        });
+
+        /**************** Merchant list Route Starts Here ******************************/
+        Route::group(['prefix' => 'merchant'], function () {
+            Route::get('list', [RegisteredBusinessController::class, 'getIndex']);
         });
     });
 });

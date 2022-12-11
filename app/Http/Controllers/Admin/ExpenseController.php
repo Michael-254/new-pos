@@ -14,48 +14,44 @@ class ExpenseController extends Controller
 {
     public function add(Request $request)
     {
-        $accounts = Account::orderBy('id','desc')->get();
+        $accounts = Account::orderBy('id', 'desc')->get();
         $search = $request['search'];
         $from = $request->from;
         $to = $request->to;
 
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
-            $query = Transaction::where('tran_type','Expense')->
-                    where(function ($q) use ($key) {
-                        foreach ($key as $value) {
-                            $q->orWhere('description', 'like', "%{$value}%");
-                        }
+            $query = Transaction::where('tran_type', 'Expense')->where(function ($q) use ($key) {
+                    foreach ($key as $value) {
+                        $q->orWhere('description', 'like', "%{$value}%");
+                    }
                 });
             $query_param = ['search' => $request['search']];
-         }else
-         {
-            $query = Transaction::where('tran_type','Expense')
-                                ->when($from!=null, function($q) use ($request){
-                                     return $q->whereBetween('date', [$request['from'], $request['to']]);
-            });
-
-         }
-        $expenses = $query->orderBy('id','desc')->paginate(Helpers::pagination_limit())->appends(['search' => $request['search'],'from'=>$request['from'],'to'=>$request['to']]);
-        return view('admin-views.expense.add',compact('accounts','expenses','search','from','to'));
+        } else {
+            $query = Transaction::where('tran_type', 'Expense')
+                ->when($from != null, function ($q) use ($request) {
+                    return $q->whereBetween('date', [$request['from'], $request['to']]);
+                });
+        }
+        $expenses = $query->orderBy('id', 'desc')->paginate(Helpers::pagination_limit())->appends(['search' => $request['search'], 'from' => $request['from'], 'to' => $request['to']]);
+        return view('admin-views.expense.add', compact('accounts', 'expenses', 'search', 'from', 'to'));
     }
     public function store(Request $request)
     {
         $request->validate([
             'account_id' => 'required',
-            'description'=> 'required',
+            'description' => 'required',
             'amount' => 'required|min:1',
         ]);
 
         $account = Account::find($request->account_id);
-        if($account->balance < $request->amount)
-        {
+        if ($account->balance < $request->amount) {
             Toastr::warning(\App\CPU\translate('you_do_not_have_sufficent_balance'));
             return back();
         }
         $transaction = new Transaction;
         $transaction->tran_type = 'Expense';
-        $transaction->account_id= $request->account_id;
+        $transaction->account_id = $request->account_id;
         $transaction->amount = $request->amount;
         $transaction->description = $request->description;
         $transaction->debit = 1;

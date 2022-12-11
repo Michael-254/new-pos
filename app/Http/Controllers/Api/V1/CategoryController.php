@@ -74,6 +74,7 @@ class CategoryController extends Controller
 
         $category = Category::findOrFail($request->id);
         $category->name = $request->name;
+        $category->company_id = auth()->user()->id;
         $category->image = $request->has('image') ? Helpers::update('category/', $category->image, 'png', $request->file('image')) : $category->image;
         $category->update();
         return response()->json([

@@ -6,6 +6,7 @@ use App\Models\Unit;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Supplier;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -24,7 +25,7 @@ class Product extends Model
 
     public function supplier()
     {
-        return $this->belongsTo(Supplier::class,'supplier_id');
+        return $this->belongsTo(Supplier::class, 'supplier_id');
     }
     public function category()
     {
@@ -45,6 +46,25 @@ class Product extends Model
             });
         } else {
             return $query->where('category_ids', "no_active");
+        }
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        if (auth('admin')->user()) {
+            static::addGlobalScope('company_id', function (Builder $builder) { // before return customer method call this
+                $builder->where('company_id', auth('admin')->user()->company_id);
+            });
+        } elseif (auth()->user()) {
+            static::addGlobalScope('company_id', function (Builder $builder) { // before return customer method call this
+                $builder->where('company_id', auth()->user()->company_id);
+            });
+        } else {
+            static::addGlobalScope('company_id', function (Builder $builder) { // before return customer method call this
+                $builder->where('company_id', 1);
+            });
         }
     }
 }

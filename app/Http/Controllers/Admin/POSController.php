@@ -696,11 +696,24 @@ class POSController extends Controller
         return view('admin-views.pos.order.list', compact('orders', 'search'));
     }
 
+    public function order_details($id)
+    {
+        $order = Order::find($id);
+        $order->load('details');
+
+        return response()->json([
+            'success' => 1,
+            'type' => 'detail',
+            'view' => view('admin-views.pos.order.details', compact('order'))->render(),
+        ]);
+    }
+
     public function generate_invoice($id)
     {
         $order = Order::where('id', $id)->first();
         return response()->json([
             'success' => 1,
+            'type' => 'print',
             'view' => view('admin-views.pos.order.invoice', compact('order'))->render(),
         ]);
     }

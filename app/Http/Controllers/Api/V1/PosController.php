@@ -471,10 +471,14 @@ class PosController extends Controller
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
         $search = $request->name;
+<<<<<<< Updated upstream
         //$stock_limit = BusinessSetting::where('key', )->first();
         $company_id = auth()->user()->company_id;
         $stock_limit =  BusinessSetting::where('company_id', $company_id)->value('stock_limit');
 
+=======
+        //$stock_limit = BusinessSetting::where('key', 'stock_limit')->first()->value;
+>>>>>>> Stashed changes
         if (!empty($search)) {
             $result = Product::where('product_code', 'like', '%' . $search . '%')
                 ->orWhere('name', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
@@ -549,9 +553,7 @@ class PosController extends Controller
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
 
-        $customer = CustomerLogin::find($request->customer_id); //CustomerLogin::find(auth()->id());
-        $orders = $customer->orderDetails()->latest()->paginate($limit, ['*'], 'page', $offset);
-        //$orders = Order::with('account')->where('user_id', $request->customer_id)->latest()->paginate($limit, ['*'], 'page', $offset);
+        $orders = Order::with('account')->where('member_id', auth()->id())->latest()->paginate($limit, ['*'], 'page', $offset);
         $data = [
             'total' => $orders->total(),
             'limit' => $limit,

@@ -31,22 +31,25 @@ class SettingController extends Controller
             'vat_reg_no' => $request['vat_reg_no'],
         ]);
 
-        DB::table('mpesa_credentials')->updateOrInsert(['company_id' => $company_id], [
-            'consumer_key' => $request['consumer_key'],
-            'consumer_secret' => $request['consumer_secret'],
-            'test_consumer_key' => $request['test_consumer_key'],
-            'test_consumer_secret' => $request['test_consumer_secret'],
-            'environment' => $request['environment'],
-            'shortcode' => $request['shortcode'],
-            'security_credential' => $request['security_credential'],
-            'lipa_na_mpesa_passkey' => $request['lipa_na_mpesa_passkey'],
-        ]);
+        if ($request['consumer_key'] != '') {
+            DB::table('mpesa_credentials')->updateOrInsert(['company_id' => $company_id], [
+                'consumer_key' => $request['consumer_key'],
+                'consumer_secret' => $request['consumer_secret'],
+                'test_consumer_key' => $request['test_consumer_key'],
+                'test_consumer_secret' => $request['test_consumer_secret'],
+                'environment' => $request['environment'],
+                'shortcode' => $request['shortcode'],
+                'security_credential' => $request['security_credential'],
+                'lipa_na_mpesa_passkey' => $request['lipa_na_mpesa_passkey'],
+            ]);
+        }
+
 
         if ($request->pagination_limit == 0) {
             Toastr::warning(translate('pagination_limit_is_required'));
             return back();
         }
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Shop updated succefully',
@@ -57,20 +60,20 @@ class SettingController extends Controller
         $company_id = 1; //auth()->user()->company_id;
         $key =  BusinessSetting::select('shop_logo', 'pagination_limit', 'currency', 'shop_name', 'shop_address', 'shop_phone', 'shop_email', 'footer_text', 'app_minimum_version_ios', 'country', 'stock_limit', 'time_zone', 'vat_reg_no')->where('company_id', $company_id)->first();
         $config_key_value_array = [
-             'shop_logo' => $key->shop_logo,
-             'pagination_limit' => $key->pagination_limit,
-             'currency' => $key->currency,
-             'shop_name' => $key->shop_name,
-             'shop_address' => $key->shop_address,
-             'shop_phone' => $key->shop_phone,
-             'shop_email' => $key->shop_email,
-             'footer_text' => $key->footer_text,
-             'app_minimum_version_ios' => $key->app_minimum_version_ios,
-             'country' => $key->country,
-             'stock_limit' => $key->stock_limit,
-             'time_zone' => $key->time_zone,
-             'vat_reg_no' => $key->vat_reg_no
-         ];
+            'shop_logo' => $key->shop_logo,
+            'pagination_limit' => $key->pagination_limit,
+            'currency' => $key->currency,
+            'shop_name' => $key->shop_name,
+            'shop_address' => $key->shop_address,
+            'shop_phone' => $key->shop_phone,
+            'shop_email' => $key->shop_email,
+            'footer_text' => $key->footer_text,
+            'app_minimum_version_ios' => $key->app_minimum_version_ios,
+            'country' => $key->country,
+            'stock_limit' => $key->stock_limit,
+            'time_zone' => $key->time_zone,
+            'vat_reg_no' => $key->vat_reg_no
+        ];
         return response()->json([
             'business_info' => $config_key_value_array,
             'currency_symbol' => Currency::where(['currency_code' => Helpers::currency_code()])->first()->currency_symbol,

@@ -25,7 +25,7 @@ class CouponController extends Controller
                 }
             });
             $query_param = ['search' => $request['search']];
-        }else{
+        } else {
             $coupons = new Coupon();
         }
 
@@ -37,7 +37,7 @@ class CouponController extends Controller
         //return $request->all();
         $request->validate([
             'title' => 'required',
-            'coupon_type'=>'required',
+            'coupon_type' => 'required',
             'code' => 'required|unique:coupons',
             'start_date' => 'required',
             'expire_date' => 'required',
@@ -47,7 +47,7 @@ class CouponController extends Controller
         DB::table('coupons')->insert([
             'title' => $request->title,
             'code' => $request->code,
-            'user_limit' => $request->coupon_type !='default'? 1 : $request->user_limit,
+            'user_limit' => $request->coupon_type != 'default' ? 1 : $request->user_limit,
             'coupon_type' => $request->coupon_type,
             'start_date' => $request->start_date,
             'expire_date' => $request->expire_date,
@@ -82,8 +82,8 @@ class CouponController extends Controller
         $coupon = Coupon::find($id);
         $request->validate([
             'title' => 'required',
-            'coupon_type'=>'required',
-            'code' => 'required|unique:coupons,code,'.$coupon->id,
+            'coupon_type' => 'required',
+            'code' => 'required|unique:coupons,code,' . $coupon->id,
             'start_date' => 'required',
             'expire_date' => 'required',
             'discount' => 'required'
@@ -92,7 +92,7 @@ class CouponController extends Controller
         DB::table('coupons')->where(['id' => $id])->update([
             'title' => $request->title,
             'code' => $request->code,
-            'user_limit' => $request->coupon_type !='default'? 1 : $request->user_limit,
+            'user_limit' => $request->coupon_type != 'default' ? 1 : $request->user_limit,
             'coupon_type' => $request->coupon_type,
             'start_date' => $request->start_date,
             'expire_date' => $request->expire_date,

@@ -23,11 +23,6 @@ class SupplierController extends Controller
         $request->validate([
             'name' => 'required',
             'mobile' => 'required',
-            'email' => 'required',
-            'state' => 'required',
-            'city' => 'required',
-            'zip_code' => 'required',
-            'address' => 'required',
         ]);
 
         if (!empty($request->file('image'))) {
@@ -41,10 +36,6 @@ class SupplierController extends Controller
         $supplier->mobile = $request->mobile;
         $supplier->email = $request->email;
         $supplier->image = $image_name;
-        $supplier->state = $request->state;
-        $supplier->city = $request->city;
-        $supplier->zip_code = $request->zip_code;
-        $supplier->address = $request->address;
         $supplier->company_id = auth('admin')->user()->company_id;
 
         $supplier->save();
@@ -260,21 +251,13 @@ class SupplierController extends Controller
         $request->validate([
             'name' => 'required',
             'mobile' => 'required|unique:suppliers,mobile,' . $supplier->id,
-            'email' => 'required|email|unique:suppliers,email,' . $supplier->id,
-            'state' => 'required',
-            'city' => 'required',
-            'zip_code' => 'required',
-            'address' => 'required',
+            'email' => 'nullable|email|unique:suppliers,email,' . $supplier->id,
         ]);
 
         $supplier->name = $request->name;
         $supplier->mobile = $request->mobile;
         $supplier->email = $request->email;
         $supplier->image = $request->has('image') ? Helpers::update('supplier/', $supplier->image, 'png', $request->file('image')) : $supplier->image;
-        $supplier->state = $request->state;
-        $supplier->city = $request->city;
-        $supplier->zip_code = $request->zip_code;
-        $supplier->address = $request->address;
         $supplier->save();
 
         Toastr::success(translate('Supplier updated successfully'));

@@ -27,8 +27,8 @@ class AccountController extends Controller
             $query = new Account;
         }
 
-        $accounts = $query->orderBy('id','desc')->paginate(Helpers::pagination_limit());
-        return view('admin-views.account.list', compact('accounts','search'));
+        $accounts = $query->orderBy('id', 'desc')->paginate(Helpers::pagination_limit());
+        return view('admin-views.account.list', compact('accounts', 'search'));
     }
 
     public function add()
@@ -39,7 +39,7 @@ class AccountController extends Controller
     {
         $request->validate([
             'account' => 'required|unique:accounts,account',
-            'balance'=> 'required',
+            'balance' => 'required',
             'account_number' => 'required|unique:accounts',
         ]);
 
@@ -63,8 +63,8 @@ class AccountController extends Controller
     {
         $account = Account::find($id);
         $request->validate([
-            'account' => 'required|unique:accounts,account,'.$account->id,
-            'account_number' => 'required|unique:accounts,account_number,'.$account->id,
+            'account' => 'required|unique:accounts,account,' . $account->id,
+            'account_number' => 'required|unique:accounts,account_number,' . $account->id,
         ]);
 
         $account->account = $request->account;
@@ -82,5 +82,4 @@ class AccountController extends Controller
         Toastr::success(translate('Account deleted successfully'));
         return back();
     }
-
 }
