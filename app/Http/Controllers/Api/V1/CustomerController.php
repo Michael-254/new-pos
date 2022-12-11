@@ -62,11 +62,7 @@ class CustomerController extends Controller
             $company_id = auth()->user()->company_id;
             $request->validate([
                 'name' => 'required',
-<<<<<<< Updated upstream
                 'mobile' => 'required|unique:customers',
-=======
-                'mobile' => 'required',
->>>>>>> Stashed changes
             ]);
             if (!empty($request->file('image'))) {
                 $image_name = Helpers::upload('customer/', 'png', $request->file('image'));
