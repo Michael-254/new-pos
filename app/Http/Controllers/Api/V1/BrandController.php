@@ -47,7 +47,7 @@ class BrandController extends Controller
             }
             $brand = new Brand();
             $brand->name = $request->name;
-            $brand->company_id = auth()->user()->id;
+            $brand->company_id = auth()->user()->company_id;
             $brand->image = $image_name;
             $brand->save();
             return response()->json([

@@ -21,10 +21,10 @@ class IncomeController extends Controller
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
             $query = Transaction::where('tran_type', 'Income')->where(function ($q) use ($key) {
-                    foreach ($key as $value) {
-                        $q->orWhere('description', 'like', "%{$value}%");
-                    }
-                });
+                foreach ($key as $value) {
+                    $q->orWhere('description', 'like', "%{$value}%");
+                }
+            });
             $query_param = ['search' => $request['search']];
         } else {
             $query = Transaction::where('tran_type', 'Income')
@@ -49,6 +49,7 @@ class IncomeController extends Controller
         $transaction->account_id = $request->account_id;
         $transaction->amount = $request->amount;
         $transaction->description = $request->description;
+        $transaction->company_id = auth('admin')->user()->company_id;
         $transaction->debit = 0;
         $transaction->credit = 1;
         $transaction->balance =  $account->balance + $request->amount;

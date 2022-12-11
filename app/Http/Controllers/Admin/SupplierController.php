@@ -148,6 +148,7 @@ class SupplierController extends Controller
             $payment_transaction->credit = 0;
             $payment_transaction->balance = $payment_account->balance - $request->paid_amount;
             $payment_transaction->date = date("Y/m/d");
+            $payment_transaction->company_id = auth('admin')->user()->company_id;
             $payment_transaction->supplier_id = $request->supplier_id;
             $payment_transaction->save();
 
@@ -167,6 +168,7 @@ class SupplierController extends Controller
             $payable_transaction->credit = 1;
             $payable_transaction->balance = $payable_account->balance + $request->due_amount;
             $payable_transaction->date = date("Y/m/d");
+            $payable_transaction->company_id = auth('admin')->user()->company_id;
             $payable_transaction->supplier_id = $request->supplier_id;
             $payable_transaction->save();
 
@@ -208,6 +210,7 @@ class SupplierController extends Controller
             $payment_transaction->credit = 0;
             $payment_transaction->balance = $payment_account->balance - $request->pay_amount;
             $payment_transaction->date = date("Y/m/d");
+            $payment_transaction->company_id = auth('admin')->user()->company_id;
             $payment_transaction->supplier_id = $request->supplier_id;
             $payment_transaction->save();
 
@@ -225,6 +228,7 @@ class SupplierController extends Controller
             $payable_transaction->credit = 0;
             $payable_transaction->balance = $payable_account->balance - $request->pay_amount;
             $payable_transaction->date = date("Y/m/d");
+            $payable_transaction->company_id = auth('admin')->user()->company_id;
             $payable_transaction->supplier_id = $request->supplier_id;
             $payable_transaction->save();
 
@@ -257,6 +261,7 @@ class SupplierController extends Controller
         $supplier->name = $request->name;
         $supplier->mobile = $request->mobile;
         $supplier->email = $request->email;
+        $supplier->company_id = auth('admin')->user()->company_id;
         $supplier->image = $request->has('image') ? Helpers::update('supplier/', $supplier->image, 'png', $request->file('image')) : $supplier->image;
         $supplier->save();
 

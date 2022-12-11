@@ -26,6 +26,7 @@ class SettingController extends Controller
             'currency' => $request['currency'],
             'country' => $request['country'],
             'footer_text' => $request['footer_text'],
+            'company_id' => auth()->user()->company_id,
             'shop_logo' => $request->has('shop_logo') ? Helpers::update('shop/', $curr_logo->shop_logo, 'png', $request->file('shop_logo')) : $curr_logo->shop_logo,
             'time_zone' => $request['time_zone'],
             'vat_reg_no' => $request['vat_reg_no'],

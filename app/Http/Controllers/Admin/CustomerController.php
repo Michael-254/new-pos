@@ -121,8 +121,6 @@ class CustomerController extends Controller
     {
         $customer = Customer::where('id', $id)->first();
 
-        $this->authorize('viewAny', $customer);
-
         if (isset($customer)) {
             $query_param = [];
             $search = $request['search'];

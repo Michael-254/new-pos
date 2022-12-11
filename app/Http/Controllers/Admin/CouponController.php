@@ -55,6 +55,7 @@ class CouponController extends Controller
             'max_discount' => $request->max_discount != null ? $request->max_discount : $request->discount,
             'discount' => $request->discount_type == 'amount' ? $request->discount : $request['discount'],
             'discount_type' => $request->discount_type,
+            'company_id' => auth('admin')->user()->company_id,
             'status' => 1,
             'created_at' => now(),
             'updated_at' => now()

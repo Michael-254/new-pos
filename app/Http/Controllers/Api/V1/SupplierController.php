@@ -48,7 +48,7 @@ class SupplierController extends Controller
         try {
             $supplier->name = $request->name;
             $supplier->mobile = $request->mobile;
-            $supplier->company_id = auth()->user()->id;
+            $supplier->company_id = auth()->user()->company_id;
             $supplier->email = $request->email;
             $supplier->image = $image_name;
             $supplier->due_amount = $request->due_amount;
@@ -239,6 +239,7 @@ class SupplierController extends Controller
                 $payment_transaction->credit = 0;
                 $payment_transaction->balance = $payment_account->balance - $request->pay_amount;
                 $payment_transaction->date = date("Y/m/d");
+                $payment_transaction->company_id = auth()->user()->company_id;
                 $payment_transaction->supplier_id = $request->supplier_id;
                 $payment_transaction->save();
 
@@ -256,6 +257,7 @@ class SupplierController extends Controller
                 $payable_transaction->credit = 0;
                 $payable_transaction->balance = $payable_account->balance - $request->pay_amount;
                 $payable_transaction->date = date("Y/m/d");
+                $payable_transaction->company_id = auth()->user()->company_id;
                 $payable_transaction->supplier_id = $request->supplier_id;
                 $payable_transaction->save();
 
@@ -306,6 +308,7 @@ class SupplierController extends Controller
             $payment_transaction->credit = 0;
             $payment_transaction->balance = $payment_account->balance - $request->paid_amount;
             $payment_transaction->date = date("Y/m/d");
+            $payment_transaction->company_id = auth()->user()->company_id;
             $payment_transaction->supplier_id = $request->supplier_id;
             $payment_transaction->save();
 
@@ -325,6 +328,7 @@ class SupplierController extends Controller
             $payable_transaction->credit = 1;
             $payable_transaction->balance = $payable_account->balance + $request->due_amount;
             $payable_transaction->date = date("Y/m/d");
+            $payable_transaction->company_id = auth()->user()->company_id;
             $payable_transaction->supplier_id = $request->supplier_id;
             $payable_transaction->save();
 

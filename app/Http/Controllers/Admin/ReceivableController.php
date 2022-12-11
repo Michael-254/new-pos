@@ -20,31 +20,28 @@ class ReceivableController extends Controller
         $to = $request->to;
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
-            $query = Transaction::where('tran_type','Receivable')->
-                    where(function ($q) use ($key) {
-                        foreach ($key as $value) {
-                            $q->orWhere('description', 'like', "%{$value}%");
-                        }
+            $query = Transaction::where('tran_type', 'Receivable')->where(function ($q) use ($key) {
+                    foreach ($key as $value) {
+                        $q->orWhere('description', 'like', "%{$value}%");
+                    }
                 });
             $query_param = ['search' => $request['search']];
-        }else
-         {
-            $query = Transaction::where('tran_type','Receivable')
-                                ->when($from!=null, function($q) use ($request){
-                                     return $q->whereBetween('date', [$request['from'], $request['to']]);
-            });
-
-         }
+        } else {
+            $query = Transaction::where('tran_type', 'Receivable')
+                ->when($from != null, function ($q) use ($request) {
+                    return $q->whereBetween('date', [$request['from'], $request['to']]);
+                });
+        }
         $receivables = $query->latest()->paginate(Helpers::pagination_limit());
-        return view('admin-views.account-receivable.add',compact('accounts','receivables','search','from','to'));
+        return view('admin-views.account-receivable.add', compact('accounts', 'receivables', 'search', 'from', 'to'));
     }
     public function store(Request $request)
     {
         $request->validate([
             'account_id' => 'required',
-            'description'=> 'required',
+            'description' => 'required',
             'amount' => 'required',
-            'date' =>'required',
+            'date' => 'required',
         ]);
 
         $account = Account::find($request->account_id);
@@ -53,6 +50,7 @@ class ReceivableController extends Controller
         $transaction->account_id = $request->account_id;
         $transaction->amount = $request->amount;
         $transaction->description = $request->description;
+        $transaction->company_id = auth('admin')->user()->company_id;
         $transaction->debit = 0;
         $transaction->credit = 1;
         $transaction->balance =  $account->balance + $request->amount;
@@ -71,7 +69,7 @@ class ReceivableController extends Controller
         $receivable_account = Account::find($request->account_id);
         $receivable_transaction = Transaction::find($request->transaction_id);
         $balance = $receivable_transaction->amount - $request->amount;
-        if($balance < 0){
+        if ($balance < 0) {
             Toastr::warning(translate('You have not sufficient balance for this transaction'));
             return back();
         }
@@ -101,6 +99,5 @@ class ReceivableController extends Controller
 
         Toastr::success(translate('Payable Balance pay successfully'));
         return back();
-
     }
 }

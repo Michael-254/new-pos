@@ -31,6 +31,7 @@ class SystemController extends Controller
         $admin->l_name = $request->l_name;
         $admin->email = $request->email;
         $admin->phone = $request->phone;
+        $admin->company_id = auth('admin')->user()->company_id;
         $admin->image = $request->has('image') ? Helpers::update('admin/', $admin->image, 'png', $request->file('image')) : $admin->image;
         $admin->save();
         Toastr::success(translate('Admin information updated successfully'));

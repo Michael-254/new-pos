@@ -46,6 +46,7 @@ class AccountController extends Controller
         $account = new Account();
         $account->account = $request->account;
         $account->description = $request->description;
+        $account->company_id = auth('admin')->user()->company_id;
         $account->balance = $request->balance;
         $account->account_number = $request->account_number;
         $account->save();

@@ -87,6 +87,7 @@
                         <td>{{ $order->coupon_discount_amount?$order->coupon_discount_amount .' '.\App\CPU\Helpers::currency_symbol():0 .' '.\App\CPU\Helpers::currency_symbol() }}</td>
                         <td>{{ $order->order_amount + $order->total_tax - $order->extra_discount - $order->coupon_discount_amount .' '.\App\CPU\Helpers::currency_symbol()}}</td>
                         <td>
+                            <a class="btn btn-sm btn-white" href="{{route('admin.pos.order-details',$order->id)}}"><i class="tio-visible"></i></a>
                             <button class="btn btn-sm btn-white" target="_blank" type="button" onclick="print_invoice('{{$order->id}}')"><i class="tio-download"></i> {{\App\CPU\translate('invoice')}}</button>
                         </td>
                     </tr>

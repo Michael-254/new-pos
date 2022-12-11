@@ -47,7 +47,7 @@ class ExpenseController extends Controller
             $expense->account_id = $request->account_id;
             $expense->amount = $request->amount;
             $expense->description = $request->description;
-            $expense->company_id = auth()->user()->id;
+            $expense->company_id = auth()->user()->company_id;
             $expense->debit = 1;
             $expense->credit = 0;
             $expense->date = $request->date;

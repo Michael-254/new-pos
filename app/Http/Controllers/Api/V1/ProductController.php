@@ -109,6 +109,7 @@ class ProductController extends Controller
                 'tax' => $collection['tax'],
                 'quantity' => $collection['quantity'],
                 'supplier_id' => $collection['supplier_id'],
+                'company_id' => auth('admin')->user()->company_id,
 
             ]);
         }

@@ -26,7 +26,7 @@ class ProductController extends Controller
     {
         $query_param = [];
         $search = $request['search'];
-        $sort_oqrderQty= $request['sort_oqrderQty'];
+        $sort_oqrderQty = $request['sort_oqrderQty'];
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
             $query = Product::where(function ($q) use ($key) {
@@ -37,37 +37,37 @@ class ProductController extends Controller
             });
             $query_param = ['search' => $request['search']];
         } else {
-            $query = Product::when($request->sort_oqrderQty=='quantity_asc', function($q) use ($request){
-                                    return $q->orderBy('quantity', 'asc');
-                                })
-                                ->when($request->sort_oqrderQty=='quantity_desc', function($q) use ($request){
-                                    return $q->orderBy('quantity', 'desc');
-                                })
-                                ->when($request->sort_oqrderQty=='order_asc', function($q) use ($request){
-                                    return $q->orderBy('order_count', 'asc');
-                                })
-                                ->when($request->sort_oqrderQty=='order_desc', function($q) use ($request){
-                                    return $q->orderBy('order_count', 'desc');
-                                })
-                                ->when($request->sort_oqrderQty=='default', function($q) use ($request){
-                                    return $q->orderBy('id');
-                                });
+            $query = Product::when($request->sort_oqrderQty == 'quantity_asc', function ($q) use ($request) {
+                return $q->orderBy('quantity', 'asc');
+            })
+                ->when($request->sort_oqrderQty == 'quantity_desc', function ($q) use ($request) {
+                    return $q->orderBy('quantity', 'desc');
+                })
+                ->when($request->sort_oqrderQty == 'order_asc', function ($q) use ($request) {
+                    return $q->orderBy('order_count', 'asc');
+                })
+                ->when($request->sort_oqrderQty == 'order_desc', function ($q) use ($request) {
+                    return $q->orderBy('order_count', 'desc');
+                })
+                ->when($request->sort_oqrderQty == 'default', function ($q) use ($request) {
+                    return $q->orderBy('id');
+                });
         }
-        $products = $query->latest()->paginate(Helpers::pagination_limit())->appends(['search'=>$search,'sort_oqrderQty'=>$request->sort_oqrderQty]);
-        return view('admin-views.product.list',compact('products','search','sort_oqrderQty'));
+        $products = $query->latest()->paginate(Helpers::pagination_limit())->appends(['search' => $search, 'sort_oqrderQty' => $request->sort_oqrderQty]);
+        return view('admin-views.product.list', compact('products', 'search', 'sort_oqrderQty'));
     }
     public function index()
     {
-        $categories = Category::where(['position' => 0])->where('status',1)->get();
+        $categories = Category::where(['position' => 0])->where('status', 1)->get();
         $brands = Brand::get();
         $suppliers = Supplier::get();
         $units = Unit::get();
-        return view('admin-views.product.add', compact('categories','brands','suppliers','units'));
+        return view('admin-views.product.add', compact('categories', 'brands', 'suppliers', 'units'));
     }
     public function get_categories(Request $request)
     {
         $cat = Category::where(['parent_id' => $request->parent_id])->get();
-        $res = '<option value="' . 0 . '" disabled selected>---'.translate('Select').'---</option>';
+        $res = '<option value="' . 0 . '" disabled selected>---' . translate('Select') . '---</option>';
         foreach ($cat as $row) {
             if ($row->id == $request->sub_category) {
                 $res .= '<option value="' . $row->id . '" selected >' . $row->name . '</option>';
@@ -83,7 +83,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required|unique:products',
-            'product_code'=> 'required|unique:products',
+            'product_code' => 'required|unique:products',
             'category_id' => 'required',
             'unit_type' => 'required',
             'quantity' => 'required|numeric|min:1',
@@ -132,12 +132,13 @@ class ProductController extends Controller
         $products->unit_value = $request->unit_value;
         $products->brand = $request->brand_id;
         $products->discount_type = $request->discount_type;
-        $products->discount = $request->discount??0;
-        $products->tax = $request->tax??0;
+        $products->discount = $request->discount ?? 0;
+        $products->tax = $request->tax ?? 0;
         $products->quantity = $request->quantity;
         $products->order_count = 0;
         $products->image = Helpers::upload('product/', 'png', $request->file('image'));
         $products->supplier_id = $request->supplier_id;
+        $products->company_id = auth('admin')->user()->company_id;
         $products->save();
         Toastr::success(translate('Product Added Successfully'));
 
@@ -152,14 +153,14 @@ class ProductController extends Controller
         $brands = Brand::get();
         $suppliers = Supplier::get();
         $units = Unit::get();
-        return view('admin-views.product.edit', compact('product','categories','brands','product_category','suppliers','units'));
+        return view('admin-views.product.edit', compact('product', 'categories', 'brands', 'product_category', 'suppliers', 'units'));
     }
     public function update(Request $request, $id)
     {
         $product = Product::find($id);
         $request->validate([
-            'name' => 'required|unique:products,name,'.$product->id,
-            'product_code'=> 'required|unique:products,product_code,'.$product->id,
+            'name' => 'required|unique:products,name,' . $product->id,
+            'product_code' => 'required|unique:products,product_code,' . $product->id,
             'category_id' => 'required',
             'unit_type' => 'required',
             'quantity' => 'required|numeric|min:1',
@@ -206,8 +207,8 @@ class ProductController extends Controller
         $product->unit_value = $request->unit_value;
         $product->brand = $request->brand_id;
         $product->discount_type = $request->discount_type;
-        $product->discount = $request->discount??0;
-        $product->tax = $request->tax??0;
+        $product->discount = $request->discount ?? 0;
+        $product->tax = $request->tax ?? 0;
         $product->quantity = $request->quantity;
         $product->image = $request->has('image') ? Helpers::update('product/', $product->image, 'png', $request->file('image')) : $product->image;
         $product->supplier_id = $request->supplier_id;
@@ -221,9 +222,9 @@ class ProductController extends Controller
     {
         $product = Product::find($request->id);
 
-            if (Storage::disk('public')->exists('product/' . $product->image)) {
-                Storage::disk('public')->delete('product/' .  $product->image);
-            }
+        if (Storage::disk('public')->exists('product/' . $product->image)) {
+            Storage::disk('public')->delete('product/' .  $product->image);
+        }
 
         $product->delete();
         Toastr::success(translate('Product removed'));
@@ -231,20 +232,19 @@ class ProductController extends Controller
     }
     public function barcode_generate(Request $request, $id)
     {
-        if($request->limit >270)
-        {
+        if ($request->limit > 270) {
             Toastr::warning(translate('You can not generate more than 270 barcode'));
             return back();
         }
-        $product = Product::where('id',$id)->first();
-        $limit = $request->limit??4;
-        return view('admin-views.product.barcode-generate',compact('product','limit'));
+        $product = Product::where('id', $id)->first();
+        $limit = $request->limit ?? 4;
+        return view('admin-views.product.barcode-generate', compact('product', 'limit'));
     }
     public function barcode($id)
     {
-        $product = Product::where('id',$id)->first();
+        $product = Product::where('id', $id)->first();
         $limit = 28;
-        return view('admin-views.product.barcode',compact('product','limit'));
+        return view('admin-views.product.barcode', compact('product', 'limit'));
     }
 
     public function bulk_import_index()
@@ -267,10 +267,10 @@ class ProductController extends Controller
             } elseif ($collection['product_code'] === "") {
                 Toastr::error('Please fill row:' . ($key + 2) . ' field: product_code ');
                 return back();
-            } elseif ($collection['unit_type'] ==="") {
+            } elseif ($collection['unit_type'] === "") {
                 Toastr::error('Please fill row:' . ($key + 2) . ' field: product_code ');
                 return back();
-            } elseif ($collection['unit_value'] ==="") {
+            } elseif ($collection['unit_value'] === "") {
                 Toastr::error('Please fill row:' . ($key + 2) . ' field: unit value ');
                 return back();
             } elseif (!is_numeric($collection['unit_value'])) {
@@ -285,7 +285,7 @@ class ProductController extends Controller
             } elseif ($collection['sub_category_id'] === "") {
                 Toastr::error('Please fill row:' . ($key + 2) . ' field: sub_category_id ');
                 return back();
-            } elseif ($collection['purchase_price'] ==="") {
+            } elseif ($collection['purchase_price'] === "") {
                 Toastr::error('Please fill row:' . ($key + 2) . ' field: purchase price ');
                 return back();
             } elseif (!is_numeric($collection['purchase_price'])) {
@@ -297,10 +297,10 @@ class ProductController extends Controller
             } elseif (!is_numeric($collection['selling_price'])) {
                 Toastr::error('Please fill row:' . ($key + 2) . ' field: number ');
                 return back();
-            }  elseif ($collection['discount_type'] === "") {
+            } elseif ($collection['discount_type'] === "") {
                 Toastr::error('Please fill row:' . ($key + 2) . ' field: discount type');
                 return back();
-            } elseif ($collection['discount'] ==="") {
+            } elseif ($collection['discount'] === "") {
                 Toastr::error('Please fill row:' . ($key + 2) . ' field: discount ');
                 return back();
             } elseif (!is_numeric($collection['discount'])) {
@@ -318,7 +318,7 @@ class ProductController extends Controller
             } elseif (!is_numeric($collection['quantity'])) {
                 Toastr::error('Quantity of row ' . ($key + 2) . ' must be number');
                 return back();
-            } elseif ($collection['supplier_id'] ==="") {
+            } elseif ($collection['supplier_id'] === "") {
                 Toastr::error('Please fill row:' . ($key + 2) . ' field: supplier_id ');
                 return back();
             } elseif (!is_numeric($collection['supplier_id'])) {
@@ -331,24 +331,22 @@ class ProductController extends Controller
                 'discount' => $collection['discount'],
             ];
             if ($collection['selling_price'] <= Helpers::discount_calculate($product, $collection['selling_price'])) {
-                Toastr::error(translate('Discount can not be more or equal to the price in row '). ($key + 2));
+                Toastr::error(translate('Discount can not be more or equal to the price in row ') . ($key + 2));
                 return back();
             }
-            $product =  Product::where('product_code',$collection['product_code'])->first();
-            if($product)
-            {
-                Toastr::warning(translate('product code row').' : ' . ($key + 2) .' '.translate('already exist'));
+            $product =  Product::where('product_code', $collection['product_code'])->first();
+            if ($product) {
+                Toastr::warning(translate('product code row') . ' : ' . ($key + 2) . ' ' . translate('already exist'));
                 return back();
             }
         }
         $data = [];
         foreach ($collections as $collection) {
-          $product =  Product::where('product_code',$collection['product_code'])->first();
-          if($product)
-          {
-              Toastr::success(translate('product code already exist'));
-              return back();
-          }
+            $product =  Product::where('product_code', $collection['product_code'])->first();
+            if ($product) {
+                Toastr::success(translate('product code already exist'));
+                return back();
+            }
             array_push($data, [
                 'name' => $collection['name'],
                 'product_code' => $collection['product_code'],
@@ -368,47 +366,42 @@ class ProductController extends Controller
             ]);
         }
         DB::table('products')->insert($data);
-        Toastr::success(count($data) . ' - '.translate('Products imported successfully'));
+        Toastr::success(count($data) . ' - ' . translate('Products imported successfully'));
         return back();
     }
     public function bulk_export_data()
     {
         $products = Product::all();
         $storage = [];
-        foreach($products as $item){
+        foreach ($products as $item) {
             $category_id = 0;
             $sub_category_id = 0;
 
-            foreach(json_decode($item->category_ids, true) as $category)
-            {
-                if($category['position']==1)
-                {
+            foreach (json_decode($item->category_ids, true) as $category) {
+                if ($category['position'] == 1) {
                     $category_id = $category['id'];
-                }
-                else if($category['position']==2)
-                {
+                } else if ($category['position'] == 2) {
                     $sub_category_id = $category['id'];
                 }
             }
 
-            array_push($storage,[
+            array_push($storage, [
                 'name' => $item['name'],
                 'product_code' => $item['product_code'],
                 'unit_type' => $item['unit_type'],
                 'unit_value' => $item['unit_value'],
-                'category_id'=>$category_id,
-                'sub_category_id'=>$sub_category_id,
-                'brand'=>$item['brand'],
-                'purchase_price'=>$item['purchase_price'],
-                'selling_price'=>$item['selling_price'],
-                'discount_type'=>$item['discount_type'],
-                'discount'=>$item['discount'],
-                'tax'=>$item['tax'],
-                'quantity'=>$item['quantity'],
-                'supplier_id'=>$item['supplier_id'],
+                'category_id' => $category_id,
+                'sub_category_id' => $sub_category_id,
+                'brand' => $item['brand'],
+                'purchase_price' => $item['purchase_price'],
+                'selling_price' => $item['selling_price'],
+                'discount_type' => $item['discount_type'],
+                'discount' => $item['discount'],
+                'tax' => $item['tax'],
+                'quantity' => $item['quantity'],
+                'supplier_id' => $item['supplier_id'],
             ]);
         }
         return (new FastExcel($storage))->download('products.xlsx');
     }
-
 }

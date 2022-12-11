@@ -22,10 +22,10 @@ class ExpenseController extends Controller
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
             $query = Transaction::where('tran_type', 'Expense')->where(function ($q) use ($key) {
-                    foreach ($key as $value) {
-                        $q->orWhere('description', 'like', "%{$value}%");
-                    }
-                });
+                foreach ($key as $value) {
+                    $q->orWhere('description', 'like', "%{$value}%");
+                }
+            });
             $query_param = ['search' => $request['search']];
         } else {
             $query = Transaction::where('tran_type', 'Expense')
@@ -52,6 +52,7 @@ class ExpenseController extends Controller
         $transaction = new Transaction;
         $transaction->tran_type = 'Expense';
         $transaction->account_id = $request->account_id;
+        $transaction->company_id = auth('admin')->user()->company_id;
         $transaction->amount = $request->amount;
         $transaction->description = $request->description;
         $transaction->debit = 1;

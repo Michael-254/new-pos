@@ -55,7 +55,7 @@ class CouponController extends Controller
         try {
             $coupon->title = $request->title;
             $coupon->code = $request->code;
-            $coupon->company_id = auth()->user()->id;
+            $coupon->company_id = auth()->user()->company_id;
             $coupon->user_limit = $request->coupon_type != 'default' ? 1 : $request->user_limit;
             $coupon->coupon_type = $request->coupon_type;
             $coupon->start_date = $request->start_date;

@@ -45,7 +45,7 @@ class TransactionController extends Controller
             }
             $transaction->tran_type = "Expense";
             $transaction->account_id = $request->account_id;
-            $transaction->company_id = auth()->user()->id;
+            $transaction->company_id = auth()->user()->company_id;
             $transaction->amount = $request->amount;
             $transaction->description = $request->description;
             $transaction->debit = 0;

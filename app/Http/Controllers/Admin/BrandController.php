@@ -34,6 +34,7 @@ class BrandController extends Controller
         $brand = new Brand();
         $brand->name = $request->name;
         $brand->image = $image_name;
+        $brand->company_id = auth('admin')->user()->company_id;
         $brand->save();
 
         Toastr::success(translate('Brand stored successfully'));

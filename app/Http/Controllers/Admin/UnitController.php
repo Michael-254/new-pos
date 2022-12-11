@@ -14,12 +14,12 @@ class UnitController extends Controller
     public function index()
     {
         $units = Unit::latest()->paginate(Helpers::pagination_limit());
-        return view('admin-views.unit.index',compact('units'));
+        return view('admin-views.unit.index', compact('units'));
     }
     public function store(Request $request)
     {
         $request->validate([
-            'unit_type' => 'required|unique:units',
+            'unit_type' => 'required',
         ]);
 
         $unit = new Unit;
@@ -33,13 +33,13 @@ class UnitController extends Controller
     {
         $unit = Unit::find($id);
 
-        return view('admin-views.unit.edit',compact('unit'));
+        return view('admin-views.unit.edit', compact('unit'));
     }
     public function update(Request $request, $id)
     {
         $unit = Unit::find($id);
         $request->validate([
-            'unit_type' => 'required|unique:units,unit_type,'.$unit->id,
+            'unit_type' => 'required|unique:units,unit_type,' . $unit->id,
         ]);
 
         $unit->unit_type = $request->unit_type;

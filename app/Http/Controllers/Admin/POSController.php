@@ -32,6 +32,7 @@ class POSController extends Controller
         $categories = Category::where('status', 1)->where('position', 0)->latest()->get();
 
         $products = Product::where('quantity', '>', 0)->active()
+            ->where('company_id', auth('admin')->user()->company_id)
             ->when($request->has('category_id') && $request['category_id'] != 0, function ($query) use ($request) {
                 $query->whereJsonContains('category_ids', [['id' => (string)$request['category_id']]]);
             })->latest()->paginate(Helpers::pagination_limit());
@@ -459,6 +460,7 @@ class POSController extends Controller
 
         $order->user_id = $user_id;
         $order->member_id = $member_details->id;
+        $order->company_id = auth('admin')->user()->company_id;
         $order->coupon_code = $cart['coupon_code'] ?? null;
         $order->coupon_discount_title = $cart['coupon_title'] ?? null;
         $order->payment_id = $request->type;
@@ -525,6 +527,7 @@ class POSController extends Controller
                     $payable_transaction->balance = $payable_account->balance - $grand_total;
                     $payable_transaction->date = date("Y/m/d");
                     $payable_transaction->customer_id = $customer->id;
+                    $payable_transaction->company_id = auth('admin')->user()->company_id;
                     $payable_transaction->order_id = $order_id;
                     $payable_transaction->save();
 
@@ -545,6 +548,7 @@ class POSController extends Controller
                         $payable_transaction->balance = $payable_account->balance - $customer->balance;
                         $payable_transaction->date = date("Y/m/d");
                         $payable_transaction->customer_id = $customer->id;
+                        $payable_transaction->company_id = auth('admin')->user()->company_id;
                         $payable_transaction->order_id = $order_id;
                         $payable_transaction->save();
 
@@ -563,6 +567,7 @@ class POSController extends Controller
                         $receivable_transaction->balance = $receivable_account->balance - $request->remaining_balance;
                         $receivable_transaction->date = date("Y/m/d");
                         $receivable_transaction->customer_id = $customer->id;
+                        $receivable_transaction->company_id = auth('admin')->user()->company_id;
                         $receivable_transaction->order_id = $order_id;
                         $receivable_transaction->save();
 
@@ -582,6 +587,7 @@ class POSController extends Controller
                         $receivable_transaction->balance = $receivable_account->balance + $grand_total;
                         $receivable_transaction->date = date("Y/m/d");
                         $receivable_transaction->customer_id = $customer->id;
+                        $receivable_transaction->company_id = auth('admin')->user()->company_id;
                         $receivable_transaction->order_id = $order_id;
                         $receivable_transaction->save();
 
@@ -607,6 +613,7 @@ class POSController extends Controller
                 $transaction->balance = $account->balance + $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
                 $transaction->date = date("Y/m/d");
                 $transaction->customer_id = $customer->id;
+                $transaction->company_id = auth('admin')->user()->company_id;
                 $transaction->order_id = $order_id;
                 $transaction->save();
                 //transaction end
@@ -701,11 +708,7 @@ class POSController extends Controller
         $order = Order::find($id);
         $order->load('details');
 
-        return response()->json([
-            'success' => 1,
-            'type' => 'detail',
-            'view' => view('admin-views.pos.order.details', compact('order'))->render(),
-        ]);
+        return view('admin-views.pos.order.details', compact('order'));
     }
 
     public function generate_invoice($id)

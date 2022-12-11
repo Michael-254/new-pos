@@ -21,10 +21,10 @@ class PayableController extends Controller
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
             $query = Transaction::where('tran_type', 'Payable')->where(function ($q) use ($key) {
-                    foreach ($key as $value) {
-                        $q->orWhere('description', 'like', "%{$value}%");
-                    }
-                });
+                foreach ($key as $value) {
+                    $q->orWhere('description', 'like', "%{$value}%");
+                }
+            });
             $query_param = ['search' => $request['search']];
         } else {
             $query = Transaction::where('tran_type', 'Payable')
@@ -49,6 +49,7 @@ class PayableController extends Controller
         $transaction->account_id = $request->account_id;
         $transaction->amount = $request->amount;
         $transaction->description = $request->description;
+        $transaction->company_id = auth('admin')->user()->company_id;
         $transaction->debit = 1;
         $transaction->credit = 0;
         $transaction->balance =  $account->balance + $request->amount;

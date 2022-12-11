@@ -65,6 +65,7 @@ class CategoryController extends Controller
         }
         $category = new Category();
         $category->name = $request->name;
+        $category->company_id = auth('admin')->user()->company_id;
         $category->image = $image_name;
         $category->parent_id = $request->parent_id == null ? 0 : $request->parent_id;
         $category->position = $request->position;

@@ -140,6 +140,8 @@ class PosController extends Controller
         $order->id = $order_id;
 
         $order->user_id = $user_id;
+        $order->member_id = $member_details->id;
+        $order->company_id = auth()->user()->company_id;
         $order->coupon_code = $cart['coupon_code'] ?? null;
         $order->coupon_discount_title = $cart['coupon_title'] ?? null;
         $order->payment_id = $request->type;
@@ -214,6 +216,7 @@ class PosController extends Controller
                     $payable_transaction->balance = $payable_account->balance - $grand_total;
                     $payable_transaction->date = date("Y/m/d");
                     $payable_transaction->customer_id = $customer->id;
+                    $payable_transaction->company_id = auth()->user()->company_id;
                     $payable_transaction->order_id = $order_id;
                     $payable_transaction->save();
 
@@ -233,6 +236,7 @@ class PosController extends Controller
                         $payable_transaction->balance = $payable_account->balance - $customer->balance;
                         $payable_transaction->date = date("Y/m/d");
                         $payable_transaction->customer_id = $customer->id;
+                        $payable_transaction->company_id = auth()->user()->company_id;
                         $payable_transaction->order_id = $order_id;
                         $payable_transaction->save();
 
@@ -251,6 +255,7 @@ class PosController extends Controller
                         $receivable_transaction->balance = $receivable_account->balance - $request->remaining_balance;
                         $receivable_transaction->date = date("Y/m/d");
                         $receivable_transaction->customer_id = $customer->id;
+                        $receivable_transaction->company_id = auth()->user()->company_id;
                         $receivable_transaction->order_id = $order_id;
                         $receivable_transaction->save();
 
@@ -270,6 +275,7 @@ class PosController extends Controller
                         $receivable_transaction->balance = $receivable_account->balance + $grand_total;
                         $receivable_transaction->date = date("Y/m/d");
                         $receivable_transaction->customer_id = $customer->id;
+                        $receivable_transaction->company_id = auth()->user()->company_id;
                         $receivable_transaction->order_id = $order_id;
                         $receivable_transaction->save();
 
@@ -296,6 +302,7 @@ class PosController extends Controller
                 $transaction->balance = $account->balance + $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
                 $transaction->date = date("Y/m/d");
                 $transaction->customer_id = $customer->id;
+                $transaction->company_id = auth()->user()->company_id;
                 $transaction->order_id = $order_id;
                 $transaction->save();
                 //transaction end
@@ -392,6 +399,7 @@ class PosController extends Controller
         $products->quantity = $request->quantity;
         $products->image = Helpers::upload('product/', 'png', $request->file('image'));
         $products->supplier_id = $request->supplier_id;
+        $products->company_id = auth()->user()->company_id;
         $products->save();
         return response()->json([
             'success' => true,
@@ -471,14 +479,7 @@ class PosController extends Controller
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
         $search = $request->name;
-<<<<<<< Updated upstream
-        //$stock_limit = BusinessSetting::where('key', )->first();
-        $company_id = auth()->user()->company_id;
-        $stock_limit =  BusinessSetting::where('company_id', $company_id)->value('stock_limit');
 
-=======
-        //$stock_limit = BusinessSetting::where('key', 'stock_limit')->first()->value;
->>>>>>> Stashed changes
         if (!empty($search)) {
             $result = Product::where('product_code', 'like', '%' . $search . '%')
                 ->orWhere('name', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
