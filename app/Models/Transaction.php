@@ -12,7 +12,7 @@ class Transaction extends Model
     public $timestamps = true;
     public function account()
     {
-        return $this->belongsTo(Account::class, 'account_id');
+        return $this->belongsTo(Account::class, 'account_id')->withDefault();
     }
 
     public static function boot()
