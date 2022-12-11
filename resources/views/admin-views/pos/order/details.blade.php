@@ -38,47 +38,58 @@
                     </div>
                     <h5 class="text-uppercase"></h5>
                     <hr class="line-dot">
-                    <table class="table table-bordered mt-3">
-                        <thead>
-                            <tr>
-                                <th>{{ \App\CPU\translate('SL') }}</th>
-                                <th>{{ \App\CPU\translate('DESC') }}</th>
-                                <th>{{ \App\CPU\translate('QTY') }}</th>
-                                <th>{{ \App\CPU\translate('Price') }}</th>
-                            </tr>
-                        </thead>
+                    <form action="{{route('admin.pos.order-return')}}" method="POST">
+                        @csrf
+                        <table class="table table-bordered mt-3">
+                            <thead>
+                                <tr>
+                                    <th>{{ \App\CPU\translate('SL') }}</th>
+                                    <th>{{ \App\CPU\translate('DESC') }}</th>
+                                    <th>{{ \App\CPU\translate('QTY') }}</th>
+                                    <th>{{ \App\CPU\translate('Price') }}</th>
+                                    <th>QTY to return to stock</th>
+                                </tr>
+                            </thead>
 
-                        <tbody>
-                            @php($sub_total = 0)
-                            @php($total_tax = 0)
-                            @php($total_dis_on_pro = 0)
-                            @foreach ($order->details as $key => $detail)
-                            @if ($detail->product)
-                            <tr>
-                                <td>
-                                    {{ $key + 1 }}
-                                </td>
-                                <td>
-                                    <span class="style-inthree">{{ $detail->product['name'] }}</span><br />
-                                    {{ \App\CPU\translate('price') }} :
-                                    {{ $detail['price'] . ' ' . \App\CPU\Helpers::currency_symbol() }} <br>
-                                    {{ \App\CPU\translate('discount') }} :
-                                    {{ $detail['discount_on_product'] * $detail['quantity'] . ' ' . \App\CPU\Helpers::currency_symbol() }}
-                                </td>
-                                <td class="">
-                                    {{ $detail['quantity'] }}
-                                </td>
-                                <td>
-                                    @php($amount = ($detail['price'] - $detail['discount_on_product']) * $detail['quantity'])
-                                    {{ $amount . ' ' . \App\CPU\Helpers::currency_symbol() }}
-                                </td>
-                            </tr>
-                            @php($sub_total += $amount)
-                            @php($total_tax += $detail['tax_amount'] * $detail['quantity'])
-                            @endif
-                            @endforeach
-                        </tbody>
-                    </table>
+                            <tbody>
+                                @php($sub_total = 0)
+                                @php($total_tax = 0)
+                                @php($total_dis_on_pro = 0)
+                                @foreach ($order->details as $key => $detail)
+                                @if ($detail->product)
+                                <tr>
+                                    <td>
+                                        {{ $key + 1 }}
+                                    </td>
+                                    <td>
+                                        <span class="style-inthree">{{ $detail->product['name'] }}</span><br />
+                                        {{ \App\CPU\translate('price') }} :
+                                        {{ $detail['price'] . ' ' . \App\CPU\Helpers::currency_symbol() }} <br>
+                                        {{ \App\CPU\translate('discount') }} :
+                                        {{ $detail['discount_on_product'] * $detail['quantity'] . ' ' . \App\CPU\Helpers::currency_symbol() }}
+                                    </td>
+                                    <td class="">
+                                        {{ $detail['quantity'] }}
+                                    </td>
+                                    <td>
+                                        @php($amount = ($detail['price'] - $detail['discount_on_product']) * $detail['quantity'])
+                                        {{ $amount . ' ' . \App\CPU\Helpers::currency_symbol() }}
+                                    </td>
+                                    <td>
+                                        <input name="return_quantity[]" type="number" class="style-two-cart qty-width" value="0">
+                                        <input type="hidden" name="detail_id[]" value="{{ $detail->id }}">
+                                    </td>
+                                </tr>
+                                @php($sub_total += $amount)
+                                @php($total_tax += $detail['tax_amount'] * $detail['quantity'])
+                                @endif
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <div class="row justify-content-md-end px-3">
+                            <button type="submit" class="btn  btn-primary btn-sm btn-block">Return</button>
+                        </div>
+                    </form>
                     <hr class="line-dot">
                     <div class="row justify-content-md-end">
                         <div class="col-md-7 col-lg-7">
