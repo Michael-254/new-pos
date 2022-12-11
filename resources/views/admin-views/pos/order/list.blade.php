@@ -153,7 +153,7 @@
 
     function print_invoice(order_id) {
         $.get({
-            url: '{{url(' / ')}}/admin/pos/invoice/' + order_id,
+            url: "{{url('/')}}/admin/pos/invoice/" + order_id,
             dataType: 'json',
             beforeSend: function() {
                 $('#loading').show();
