@@ -711,6 +711,11 @@ class POSController extends Controller
         return view('admin-views.pos.order.details', compact('order'));
     }
 
+    public function order_return(Request $request)
+    {
+        dd($request->all());
+    }
+
     public function generate_invoice($id)
     {
         $order = Order::where('id', $id)->first();
