@@ -15,7 +15,7 @@ class RegisteredBusinessController extends Controller
     {
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
-        $merchants = BusinessSetting::select('id', 'shop_name', 'shop_address', 'shop_phone', 'shop_email', 'company_id', 'created_at', 'updated_at')
+        $merchants = BusinessSetting::select('id', 'shop_name', 'shop_logo', 'shop_address', 'shop_phone', 'shop_email', 'company_id', 'created_at', 'updated_at')
             ->latest()->paginate($limit, ['*'], 'page', $offset);
         $data =  [
             'total' => $merchants->total(),
@@ -32,7 +32,7 @@ class RegisteredBusinessController extends Controller
         $offset = $request['offset'] ?? 1;
         $search = $request->name;
         // if (!empty($search)) {
-        $result = BusinessSetting::select('id', 'shop_name', 'shop_address', 'shop_phone', 'shop_email', 'company_id', 'created_at', 'updated_at')
+        $result = BusinessSetting::select('id', 'shop_name', 'shop_logo', 'shop_address', 'shop_phone', 'shop_email', 'company_id', 'created_at', 'updated_at')
             ->where('shop_name', 'like', '%' . $search . '%')->orWhere('shop_phone', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
         $data = [
             'total' => $result->total(),
