@@ -15,7 +15,7 @@ class RegisteredBusinessController extends Controller
     {
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
-        $merchants = BusinessSetting::select('shop_name', 'shop_address', 'shop_phone', 'shop_email')
+        $merchants = BusinessSetting::select('id', 'shop_name', 'shop_address', 'shop_phone', 'shop_email', 'company_id')
             ->latest()->paginate($limit, ['*'], 'page', $offset);
         $data =  [
             'total' => $merchants->total(),
