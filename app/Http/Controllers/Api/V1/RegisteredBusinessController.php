@@ -17,8 +17,8 @@ class RegisteredBusinessController extends Controller
         $offset = $request['offset'] ?? 1;
         $merchants = BusinessSetting::select('id', 'shop_name', 'shop_logo', 'shop_address', 'shop_phone', 'shop_email', 'company_id', 'created_at', 'updated_at')
             ->latest()->paginate($limit, ['*'], 'page', $offset);
-            
-        foreach($merchants as $merchant) {
+
+        foreach ($merchants as $merchant) {
             $merchant['product_count'] = Product::where('company_id', $merchant->company_id)->count();
         }
 
@@ -40,7 +40,7 @@ class RegisteredBusinessController extends Controller
         $result = BusinessSetting::select('id', 'shop_name', 'shop_logo', 'shop_address', 'shop_phone', 'shop_email', 'company_id', 'created_at', 'updated_at')
             ->where('shop_name', 'like', '%' . $search . '%')->orWhere('shop_phone', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
 
-        foreach($merchants as $merchant) {
+        foreach ($result as $merchant) {
             $merchant['product_count'] = Product::where('company_id', $merchant->company_id)->count();
         }
 

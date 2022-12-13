@@ -25,12 +25,12 @@ class DashboardController extends Controller
     public function getCustomerLoyaltyPointsSummary()
     {
         $customer = CustomerLogin::find(1); //CustomerLogin::find(auth()->id());
-        $orders = $customer->orderDetails()->get();
+        $orders = $customer->orders()->get();
         $collected_cash = 0;
 
         foreach ($orders as $order) {
             if ($orders->last()) {
-                $collected_cash = round($order->order->collected_cash / 10);
+                $collected_cash = round($order->collected_cash / 10);
             }
         }
 

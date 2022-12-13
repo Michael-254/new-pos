@@ -45,7 +45,7 @@
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                         </li>
                         <!-- Pos Pages -->
-                        @php($orders = \App\Models\Order::get()->count())
+                        @php($orders = \App\Models\Order::get()->count(); $orders_return = \App\Models\OrderReturn::get()->count();)
                         <li class="navbar-vertical-aside-has-menu {{Request::is('admin/pos*')?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
                                 <i class="tio-shopping nav-icon"></i>
@@ -75,11 +75,11 @@
                                     </a>
                                 </li>
 
-                                <li class="nav-item {{Request::is('admin/pos/orders')?'active':''}}">
-                                    <a class="nav-link " href="{{route('admin.pos.orders')}}" title="{{\App\CPU\translate('orders')}}">
+                                <li class="nav-item {{Request::is('admin/pos/order-returns')?'active':''}}">
+                                    <a class="nav-link " href="{{route('admin.pos.order-return')}}" title="{{\App\CPU\translate('orders')}}">
                                         <span class="tio-circle nav-indicator-icon"></span>
                                         <span class="text-truncate">{{\App\CPU\translate('order_returns')}}
-                                            <span class="badge badge-success ml-2">{{ $orders }} </span>
+                                            <span class="badge badge-success ml-2">{{ $orders_return }} </span>
                                         </span>
                                     </a>
                                 </li>

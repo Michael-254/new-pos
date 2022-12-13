@@ -14,9 +14,8 @@ class CreateOrderReturnsTable extends Migration
     public function up()
     {
         Schema::create('order_returns', function (Blueprint $table) {
-            $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->bigInteger('company_id')->nullable();
+            $table->unsignedBigInteger('member_id')->nullable();
             $table->double('order_amount')->default(0);
             $table->double('total_tax');
             $table->double('collected_cash')->nullable();

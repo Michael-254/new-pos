@@ -14,6 +14,7 @@ use App\Models\OrderDetail;
 use App\Models\Customer;
 use App\CPU\Helpers;
 use App\Models\CustomerLogin;
+use App\Models\OrderReturn;
 use App\Models\User;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
@@ -703,17 +704,69 @@ class POSController extends Controller
         return view('admin-views.pos.order.list', compact('orders', 'search'));
     }
 
-    public function order_details($id)
+    public function order_return_list(Request $request)
     {
-        $order = Order::find($id);
+        $query_param = [];
+        $search = $request['search'];
+        if ($request->has('search')) {
+            $orders = OrderReturn::where('id', 'like', "%{$search}%")->paginate(Helpers::pagination_limit())->appends($search);
+        } else {
+            $orders = OrderReturn::latest()->paginate(Helpers::pagination_limit())->appends($search);
+        }
+
+        return view('admin-views.pos.order.list', compact('orders', 'search'));
+    }
+
+    public function order_details(Order $order)
+    {
         $order->load('details');
 
         return view('admin-views.pos.order.details', compact('order'));
     }
 
+    public function order_return_details(OrderReturn $order)
+    {
+        $order->load('details');
+
+        return view('admin-views.pos.order-returns.details', compact('order'));
+    }
+
     public function order_return(Request $request)
     {
         dd($request->all());
+        foreach ($request->return_quantity as $key => $quantity) {
+            if ($quantity > 0) {
+                $order_detail = OrderDetail::with('order')->find($request->detail_id[$key]);
+                $order_return = OrderReturn::create([
+                    'user_id' => $order_detail->order->user_id,
+                    'order_amount' => $order_detail->order->order_amount,
+                    'order_amount' => ((int)$order_detail->price * $quantity) + ((int)$order_detail->discount_on_product * $quantity),
+                    'collected_cash' => ((int)$order_detail->price * $quantity) + ((int)$order_detail->discount_on_product * $quantity),
+                    'payment_id' => $order_detail->order->payment_id,
+                ]);
+
+                $order_return_details = OrderReturn::create([
+                    'product_id' => $order_detail->product_id,
+                    'order_id' => $order_detail->order_id,
+                    'price' => $order_detail->price,
+                    'product_details' => $order_detail->product_details,
+                    'discount_on_product' => $order_detail->discount_on_product,
+                    'discount_type' => $order_detail->discount_type,
+                    'quantity' => $quantity,
+                    'tax_amount' => $order_detail->tax_amount,
+                ]);
+                if ($quantity == $order_detail->quantity) {
+                    $order_detail->order->order_amount = $order_detail->order->order_amount -
+                        ((int)$order_detail->price * $quantity) + ((int)$order_detail->discount_on_product * $quantity);
+                    $order_detail->delete();
+                } else {
+                    $order_detail->quantity = $order_detail->quantity - $quantity;
+                    $order_detail->save();
+                    $order_detail->order->order_amount = $order_detail->order->order_amount -
+                        ((int)$order_detail->price * $quantity) + ((int)$order_detail->discount_on_product * $quantity);
+                }
+            }
+        }
     }
 
     public function generate_invoice($id)

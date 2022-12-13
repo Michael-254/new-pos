@@ -92,8 +92,14 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.', 'prefix' => 'admin'], fu
             Route::get('customer-balance', 'POSController@customer_balance')->name('customer-balance');
             Route::post('order', 'POSController@place_order')->name('order');
             Route::get('orders', 'POSController@order_list')->name('orders');
+<<<<<<< Updated upstream
             Route::get('order-details/{id}', 'POSController@order_details')->name('order-details');
             Route::post('order-return', 'POSController@order_return')->name('order-return');
+=======
+            Route::get('order-details/{order}', 'POSController@order_details')->name('order-details');
+            Route::get('order-return-details/{order}', 'POSController@order_details')->name('order-return-details');
+            Route::post('order-returns', 'POSController@order_return_list')->name('order-return');
+>>>>>>> Stashed changes
             Route::get('invoice/{id}', 'POSController@generate_invoice');
             Route::get('search-products', 'POSController@search_product')->name('search-products');
             Route::get('search-by-add', 'POSController@search_by_add_product')->name('search-by-add');
@@ -146,7 +152,7 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.', 'prefix' => 'admin'], fu
             Route::get('add', 'CustomerController@index')->name('add');
             Route::post('store', 'CustomerController@store')->name('store');
             Route::get('list', 'CustomerController@list')->name('list');
-            Route::get('list/with-loyalty', 'CustomerController@listWithLoyalty')->name('listWithLoyalty');
+            Route::get('list-of-loyalty-enrolled', 'CustomerController@listWithLoyalty')->name('listWithLoyalty');
             Route::get('view/{id}', 'CustomerController@view')->name('view');
             Route::get('edit/{id}', 'CustomerController@edit')->name('edit');
             Route::post('update/{id}', 'CustomerController@update')->name('update');
