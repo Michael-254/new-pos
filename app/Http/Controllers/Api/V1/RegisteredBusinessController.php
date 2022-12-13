@@ -15,8 +15,13 @@ class RegisteredBusinessController extends Controller
     {
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
-        $merchants = BusinessSetting::select('shop_name', 'shop_address', 'shop_phone', 'shop_email')
+        $merchants = BusinessSetting::select('id', 'shop_name', 'shop_logo', 'shop_address', 'shop_phone', 'shop_email', 'company_id', 'created_at', 'updated_at')
             ->latest()->paginate($limit, ['*'], 'page', $offset);
+            
+        foreach($merchants as $merchant) {
+            $merchant['product_count'] = Product::where('company_id', $merchant->company_id)->count();
+        }
+
         $data =  [
             'total' => $merchants->total(),
             'limit' => $limit,
@@ -32,13 +37,18 @@ class RegisteredBusinessController extends Controller
         $offset = $request['offset'] ?? 1;
         $search = $request->name;
         // if (!empty($search)) {
-        $result = BusinessSetting::select('shop_name', 'shop_address', 'shop_phone', 'shop_email')
+        $result = BusinessSetting::select('id', 'shop_name', 'shop_logo', 'shop_address', 'shop_phone', 'shop_email', 'company_id', 'created_at', 'updated_at')
             ->where('shop_name', 'like', '%' . $search . '%')->orWhere('shop_phone', 'like', '%' . $search . '%')->latest()->paginate($limit, ['*'], 'page', $offset);
+
+        foreach($merchants as $merchant) {
+            $merchant['product_count'] = Product::where('company_id', $merchant->company_id)->count();
+        }
+
         $data = [
             'total' => $result->total(),
             'limit' => $limit,
             'offset' => $offset,
-            'suppliers' => $result->items(),
+            'merchants' => $result->items(),
         ];
         return response()->json($data, 200);
         // }

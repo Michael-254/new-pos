@@ -72,7 +72,7 @@
 <script>
     "use strict";
     $(document).on('ready', function() {
-        @php($country = $customer - > country)
+        @php($country = $customer->country)
         $("#country option[value='{{$country}}']").attr('selected', 'selected').change();
     })
 </script>
