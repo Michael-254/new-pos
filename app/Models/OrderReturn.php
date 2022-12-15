@@ -12,7 +12,7 @@ class OrderReturn extends Model
 
     public function details()
     {
-        return $this->hasMany(OrderDetail::class);
+        return $this->hasMany(OrderReturnDetail::class, 'order_return_id');
     }
 
     public function customer()

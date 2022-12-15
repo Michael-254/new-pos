@@ -10,6 +10,11 @@ class PurchaseReturn extends Model
 {
     use HasFactory;
 
+    public function details()
+    {
+        return $this->hasMany(PurchaseReturnDetail::class, 'purchase_return_id');
+    }
+
     public static function boot()
     {
         parent::boot();
