@@ -48,7 +48,6 @@ class SupplierController extends Controller
         try {
             $supplier->name = $request->name;
             $supplier->mobile = $request->mobile;
-            $supplier->company_id = auth()->user()->company_id;
             $supplier->email = $request->email;
             $supplier->image = $image_name;
             $supplier->due_amount = $request->due_amount;

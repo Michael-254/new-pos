@@ -59,7 +59,7 @@ class CustomerController extends Controller
     public function postStore(Request $request, Customer $customer)
     {
         try {
-            $company_id = auth()->user()->company_id;
+            $company_id = auth()->company_id;
             $request->validate([
                 'name' => 'required',
                 'mobile' => 'required|unique:customers',
@@ -81,6 +81,7 @@ class CustomerController extends Controller
                         'f_name' => (string)$split_name[0],
                         'l_name' => $split_name[1] ? (string)$split_name[1] : '',
                         'password' => bcrypt(123456),
+                        'company_id' => auth()->user()->company_id,
                         'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
                     ]
                 );

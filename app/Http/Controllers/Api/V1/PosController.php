@@ -116,7 +116,7 @@ class PosController extends Controller
                 return response()->json(['message' => 'Cart empty'], 403);
             }
         }
-        $user_id = $request->user_id;
+        $user_id = $request->user_id == null ? 1 : $request->user_id;
 
         //$cart = session($cart_id);
         $coupon_code = 0;
@@ -134,7 +134,7 @@ class PosController extends Controller
 
         $customer = Customer::where('id', $user_id)->first();
 
-        $member_details = CustomerLogin::where('phone', $customer->mobile)->first();
+        $member_details = CustomerLogin::where('phone', $customer->phone)->first();
 
         $order = new Order();
         $order->id = $order_id;
