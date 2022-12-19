@@ -185,6 +185,9 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('products', [RegisteredBusinessController::class, 'merchantProduct']);
         });
     });
+
+    Route::group(['middleware' => ['auth:customer-api']], function () {
+    });
 });
 // Fallback route
 Route::fallback(function () {

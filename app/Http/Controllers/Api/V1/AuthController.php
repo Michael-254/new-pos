@@ -66,7 +66,7 @@ class AuthController extends Controller
                 if (Hash::check($request->password, $admin->password)) {
                     $token = $admin->createToken('LaravelPassportClient')->accessToken;
                     return response()->json(
-                        ['message' => 'You are logged in', 'token' => $token, 'user_id' => $admin->id, 'user_type' => $request->usertype],
+                        ['message' => 'You are logged in', 'token' => $token, 'user_id' => $admin->id, 'user_type' => $request->usertype, 'fname' => $admin->f_name, 'lname' => $admin->l_name, 'phone' => $admin->phone],
                         200
                     );
                 } else {

@@ -134,7 +134,7 @@ class PosController extends Controller
 
         $customer = Customer::where('id', $user_id)->first();
 
-        $member_details = CustomerLogin::where('phone', $customer->phone)->first();
+        $member_details = CustomerLogin::where('id', $customer->member_id)->first();
 
         $order = new Order();
         $order->id = $order_id;

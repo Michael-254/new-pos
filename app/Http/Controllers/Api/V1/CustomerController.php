@@ -11,6 +11,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\CustomerLogin;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
@@ -58,8 +59,9 @@ class CustomerController extends Controller
     //Save Category
     public function postStore(Request $request, Customer $customer)
     {
-        try {
-            $company_id = auth()->company_id;
+        //try {
+            dd(Auth::guard('admin-api')->user()->id);
+            $company_id = auth()->user()->company_id;
             $request->validate([
                 'name' => 'required',
                 'mobile' => 'required|unique:customers',
@@ -81,39 +83,42 @@ class CustomerController extends Controller
                         'f_name' => (string)$split_name[0],
                         'l_name' => $split_name[1] ? (string)$split_name[1] : '',
                         'password' => bcrypt(123456),
-                        'company_id' => auth()->user()->company_id,
                         'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
                     ]
                 );
-            }
 
+				if ($request->is_loyalty_enrolled == 'Yes') {
+					$dukapaq_member->update([
+						'loyalty_points' => 100,
+					]);
+				}
 
-            if ($request->is_loyalty_enrolled == 'Yes') {
-                $dukapaq_member->update([
-                    'loyalty_points' => 100,
-                ]);
-            }
+				$customer = new Customer;
+				$customer->member_id = $dukapaq_member->id;
+				$customer->name = $request->name;
+				$customer->mobile = $request->mobile;
+				$customer->email = $request->email;
+				$customer->image = $image_name;
+				$customer->balance = $request->balance;
+				$customer->company_id = auth()->user()->company_id;
+				$customer->save();
+				
+				return response()->json([
+					'success' => true,
+					'message' => 'Customer saved successfully',
+				], 200);
+			}
 
-            $customer = new Customer;
-            $customer->member_id = $dukapaq_member->id;
-            $customer->name = $request->name;
-            $customer->mobile = $request->mobile;
-            $customer->email = $request->email;
-            $customer->image = $image_name;
-            $customer->balance = $request->balance;
-            $customer->company_id = auth()->user()->company_id;
-            $customer->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Customer saved successfully',
-            ], 200);
-        } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
-                'message' => 'Customer not saved',
-            ], 403);
-        }
+                'message' => 'Customer already exists!',
+            ], 200);
+        // } catch (\Throwable $th) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'Customer not saved',
+        //     ], 403);
+        // }
     }
 
     public function getDetails(Request $request)
