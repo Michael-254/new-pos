@@ -110,13 +110,13 @@ class PosController extends Controller
 
     public function placeOrder(Request $request)
     {
-
         if ($request['cart']) {
             if (count($request['cart']) < 1) {
                 return response()->json(['message' => 'Cart empty'], 403);
             }
         }
-        $user_id = $request->user_id == null ? 1 : $request->user_id;
+        
+		$user_id = $request->user_id;
 
         //$cart = session($cart_id);
         $coupon_code = 0;
@@ -127,12 +127,16 @@ class PosController extends Controller
         $ext_discount = 0;
         $coupon_discount = $request->coupon_discount ?? 0;
 
-        $order_id = 100000 + Order::all()->count() + 1;
-        if (Order::find($order_id)) {
-            $order_id = Order::orderBy('id', 'DESC')->first()->id + 1;
-        }
+        //$order_id = 100000 + Order::all()->count() + 1;
+        //if (Order::find($order_id)) {
+        //    $order_id = Order::orderBy('id', 'DESC')->first()->id + 1;
+        //}
+		$order_id = Carbon::now()->timestamp;
 
         $customer = Customer::where('id', $user_id)->first();
+		if($customer == null) {
+			$customer = Customer::find(5001);
+		}
 
         $member_details = CustomerLogin::where('id', $customer->member_id)->first();
 
@@ -192,6 +196,7 @@ class PosController extends Controller
         }
 
         $total_tax_amount = $product_tax;
+			
         try {
             $order->total_tax = $total_tax_amount;
             $order->order_amount = $total_price;
@@ -200,7 +205,7 @@ class PosController extends Controller
             $order->collected_cash = $request->collected_cash ? $request->collected_cash : $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
             $order->save();
 
-            $customer = Customer::where('id', $user_id)->first();
+            //$customer = Customer::where('id', $user_id)->first();
             if ($user_id != 0 && $request->type == 0) {
                 $grand_total = $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
 
@@ -213,15 +218,15 @@ class PosController extends Controller
                     $payable_transaction->description = 'POS order';
                     $payable_transaction->debit = 1;
                     $payable_transaction->credit = 0;
-                    $payable_transaction->balance = $payable_account->balance - $grand_total;
+                    $payable_transaction->balance = ($payable_account->balance ?? 0) - $grand_total;
                     $payable_transaction->date = date("Y/m/d");
                     $payable_transaction->customer_id = $customer->id;
                     $payable_transaction->company_id = auth()->user()->company_id;
                     $payable_transaction->order_id = $order_id;
                     $payable_transaction->save();
 
-                    $payable_account->total_out = $payable_account->total_out + $grand_total;
-                    $payable_account->balance = $payable_account->balance - $grand_total;
+                    $payable_account->total_out = ($payable_account->total_out ?? 0) + $grand_total;
+                    $payable_account->balance = ($payable_account->balance ?? 0) - $grand_total;
                     $payable_account->save();
                 } else {
                     if ($customer->balance > 0) {
@@ -229,38 +234,38 @@ class PosController extends Controller
                         $payable_transaction = new Transaction;
                         $payable_transaction->tran_type = 'Payable';
                         $payable_transaction->account_id = $payable_account->id;
-                        $payable_transaction->amount = $customer->balance;
+                        $payable_transaction->amount = ($customer->balance ?? 0);
                         $payable_transaction->description = 'POS order';
                         $payable_transaction->debit = 1;
                         $payable_transaction->credit = 0;
-                        $payable_transaction->balance = $payable_account->balance - $customer->balance;
+                        $payable_transaction->balance = ($payable_account->balance ?? 0) - ($customer->balance ?? 0);
                         $payable_transaction->date = date("Y/m/d");
                         $payable_transaction->customer_id = $customer->id;
                         $payable_transaction->company_id = auth()->user()->company_id;
                         $payable_transaction->order_id = $order_id;
                         $payable_transaction->save();
 
-                        $payable_account->total_out = $payable_account->total_out + $customer->balance;
-                        $payable_account->balance = $payable_account->balance - $customer->balance;
+                        $payable_account->total_out = ($payable_account->total_out ?? 0) + ($customer->balance ?? 0);
+                        $payable_account->balance = ($payable_account->balance ?? 0) - ($customer->balance ?? 0);
                         $payable_account->save();
 
                         $receivable_account = Account::find(3);
                         $receivable_transaction = new Transaction;
                         $receivable_transaction->tran_type = 'Receivable';
                         $receivable_transaction->account_id = $receivable_account->id;
-                        $receivable_transaction->amount = -$request->remaining_balance;
+                        $receivable_transaction->amount = -$request->remaining_balance ?? 0;
                         $receivable_transaction->description = 'POS order';
                         $receivable_transaction->debit = 0;
                         $receivable_transaction->credit = 1;
-                        $receivable_transaction->balance = $receivable_account->balance - $request->remaining_balance;
+                        $receivable_transaction->balance = ($receivable_account->balance ?? 0) - ($request->remaining_balance ?? 0);
                         $receivable_transaction->date = date("Y/m/d");
                         $receivable_transaction->customer_id = $customer->id;
                         $receivable_transaction->company_id = auth()->user()->company_id;
                         $receivable_transaction->order_id = $order_id;
                         $receivable_transaction->save();
 
-                        $receivable_account->total_in = $receivable_account->total_in - $request->remaining_balance;
-                        $receivable_account->balance = $receivable_account->balance - $request->remaining_balance;
+                        $receivable_account->total_in = ($receivable_account->total_in ?? 0) - ($request->remaining_balance ?? 0);
+                        $receivable_account->balance = ($receivable_account->balance ?? 0) - ($request->remaining_balance ?? 0);
                         $receivable_account->save();
                     } else {
 
@@ -272,25 +277,26 @@ class PosController extends Controller
                         $receivable_transaction->description = 'POS order';
                         $receivable_transaction->debit = 0;
                         $receivable_transaction->credit = 1;
-                        $receivable_transaction->balance = $receivable_account->balance + $grand_total;
+                        $receivable_transaction->balance = ($receivable_account->balance ?? 0) + $grand_total;
                         $receivable_transaction->date = date("Y/m/d");
                         $receivable_transaction->customer_id = $customer->id;
                         $receivable_transaction->company_id = auth()->user()->company_id;
                         $receivable_transaction->order_id = $order_id;
                         $receivable_transaction->save();
 
-                        $receivable_account->total_in = $receivable_account->total_in + $grand_total;
-                        $receivable_account->balance = $receivable_account->balance + $grand_total;
+                        $receivable_account->total_in = ($receivable_account->total_in ?? 0) + $grand_total;
+                        $receivable_account->balance = ($receivable_account->balance ?? 0) + $grand_total;
                         $receivable_account->save();
                     }
                 }
 
-                $customer->balance = $request->remaining_balance;
+                $customer->balance = ($request->remaining_balance ?? 0);
 
                 $customer->save();
             }
+			
             //transaction start
-            if ($request->type != 0) {
+            /* if ($request->type != 0) {
                 $account = Account::find($request->type);
                 $transaction = new Transaction;
                 $transaction->tran_type = 'Income';
@@ -299,7 +305,7 @@ class PosController extends Controller
                 $transaction->description = 'POS order';
                 $transaction->debit = 0;
                 $transaction->credit = 1;
-                $transaction->balance = $account->balance + $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
+                $transaction->balance = ($account->balance ?? 0) + $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
                 $transaction->date = date("Y/m/d");
                 $transaction->customer_id = $customer->id;
                 $transaction->company_id = auth()->user()->company_id;
@@ -307,10 +313,11 @@ class PosController extends Controller
                 $transaction->save();
                 //transaction end
                 //account
-                $account->balance = $account->balance + $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
-                $account->total_in = $account->total_in + $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
+                $account->balance = ($account->balance ?? 0) + $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
+                $account->total_in = ($account->total_in ?? 0) + $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
                 $account->save();
-            }
+            } */
+			
             foreach ($order_details as $key => $item) {
                 $order_details[$key]['order_id'] = $order->id;
             }
@@ -327,7 +334,7 @@ class PosController extends Controller
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to placed order'
+                'message' => $e->getMessage()
             ], 400);
         }
     }
