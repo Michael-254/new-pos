@@ -92,14 +92,9 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.', 'prefix' => 'admin'], fu
             Route::get('customer-balance', 'POSController@customer_balance')->name('customer-balance');
             Route::post('order', 'POSController@place_order')->name('order');
             Route::get('orders', 'POSController@order_list')->name('orders');
-<<<<<<< Updated upstream
-            Route::get('order-details/{id}', 'POSController@order_details')->name('order-details');
-            Route::post('order-return', 'POSController@order_return')->name('order-return');
-=======
             Route::get('order-details/{order}', 'POSController@order_details')->name('order-details');
             Route::get('order-return-details/{order}', 'POSController@order_details')->name('order-return-details');
             Route::post('order-returns', 'POSController@order_return_list')->name('order-return');
->>>>>>> Stashed changes
             Route::get('invoice/{id}', 'POSController@generate_invoice');
             Route::get('search-products', 'POSController@search_product')->name('search-products');
             Route::get('search-by-add', 'POSController@search_by_add_product')->name('search-by-add');
@@ -173,6 +168,36 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.', 'prefix' => 'admin'], fu
             Route::get('transaction-list/{id}', 'SupplierController@transaction_list')->name('transaction-list');
             Route::post('add-new-purchase', 'SupplierController@add_new_purchase')->name('add-new-purchase');
             Route::post('pay-due', 'SupplierController@pay_due')->name('pay-due');
+        });
+        //user
+        Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+            Route::get('add', 'UserController@index')->name('add');
+            Route::post('store', 'UserController@store')->name('store');
+            Route::get('list', 'UserController@list')->name('list');
+            Route::get('view/{id}', 'UserController@view')->name('view');
+            Route::get('edit/{id}', 'UserController@edit')->name('edit');
+            Route::post('update/{id}', 'UserController@update')->name('update');
+            Route::delete('delete/{id}', 'UserController@delete')->name('delete');
+        });
+        //role
+        Route::group(['prefix' => 'role', 'as' => 'role.'], function () {
+            Route::get('add', 'RoleController@index')->name('add');
+            Route::post('store', 'RoleController@store')->name('store');
+            Route::get('list', 'RoleController@list')->name('list');
+            Route::get('view/{id}', 'RoleController@view')->name('view');
+            Route::get('edit/{id}', 'RoleController@edit')->name('edit');
+            Route::post('update/{id}', 'RoleController@update')->name('update');
+            Route::delete('delete/{id}', 'RoleController@delete')->name('delete');
+        });
+        //permission
+        Route::group(['prefix' => 'permission', 'as' => 'permission.'], function () {
+            Route::get('add', 'PermissionController@index')->name('add');
+            Route::post('store', 'PermissionController@store')->name('store');
+            Route::get('list', 'PermissionController@list')->name('list');
+            Route::get('view/{id}', 'PermissionController@view')->name('view');
+            Route::get('edit/{id}', 'PermissionController@edit')->name('edit');
+            Route::post('update/{id}', 'PermissionController@update')->name('update');
+            Route::delete('delete/{id}', 'PermissionController@delete')->name('delete');
         });
         //stock limit
         Route::group(['prefix' => 'stock', 'as' => 'stock.'], function () {

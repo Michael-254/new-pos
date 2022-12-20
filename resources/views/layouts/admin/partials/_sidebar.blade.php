@@ -318,6 +318,47 @@
                         <small class="nav-subtitle">{{\App\CPU\translate('shop_setting_section')}}</small>
                         <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                     </li>
+                    <!-- Users Pages -->
+                    <li class="navbar-vertical-aside-has-menu {{Request::is('admin/user*')?'active':''}}">
+                        <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
+                            <i class="tio-poi-user nav-icon"></i>
+                            <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{\App\CPU\translate('user')}}</span>
+                        </a>
+                        <ul class="js-navbar-vertical-aside-submenu nav nav-sub {{Request::is('admin/user*')?'d-block':''}}">
+                            <li class="nav-item {{Request::is('admin/user/add')?'active':''}}">
+                                <a class="nav-link " href="{{route('admin.user.add')}}" title="{{\App\CPU\translate('add_new_user')}}">
+                                    <span class="tio-circle nav-indicator-icon"></span>
+                                    <span class="text-truncate">{{\App\CPU\translate('add_user')}}</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item {{Request::is('admin/user/list')?'active':''}}">
+                                <a class="nav-link " href="{{route('admin.user.list')}}" title="{{\App\CPU\translate('list_of_users')}}">
+                                    <span class="tio-circle nav-indicator-icon"></span>
+                                    <span class="text-truncate">{{\App\CPU\translate('user_list')}}</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item {{Request::is('admin/role/list')?'active':''}}">
+                                <a class="nav-link " href="{{route('admin.role.list')}}" title="{{\App\CPU\translate('list_of_roles')}}">
+                                    <span class="tio-circle nav-indicator-icon"></span>
+                                    <span class="text-truncate">{{\App\CPU\translate('role_list')}}</span>
+                                </a>
+                            </li>
+
+                            <li class="nav-item {{Request::is('admin/permission/list')?'active':''}}">
+                                <a class="nav-link " href="{{route('admin.permission.list')}}" title="{{\App\CPU\translate('list_of_permissions')}}">
+                                    <span class="tio-circle nav-indicator-icon"></span>
+                                    <span class="text-truncate">{{\App\CPU\translate('permission_list')}}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Users end Pages -->
+                    <li class="nav-item">
+                        <small class="nav-subtitle">{{\App\CPU\translate('shop_setting_section')}}</small>
+                        <small class="tio-more-horizontal nav-subtitle-replacer"></small>
+                    </li>
                     <!-- Settings Start Pages -->
                     <li class="navbar-vertical-aside-has-menu {{Request::is('admin/business-settings*')?'active':''}}">
                         <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
