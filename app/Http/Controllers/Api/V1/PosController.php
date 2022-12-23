@@ -383,13 +383,13 @@ class PosController extends Controller
         if ($request->category_id != null) {
             array_push($category, [
                 'id' => $request->category_id,
-                'position' => 1,
+                'position' => "1",
             ]);
         }
         if ($request->sub_category_id != null) {
             array_push($category, [
                 'id' => $request->sub_category_id,
-                'position' => 2,
+                'position' => "2",
             ]);
         }
         $products->category_ids = json_encode($category);
