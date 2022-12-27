@@ -15,7 +15,7 @@ class BusinessSettingTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('admins')->insert([
+        DB::table('business_settings')->insert([
             'id' => 1,
             'company_id' => 1,
             'shop_logo' => '2022-10-17-634c4a5c98a27.png',
