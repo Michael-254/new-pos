@@ -58,7 +58,6 @@ class DashboardController extends Controller
         }
         //dd($last_month_income);
         $stock_limit = Helpers::get_business_settings('stock_limit');
-        dd($stock_limit);
 
         $products = Product::where('quantity', '<', $stock_limit)->orderBy('quantity')->paginate(Helpers::pagination_limit(), ['*'], 'product');
         //dd($products);

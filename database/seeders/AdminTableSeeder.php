@@ -23,8 +23,8 @@ class AdminTableSeeder extends Seeder
             'email' => 'admin@admin.com',
             'password' => bcrypt(12345678),
             'remember_token' =>Str::random(10),
-            'created_at'=>now(),
-            'updated_at'=>now()
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
     }
 }
