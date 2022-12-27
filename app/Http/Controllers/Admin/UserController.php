@@ -27,7 +27,7 @@ class UserController extends Controller
         ]);
 
         if (!empty($request->file('image'))) {
-            $image_name =  Helpers::upload('customer/', 'png', $request->file('image'));
+            $image_name =  Helpers::upload('user/', 'png', $request->file('image'));
         } else {
             $image_name = 'def.png';
         }
@@ -53,15 +53,15 @@ class UserController extends Controller
             ]);
         }
 
-        $customer = new Admin;
-        $customer->member_id = $dukapaq_member->id;
-        $customer->name = $request->name;
-        $customer->mobile = $request->mobile;
-        $customer->email = $request->email;
-        $customer->image = $image_name;
-        $customer->balance = $request->balance;
-        $customer->company_id = auth('admin')->user()->company_id;
-        $customer->save();
+        $user = new Admin;
+        $user->member_id = $dukapaq_member->id;
+        $user->name = $request->name;
+        $user->mobile = $request->mobile;
+        $user->email = $request->email;
+        $user->image = $image_name;
+        $user->balance = $request->balance;
+        $user->company_id = auth('admin')->user()->company_id;
+        $user->save();
 
 
         Toastr::success(translate('Admin Added successfully'));
@@ -74,7 +74,7 @@ class UserController extends Controller
         $search = $request['search'];
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
-            $customers = Admin::where(function ($q) use ($key) {
+            $users = Admin::where(function ($q) use ($key) {
                 foreach ($key as $value) {
                     $q->orWhere('name', 'like', "%{$value}%")
                         ->orWhere('mobile', 'like', "%{$value}%");
@@ -82,11 +82,11 @@ class UserController extends Controller
             });
             $query_param = ['search' => $request['search']];
         } else {
-            $customers = new Admin;
+            $users = new Admin;
         }
-        //$walk_customer = $customers->where('type',0)->get();
-        $customers = $customers->with('member')->where('company_id', auth('admin')->user()->company_id)->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
-        return view('admin-views.users.list', compact('customers', 'accounts', 'search'));
+        //$walk_user = $users->where('type',0)->get();
+        $users = $users->where('company_id', auth('admin')->user()->company_id)->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
+        return view('admin-views.users.list', compact('users', 'accounts', 'search'));
     }
 
     public function listWithLoyalty(Request $request)
@@ -97,7 +97,7 @@ class UserController extends Controller
 
         $key = explode(' ', $request['search']);
 
-        $customers = Admin::whereHas('member', function ($q) {
+        $users = Admin::whereHas('member', function ($q) {
             $q->where('is_loyalty_enrolled', 'Yes');
         })
             ->when($request->has('search'), function ($q) use ($key) {
@@ -107,18 +107,18 @@ class UserController extends Controller
                 }
             });
         $query_param = ['search' => $request['search'] ?? ''];
-        //$walk_customer = $customers->where('type',0)->get();
-        $customers = $customers->where('company_id', auth('admin')->user()->company_id)
+        //$walk_user = $users->where('type',0)->get();
+        $users = $users->where('company_id', auth('admin')->user()->company_id)
             ->paginate(Helpers::pagination_limit())->appends($query_param);
 
-        return view('admin-views.users.list', compact('customers', 'accounts', 'search'));
+        return view('admin-views.users.list', compact('users', 'accounts', 'search'));
     }
 
     public function view(Request $request, $id)
     {
-        $customer = Admin::where('id', $id)->first();
+        $user = Admin::where('id', $id)->first();
 
-        if (isset($customer)) {
+        if (isset($user)) {
             $query_param = [];
             $search = $request['search'];
             if ($request->has('search')) {
@@ -135,7 +135,7 @@ class UserController extends Controller
             }
 
             $orders = $orders->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
-            return view('admin-views.users.view', compact('customer', 'orders', 'search'));
+            return view('admin-views.users.view', compact('user', 'orders', 'search'));
         }
         Toastr::error('Admin not found!');
         return back();
@@ -143,12 +143,12 @@ class UserController extends Controller
     public function transaction_list(Request $request, $id)
     {
         $accounts = Account::get();
-        $customer = Admin::where('id', $id)->first();
-        if (isset($customer)) {
+        $user = Admin::where('id', $id)->first();
+        if (isset($user)) {
             $acc_id = $request['account_id'];
             $tran_type = $request['tran_type'];
             $orders = Order::where(['user_id' => $id])->get();
-            $transactions = Transaction::where(['customer_id' => $id])
+            $transactions = Transaction::where(['user_id' => $id])
                 ->when($acc_id != null, function ($q) use ($request) {
                     return $q->where('account_id', $request['account_id']);
                 })
@@ -156,19 +156,19 @@ class UserController extends Controller
                     return $q->where('tran_type', $request['tran_type']);
                 })->latest()->paginate(Helpers::pagination_limit())
                 ->appends(['account_id' => $request['account_id'], 'tran_type' => $request['tran_type']]);
-            return view('admin-views.users.transaction-list', compact('customer', 'transactions', 'orders', 'tran_type', 'accounts', 'acc_id'));
+            return view('admin-views.users.transaction-list', compact('user', 'transactions', 'orders', 'tran_type', 'accounts', 'acc_id'));
         }
         Toastr::error(translate('Admin not found'));
         return back();
     }
     public function edit(Request $request)
     {
-        $customer = Admin::where('id', $request->id)->first();
-        return view('admin-views.users.edit', compact('customer'));
+        $user = Admin::where('id', $request->id)->first();
+        return view('admin-views.users.edit', compact('user'));
     }
     public function update(Request $request)
     {
-        $customer = Admin::where('id', $request->id)->first();
+        $user = Admin::where('id', $request->id)->first();
         $request->validate([
             'name' => 'required',
             'mobile' => 'required',
@@ -183,25 +183,25 @@ class UserController extends Controller
             ]);
         }
 
-        $customer->name = $request->name;
-        $customer->mobile = $request->mobile;
-        $customer->email = $request->email;
-        $customer->image = $request->has('image') ? Helpers::update('customer/', $customer->image, 'png', $request->file('image')) : $customer->image;
-        $customer->state = $request->state;
-        $customer->city = $request->city;
-        $customer->zip_code = $request->zip_code;
-        $customer->address = $request->address;
-        $customer->balance = $request->balance;
-        $customer->save();
+        $user->name = $request->name;
+        $user->mobile = $request->mobile;
+        $user->email = $request->email;
+        $user->image = $request->has('image') ? Helpers::update('user/', $user->image, 'png', $request->file('image')) : $user->image;
+        $user->state = $request->state;
+        $user->city = $request->city;
+        $user->zip_code = $request->zip_code;
+        $user->address = $request->address;
+        $user->balance = $request->balance;
+        $user->save();
 
         Toastr::success(translate('Admin updated successfully'));
         return back();
     }
     public function delete(Request $request)
     {
-        $customer = Admin::find($request->id);
-        Helpers::delete('customer/' . $customer['image']);
-        $customer->delete();
+        $user = Admin::find($request->id);
+        Helpers::delete('user/' . $user['image']);
+        $user->delete();
 
         Toastr::success(translate('Admin removed successfully'));
         return back();
@@ -209,14 +209,14 @@ class UserController extends Controller
     public function update_balance(Request $request)
     {
         $request->validate([
-            'customer_id' => 'required',
+            'user_id' => 'required',
             'amount' => 'required',
             'account_id' => 'required',
             'date' => 'required',
         ]);
-        $customer = Admin::find($request->customer_id);
+        $user = Admin::find($request->user_id);
 
-        if ($customer->balance >= 0) {
+        if ($user->balance >= 0) {
             $account = Account::find(2);
             $transaction = new Transaction;
             $transaction->tran_type = 'Payable';
@@ -227,7 +227,7 @@ class UserController extends Controller
             $transaction->credit = 1;
             $transaction->balance = $account->balance + $request->amount;
             $transaction->date = $request->date;
-            $transaction->customer_id = $request->customer_id;
+            $transaction->user_id = $request->user_id;
             $transaction->save();
 
             $account->total_in = $account->total_in + $request->amount;
@@ -244,14 +244,14 @@ class UserController extends Controller
             $receive_transaction->credit = 1;
             $receive_transaction->balance = $receive_account->balance + $request->amount;
             $receive_transaction->date = $request->date;
-            $receive_transaction->customer_id = $request->customer_id;
+            $receive_transaction->user_id = $request->user_id;
             $receive_transaction->save();
 
             $receive_account->total_in = $receive_account->total_in + $request->amount;
             $receive_account->balance = $receive_account->balance + $request->amount;
             $receive_account->save();
         } else {
-            $remaining_balance = $customer->balance + $request->amount;
+            $remaining_balance = $user->balance + $request->amount;
 
             if ($remaining_balance >= 0) {
                 if ($remaining_balance != 0) {
@@ -265,7 +265,7 @@ class UserController extends Controller
                     $payable_transaction->credit = 1;
                     $payable_transaction->balance = $payable_account->balance + $remaining_balance;
                     $payable_transaction->date = $request->date;
-                    $payable_transaction->customer_id = $request->customer_id;
+                    $payable_transaction->user_id = $request->user_id;
                     $payable_transaction->save();
 
                     $payable_account->total_in = $payable_account->total_in + $remaining_balance;
@@ -283,7 +283,7 @@ class UserController extends Controller
                 $receive_transaction->credit = 1;
                 $receive_transaction->balance = $receive_account->balance + $request->amount;
                 $receive_transaction->date = $request->date;
-                $receive_transaction->customer_id = $request->customer_id;
+                $receive_transaction->user_id = $request->user_id;
                 $receive_transaction->save();
 
                 $receive_account->total_in = $receive_account->total_in + $request->amount;
@@ -295,17 +295,17 @@ class UserController extends Controller
                 $receivable_transaction = new Transaction;
                 $receivable_transaction->tran_type = 'Receivable';
                 $receivable_transaction->account_id = $receivable_account->id;
-                $receivable_transaction->amount = -$customer->balance;
-                $receivable_transaction->description = 'update customer balance';
+                $receivable_transaction->amount = -$user->balance;
+                $receivable_transaction->description = 'update user balance';
                 $receivable_transaction->debit = 1;
                 $receivable_transaction->credit = 0;
-                $receivable_transaction->balance = $receivable_account->balance + $customer->balance;
+                $receivable_transaction->balance = $receivable_account->balance + $user->balance;
                 $receivable_transaction->date = $request->date;
-                $receivable_transaction->customer_id = $request->customer_id;
+                $receivable_transaction->user_id = $request->user_id;
                 $receivable_transaction->save();
 
-                $receivable_account->total_out = $receivable_account->total_out - $customer->balance;
-                $receivable_account->balance = $receivable_account->balance + $customer->balance;
+                $receivable_account->total_out = $receivable_account->total_out - $user->balance;
+                $receivable_account->balance = $receivable_account->balance + $user->balance;
                 $receivable_account->save();
             } else {
 
@@ -319,7 +319,7 @@ class UserController extends Controller
                 $receive_transaction->credit = 1;
                 $receive_transaction->balance = $receive_account->balance + $request->amount;
                 $receive_transaction->date = $request->date;
-                $receive_transaction->customer_id = $request->customer_id;
+                $receive_transaction->user_id = $request->user_id;
                 $receive_transaction->save();
 
                 $receive_account->total_in = $receive_account->total_in + $request->amount;
@@ -331,12 +331,12 @@ class UserController extends Controller
                 $receivable_transaction->tran_type = 'Receivable';
                 $receivable_transaction->account_id = $receivable_account->id;
                 $receivable_transaction->amount = $request->amount;
-                $receivable_transaction->description = 'update customer balance';
+                $receivable_transaction->description = 'update user balance';
                 $receivable_transaction->debit = 1;
                 $receivable_transaction->credit = 0;
                 $receivable_transaction->balance = $receivable_account->balance - $request->amount;
                 $receivable_transaction->date = $request->date;
-                $receivable_transaction->customer_id = $request->customer_id;
+                $receivable_transaction->user_id = $request->user_id;
                 $receivable_transaction->save();
 
                 $receivable_account->total_out = $receivable_account->total_out + $request->amount;
@@ -344,8 +344,8 @@ class UserController extends Controller
                 $receivable_account->save();
             }
         }
-        $customer->balance = $customer->balance + $request->amount;
-        $customer->save();
+        $user->balance = $user->balance + $request->amount;
+        $user->save();
 
         Toastr::success(translate('Admin balance updated successfully'));
         return back();

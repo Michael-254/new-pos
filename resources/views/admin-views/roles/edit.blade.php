@@ -32,30 +32,6 @@
                                     <input type="text" name="name" class="form-control" value="{{ $customer->name }}" placeholder="{{\App\CPU\translate('customer_name')}}" required>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-4">
-                                <div class="form-group">
-                                    <label class="input-label">{{\App\CPU\translate('mobile_no')}} <span class="input-label-secondary text-danger">*</span></label>
-                                    <input type="number" id="mobile" name="mobile" class="form-control" value="{{ $customer->mobile }}" placeholder="{{\App\CPU\translate('mobile_no')}}" required>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-4">
-                                <div class="form-group">
-                                    <label class="input-label">{{\App\CPU\translate('enroll_to_DUKAPAQ_Loyalty')}} <span class="input-label-secondary text-danger">*</span> </label>
-                                    <select name="is_loyalty_enrolled" class="form-control" required>
-                                        <option value="">-- Select --</option>
-                                        <option value="Yes" {{ $customer->member->is_loyalty_enrolled == 'Yes'  ? 'selected' : '' }}>Yes</option>
-                                        <option value="No" {{ $customer->member->is_loyalty_enrolled == 'No'  ? 'selected' : '' }}>No</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row pl-2">
-                            <div class="col-12 col-sm-6">
-                                <div class="form-group">
-                                    <label class="input-label">{{\App\CPU\translate('email')}}</label>
-                                    <input type="email" name="email" class="form-control" value="{{ $customer->email }}" placeholder="{{\App\CPU\translate('Ex_:_ex@example.com')}}">
-                                </div>
-                            </div>
                         </div>
                         <hr>
                         <button type="submit" class="btn btn-primary">{{\App\CPU\translate('update')}}</button>

@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('title',\App\CPU\translate('customer_list'))
+@section('title',\App\CPU\translate('permission_list'))
 
 @push('css_or_js')
 <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -13,8 +13,8 @@
     <div class="page-header">
         <div class="row align-items-center">
             <div class="col-sm mb-2 mb-sm-0">
-                <h1 class="page-header-title text-capitalize"><i class="tio-filter-list"></i> {{\App\CPU\translate('customer_list')}}
-                    <span class="badge badge-soft-dark ml-2">{{$customers->total()}}</span>
+                <h1 class="page-header-title text-capitalize"><i class="tio-filter-list"></i> {{\App\CPU\translate('permission_list')}}
+                    <span class="badge badge-soft-dark ml-2">{{$permissions->total()}}</span>
                 </h1>
             </div>
         </div>
@@ -44,7 +44,7 @@
                             </form>
                         </div>
                         <div class="col-12 col-sm-5">
-                            <a href="{{route('admin.customer.add')}}" class="btn btn-primary float-right"><i class="tio-add-circle"></i> {{\App\CPU\translate('add_new_customer')}}
+                            <a href="{{route('admin.permission.add')}}" class="btn btn-primary float-right"><i class="tio-add-circle"></i> {{\App\CPU\translate('add_new_permission')}}
                             </a>
                         </div>
                     </div>
@@ -60,8 +60,6 @@
                                 <th>{{ \App\CPU\translate('image') }}</th>
                                 <th>{{\App\CPU\translate('name')}}</th>
                                 <th>{{\App\CPU\translate('phone')}}</th>
-                                <th>{{\App\CPU\translate('is_loyalty_enrolled')}}</th>
-                                <th>{{\App\CPU\translate('loyalty_points')}}</th>
                                 <th>{{ \App\CPU\translate('orders') }}</th>
                                 <th class="text-center">{{ \App\CPU\translate('balance') }}</th>
                                 <th>{{\App\CPU\translate('action')}}</th>
@@ -69,50 +67,36 @@
                         </thead>
 
                         <tbody id="set-rows">
-                            @foreach($customers as $key=>$customer)
+                            @foreach($permissions as $key=>$permission)
                             <tr>
-                                <td>{{ $customers->firstItem()+$key+1 }}</td>
+                                <td>{{ $permissions->firstItem()+$key+1 }}</td>
                                 <td>
-                                    <a href="{{route('admin.customer.view',[$customer['id']])}}">
-                                        <img class="img-one-cl" onerror="this.src='{{asset('assets/admin/img/160x160/img1.jpg')}}'" src="{{asset('storage/app/public/customer')}}/{{ $customer->image }}" alt="">
+                                    <a href="{{route('admin.permission.view',[$permission['id']])}}">
+                                        <img class="img-one-cl" onerror="this.src='{{asset('assets/admin/img/160x160/img1.jpg')}}'" src="{{asset('storage/app/public/permission')}}/{{ $permission->image }}" alt="">
                                     </a>
                                 </td>
                                 <td>
-                                    <a class="text-primary" href="{{route('admin.customer.view',[$customer['id']])}}">
-                                        {{ $customer->name }}
+                                    <a class="text-primary" href="{{route('admin.permission.view',[$permission['id']])}}">
+                                        {{ $permission->name }}
                                     </a>
                                 </td>
                                 <td>
-                                    @if ($customer->id != 1)
-                                    {{ $customer->mobile }}
+                                    @if ($permission->id != 1)
+                                    {{ $permission->mobile }}
                                     @else
                                     {{\App\CPU\translate('no_phone')}}
                                     @endif
                                 </td>
-                                <td>
-                                    @if($customer->member->is_loyalty_enrolled == 'Yes')
-                                    Yes
-                                    @else
-                                    No
-                                    @endif
-                                </td>
-                                <td>
-                                    @if($customer->member->is_loyalty_enrolled == 'Yes')
-                                    {{ $customer->member->loyalty_points }}
-                                    @else
-                                    {{\App\CPU\translate('not_a_loyalty_member')}}
-                                    @endif
-                                </td>
-                                <td>{{ $customer->orders->count() }}</td>
+                                <td>{{ $permission->orders->count() }}</td>
                                 <td class="text-center p-5">
-                                    @if ($customer->id != 1)
+                                    @if ($permission->id != 1)
                                     <div class="row">
                                         <div class="col-5">
-                                            {{ $customer->balance. ' ' . \App\CPU\Helpers::currency_symbol() }}
+                                            {{ $permission->balance. ' ' . \App\CPU\Helpers::currency_symbol() }}
                                         </div>
                                         <div class="col-5">
 
-                                            <a class=" btn btn-info p-1 badge" id="{{ $customer->id }}" onclick="update_customer_balance_cl({{ $customer->id }})" type="button" data-toggle="modal" data-target="#update-customer-balance">
+                                            <a class=" btn btn-info p-1 badge" id="{{ $permission->id }}" onclick="update_permission_balance_cl({{ $permission->id }})" type="button" data-toggle="modal" data-target="#update-permission-balance">
                                                 <i class="tio-add-circle"></i>
                                                 {{\App\CPU\translate('add_balance')}}</a>
 
@@ -129,17 +113,17 @@
 
                                 </td>
                                 <td>
-                                    @if ($customer->name != "walking customer")
-                                    <a class="btn btn-white mr-1" href="{{route('admin.customer.view',[$customer['id']])}}"><span class="tio-visible"></span></a>
-                                    <a class="btn btn-white mr-1" href="{{route('admin.customer.edit',[$customer['id']])}}">
+                                    @if ($permission->name != "walking permission")
+                                    <a class="btn btn-white mr-1" href="{{route('admin.permission.view',[$permission['id']])}}"><span class="tio-visible"></span></a>
+                                    <a class="btn btn-white mr-1" href="{{route('admin.permission.edit',[$permission['id']])}}">
                                         <span class="tio-edit"></span>
                                     </a>
-                                    <a class="btn btn-white mr-1" href="javascript:" onclick="form_alert('customer-{{$customer['id']}}','Want to delete this customer?')"><span class="tio-delete"></span></a>
-                                    <form action="{{route('admin.customer.delete',[$customer['id']])}}" method="post" id="customer-{{$customer['id']}}">
+                                    <a class="btn btn-white mr-1" href="javascript:" onclick="form_alert('permission-{{$permission['id']}}','Want to delete this permission?')"><span class="tio-delete"></span></a>
+                                    <form action="{{route('admin.permission.delete',[$permission['id']])}}" method="post" id="permission-{{$permission['id']}}">
                                         @csrf @method('delete')
                                     </form>
                                     @else
-                                    <a class="btn btn-white mr-1" href="{{route('admin.customer.view',[$customer['id']])}}"><span class="tio-visible"></span></a>
+                                    <a class="btn btn-white mr-1" href="{{route('admin.permission.view',[$permission['id']])}}"><span class="tio-visible"></span></a>
                                     @endif
                                 </td>
                             </tr>
@@ -150,11 +134,11 @@
                     <div class="page-area">
                         <table>
                             <tfoot class="border-top">
-                                {!! $customers->links() !!}
+                                {!! $permissions->links() !!}
                             </tfoot>
                         </table>
                     </div>
-                    @if(count($customers)==0)
+                    @if(count($permissions)==0)
                     <div class="text-center p-4">
                         <img class="mb-3 w-one-cl" src="{{asset('assets/admin')}}/svg/illustrations/sorry.svg" alt="{{\App\CPU\translate('Image Description')}}">
                         <p class="mb-0">{{ \App\CPU\translate('No_data_to_show')}}</p>
@@ -164,57 +148,6 @@
                 <!-- End Table -->
             </div>
             <!-- End Card -->
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="update-customer-balance" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{{\App\CPU\translate('update_customer_balance_cl')}}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="{{route('admin.customer.update-balance')}}" method="post" class="row">
-                    @csrf
-                    <input type="hidden" id="customer_id" name="customer_id">
-
-                    <div class="form-group col-12 col-sm-6">
-                        <label for="">{{\App\CPU\translate('balance')}}</label>
-                        <input type="number" step="0.01" min="0" class="form-control" name="amount" required>
-                    </div>
-                    <div class="col-12 col-sm-6">
-                        <div class="form-group">
-                            <label class="input-label" for="exampleFormControlInput1">{{\App\CPU\translate('balance_receive_account')}}</label>
-                            <select name="account_id" class="form-control js-select2-custom" required>
-                                <option value="">---{{\App\CPU\translate('select')}}---</option>
-                                @foreach ($accounts as $account)
-                                @if ($account['id']!=2 && $account['id']!=3)
-                                <option value="{{$account['id']}}">{{$account['account']}}</option>
-                                @endif
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6">
-                        <div class="form-group">
-                            <label class="input-label">{{\App\CPU\translate('description')}} </label>
-                            <input type="text" name="description" class="form-control" placeholder="{{\App\CPU\translate('description')}}">
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-6">
-                        <div class="form-group">
-                            <label class="input-label" for="exampleFormControlInput1">{{\App\CPU\translate('date')}} </label>
-                            <input type="date" name="date" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="form-group col-sm-12">
-                        <button class="btn btn-sm btn-primary" type="submit">{{\App\CPU\translate('submit')}}</button>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 </div>
