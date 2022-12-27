@@ -16,7 +16,7 @@ class AdminTableSeeder extends Seeder
      */
     public function run()
     {
-        $user = DB::table('admins')->insert([
+        DB::table('admins')->insert([
             'id' => 1,
             'company_id' => 1,
             'f_name' => 'Master Admin',
@@ -28,7 +28,8 @@ class AdminTableSeeder extends Seeder
             'updated_at' => now()
         ]);
 
-        // $role = Role::find(1);
-        // $user->assignRole($role);
+        $user = \App\Models\Admin::find(1);
+        $role = Role::find(1);
+        $user->assignRole($role);
     }
 }
