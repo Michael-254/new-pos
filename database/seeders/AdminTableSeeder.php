@@ -17,6 +17,7 @@ class AdminTableSeeder extends Seeder
     {
         DB::table('admins')->insert([
             'id' => 1,
+            'company_id' => 1,
             'f_name' => 'Master Admin',
             'l_name' => 'Wanguba',
             'email' => 'admin@admin.com',
