@@ -26,18 +26,18 @@ class RolePermissionTableSeeder extends Seeder
         Permission::create(['name' => 'list users', 'guard_name' => 'admin']);
 
         // create roles and assign existing permissions
-        $role1 = Role::create(['name' => 'Super-Admin']);
+        $role1 = Role::create(['name' => 'Super-Admin', 'guard_name' => 'admin']);
         $role1->givePermissionTo('create users');
         $role1->givePermissionTo('edit users');
         $role1->givePermissionTo('delete users');
         $role1->givePermissionTo('list users');
 
-        $role2 = Role::create(['name' => 'Admin']);
+        $role2 = Role::create(['name' => 'Admin', 'guard_name' => 'admin']);
         $role2->givePermissionTo('create users');
         $role2->givePermissionTo('edit users');
-        $role3->givePermissionTo('list users');
+        $role2->givePermissionTo('list users');
 
-        $role3 = Role::create(['name' => 'Manager']);
+        $role3 = Role::create(['name' => 'Manager', 'guard_name' => 'admin']);
         $role3->givePermissionTo('create users');
         $role3->givePermissionTo('list users');
     }
