@@ -86,7 +86,7 @@ class PermissionController extends Controller
         }
         //$walk_customer = $customers->where('type',0)->get();
         $customers = $customers->with('member')->where('company_id', auth('admin')->user()->company_id)->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
-        return view('admin-views.permissions.index', compact('customers', 'accounts', 'search'));
+        return view('admin-views.permissions.list', compact('customers', 'accounts', 'search'));
     }
 
     public function listWithLoyalty(Request $request)

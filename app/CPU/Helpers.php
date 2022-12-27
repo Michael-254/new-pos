@@ -260,7 +260,7 @@ class Helpers
     }
     public static function pagination_limit()
     {
-        $company_id = auth()->guard('admin')->user()->company_id ?? 1;
+        $company_id = auth()->guard('admin')->user()->company_id;
         $pagination_limit = BusinessSetting::where('company_id', $company_id)->first();
         return (int)$pagination_limit->pagination_limit ?? 12;
     }

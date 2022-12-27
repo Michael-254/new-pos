@@ -86,7 +86,7 @@ class RoleController extends Controller
         }
       
         $customers = $customers->with('member')->where('company_id', auth('admin')->user()->company_id ?? 1)->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
-        return view('admin-views.roles.index', compact('customers', 'accounts', 'search'));
+        return view('admin-views.roles.list', compact('customers', 'accounts', 'search'));
     }
 
     public function listWithLoyalty(Request $request)
