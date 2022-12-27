@@ -45,7 +45,8 @@
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                         </li>
                         <!-- Pos Pages -->
-                        @php($orders = \App\Models\Order::get()->count(); $orders_return = \App\Models\OrderReturn::get()->count();)
+                        @php($orders = \App\Models\Order::get()->count())
+                        @php($orders_return = \App\Models\OrderReturn::get()->count())
                         <li class="navbar-vertical-aside-has-menu {{Request::is('admin/pos*')?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
                                 <i class="tio-shopping nav-icon"></i>
