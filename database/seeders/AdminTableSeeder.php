@@ -28,7 +28,7 @@ class AdminTableSeeder extends Seeder
             'updated_at' => now()
         ]);
 
-        $role = Role::find(1);
-        $user->assignRole($role);
+        // $role = Role::find(1);
+        // $user->assignRole($role);
     }
 }
