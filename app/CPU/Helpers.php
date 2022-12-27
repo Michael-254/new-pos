@@ -87,7 +87,6 @@ class Helpers
     {
         if(auth()->guard('admin')->user()) {
             $company_id = auth()->guard('admin')->user()->company_id;
-            dd($company_id);
             $config = null;
             $data = BusinessSetting::where(['company_id' => $company_id])->first();
             if (isset($data)) {
