@@ -84,8 +84,8 @@ class RoleController extends Controller
         } else {
             $customers = new Role;
         }
-        dd(Helpers::pagination_limit());
-        $customers = $customers->with('member')->where('company_id', auth('admin')->user()->company_id)->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
+      
+        $customers = $customers->with('member')->where('company_id', auth('admin')->user()->company_id ?? 1)->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
         return view('admin-views.roles.list', compact('customers', 'accounts', 'search'));
     }
 
