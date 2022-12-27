@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
 
 class AdminTableSeeder extends Seeder
@@ -15,7 +16,7 @@ class AdminTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('admins')->insert([
+        $user = DB::table('admins')->insert([
             'id' => 1,
             'company_id' => 1,
             'f_name' => 'Master Admin',
@@ -26,5 +27,8 @@ class AdminTableSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+        $role = Role::find(1);
+        $user->assignRole($role);
     }
 }
