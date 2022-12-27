@@ -17,27 +17,28 @@ class RolePermissionTableSeeder extends Seeder
     public function run()
     {
         // Reset cached roles and permissions
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        //app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // create permissions
-        Permission::create(['name' => 'edit users']);
-        Permission::create(['name' => 'delete users']);
-        Permission::create(['name' => 'create users']);
-        Permission::create(['name' => 'view users']);
+        Permission::create(['name' => 'edit users', 'guard_name' => 'admin']);
+        Permission::create(['name' => 'delete users', 'guard_name' => 'admin']);
+        Permission::create(['name' => 'create users', 'guard_name' => 'admin']);
+        Permission::create(['name' => 'list users', 'guard_name' => 'admin']);
 
         // create roles and assign existing permissions
         $role1 = Role::create(['name' => 'Super-Admin']);
         $role1->givePermissionTo('create users');
-        $role1->givePermissionTo('update users');
+        $role1->givePermissionTo('edit users');
         $role1->givePermissionTo('delete users');
-        $role1->givePermissionTo('view users');
+        $role1->givePermissionTo('list users');
 
         $role2 = Role::create(['name' => 'Admin']);
         $role2->givePermissionTo('create users');
-        $role2->givePermissionTo('update users');
+        $role2->givePermissionTo('edit users');
+        $role3->givePermissionTo('list users');
 
         $role3 = Role::create(['name' => 'Manager']);
         $role3->givePermissionTo('create users');
-        $role3->givePermissionTo('view users');
+        $role3->givePermissionTo('list users');
     }
 }
