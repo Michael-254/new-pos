@@ -30,7 +30,6 @@ class CreateProductsTable extends Migration
             $table->string('image')->nullable();
             $table->unsignedInteger('order_count')->nullable();
             $table->unsignedInteger('supplier_id')->nullable();
-            $table->unsignedInteger('company_id')->nullable();
             $table->timestamps();
         });
     }

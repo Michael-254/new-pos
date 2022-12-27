@@ -14,7 +14,7 @@ class CustomerTableSeeder extends Seeder
      */
     public function run()
     {
-        for($i=0;$i<5000;$i++)
+        for($i=0;$i<100;$i++)
         {
             Customer::create([
                 'name'=>$this->secure_random_string(10),
