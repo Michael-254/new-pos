@@ -1,4 +1,4 @@
-<?php return array (
+<?php return array(
   'category' => 'Category',
   'sub_category' => 'Sub category',
   'add' => 'Add',
@@ -64,6 +64,7 @@
   'pos' => 'DUKAPAQ',
   'POS' => 'DUKAPAQ',
   'orders' => 'Orders',
+  'order_returns' => 'Order returns',
   'sign_out' => 'Sign out',
   'item' => 'Item',
   'qty' => 'Qty',
@@ -73,6 +74,7 @@
   'total' => 'Total',
   'Cancel' => 'Cancel',
   'Order' => 'Order',
+  'order_return' => 'Order return',
   'update_discount' => 'Update discount',
   'update_tax' => 'Update tax',
   'payment' => 'Payment',

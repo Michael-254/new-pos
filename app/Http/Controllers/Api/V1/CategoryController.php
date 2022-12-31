@@ -44,6 +44,7 @@ class CategoryController extends Controller
             $category->parent_id = $request->parent_id == null ? 0 : $request->parent_id;
             $category->position = 0;
             $category->image = $image_name;
+            $category->company_id = auth()->user()->company_id;
             $category->save();
             return response()->json([
                 'success' => true,

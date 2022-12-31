@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CustomerResource;
 use App\Models\CustomerLogin;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -41,12 +42,12 @@ class CustomerController extends Controller
 
         $key = explode(' ', $request['search']);
 
-        $customers = Customer::whereHas('member', function ($q) {
+        $customers = CustomerResource::collection(Customer::whereHas('member', function ($q) {
             $q->where('is_loyalty_enrolled', 'Yes');
         })
             ->withCount('orders')
             ->where('company_id', auth()->user()->company_id)->orderBy('id', 'asc')
-            ->paginate($limit, ['*'], 'page', $offset);
+            ->paginate($limit, ['*'], 'page', $offset));
 
         $data = [
             'total' => $customers->total(),

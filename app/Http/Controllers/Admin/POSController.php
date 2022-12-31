@@ -15,6 +15,7 @@ use App\Models\Customer;
 use App\CPU\Helpers;
 use App\Models\CustomerLogin;
 use App\Models\OrderReturn;
+use App\Models\OrderReturnDetail;
 use App\Models\User;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
@@ -731,7 +732,7 @@ class POSController extends Controller
         return view('admin-views.pos.order-returns.details', compact('order'));
     }
 
-    public function order_return(Request $request)
+    public function store_order_return(Request $request)
     {
         dd($request->all());
         foreach ($request->return_quantity as $key => $quantity) {
@@ -739,15 +740,17 @@ class POSController extends Controller
                 $order_detail = OrderDetail::with('order')->find($request->detail_id[$key]);
                 $order_return = OrderReturn::create([
                     'user_id' => $order_detail->order->user_id,
+                    'company_id' => auth('admin')->user()->company_id,
                     'order_amount' => $order_detail->order->order_amount,
                     'order_amount' => ((int)$order_detail->price * $quantity) + ((int)$order_detail->discount_on_product * $quantity),
                     'collected_cash' => ((int)$order_detail->price * $quantity) + ((int)$order_detail->discount_on_product * $quantity),
                     'payment_id' => $order_detail->order->payment_id,
                 ]);
 
-                $order_return_details = OrderReturn::create([
+                $order_return_details = OrderReturnDetail::create([
                     'product_id' => $order_detail->product_id,
                     'order_id' => $order_detail->order_id,
+                    'order_return_id' => $order_return->id,
                     'price' => $order_detail->price,
                     'product_details' => $order_detail->product_details,
                     'discount_on_product' => $order_detail->discount_on_product,

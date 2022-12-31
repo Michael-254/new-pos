@@ -11,7 +11,7 @@
     <div class="page-header">
         <div class="row align-items-center mb-2">
             <div class="col-sm">
-                <h1 class="page-header-title text-capitalize">{{\App\CPU\translate('pos')}} {{\App\CPU\translate('order')}}
+                <h1 class="page-header-title text-capitalize">{{\App\CPU\translate('pos')}} {{\App\CPU\translate('order_return')}}
                 </h1>
             </div>
         </div>
@@ -47,7 +47,7 @@
                                     <th>{{ \App\CPU\translate('DESC') }}</th>
                                     <th>{{ \App\CPU\translate('QTY') }}</th>
                                     <th>{{ \App\CPU\translate('Price') }}</th>
-                                    <th>QTY to return to stock</th>
+                                    <!-- <th>QTY to return to stock</th> -->
                                 </tr>
                             </thead>
 
@@ -75,10 +75,10 @@
                                         @php($amount = ($detail['price'] - $detail['discount_on_product']) * $detail['quantity'])
                                         {{ $amount . ' ' . \App\CPU\Helpers::currency_symbol() }}
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         <input name="return_quantity[]" type="number" class="style-two-cart qty-width" value="0" max="{{ $detail->quantity }}">
                                         <input type="hidden" name="detail_id[]" value="{{ $detail->id }}">
-                                    </td>
+                                    </td> -->
                                 </tr>
                                 @php($sub_total += $amount)
                                 @php($total_tax += $detail['tax_amount'] * $detail['quantity'])
@@ -86,9 +86,9 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        <div class="row justify-content-md-end px-3">
+                        <!-- <div class="row justify-content-md-end px-3">
                             <button type="submit" class="btn  btn-primary btn-sm btn-block">Return</button>
-                        </div>
+                        </div> -->
                     </form>
                     <hr class="line-dot">
                     <div class="row justify-content-md-end">

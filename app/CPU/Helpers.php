@@ -19,12 +19,11 @@ class Helpers
     }
     public static function currency_code()
     {
-        if(auth()->guard('admin')->user()) {
+        if (auth()->guard('admin')->user()) {
             $company_id = auth()->guard('admin')->user()->company_id;
             $currency_code = BusinessSetting::where(['company_id' => $company_id])->value('currency');
             return $currency_code;
-        }
-        else {
+        } else {
             $company_id = 1; //auth()->user()->company_id;
             $currency_code = BusinessSetting::where(['company_id' => $company_id])->value('currency');
             return $currency_code;
@@ -85,7 +84,7 @@ class Helpers
     }
     public static function get_business_settings($name)
     {
-        if(auth()->guard('admin')->user()) {
+        if (auth()->guard('admin')->user()) {
             $company_id = auth()->guard('admin')->user()->company_id;
             $config = null;
             $data = BusinessSetting::where(['company_id' => $company_id])->first();
@@ -96,8 +95,7 @@ class Helpers
                 }
             }
             return $config;
-        }
-        else {
+        } else {
             $company_id = 1; //auth()->user()->company_id;
             $config = null;
             $data = BusinessSetting::where(['company_id' => $company_id])->first();
@@ -337,4 +335,3 @@ function translate($key)
     }
     return $result;
 }
-

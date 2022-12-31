@@ -38,7 +38,7 @@
                     </div>
                     <h5 class="text-uppercase"></h5>
                     <hr class="line-dot">
-                    <form action="{{route('admin.pos.order-return')}}" method="POST">
+                    <form action="{{route('admin.pos.store-order-return')}}" method="POST">
                         @csrf
                         <table class="table table-bordered mt-3">
                             <thead>

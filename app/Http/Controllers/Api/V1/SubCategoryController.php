@@ -21,7 +21,7 @@ class SubCategoryController extends Controller
         $category_id = $request['category_id'] ?? 1;
 
         try {
-            $subCategories = Category::where(['position' => 1,'parent_id' => $category_id])->latest()->paginate($limit, ['*'], 'page', $offset);
+            $subCategories = Category::where(['position' => 1, 'parent_id' => $category_id])->latest()->paginate($limit, ['*'], 'page', $offset);
             $data =  [
                 'total' => $subCategories->total(),
                 'limit' => $limit,
@@ -46,6 +46,7 @@ class SubCategoryController extends Controller
             $subCategory->name = $request->name;
             //$subCategory->parent_id = $request->parent;
             $subCategory->parent_id = $request->parent_id;
+            $subCategory->company_id = auth()->user()->company_id;
             $subCategory->position = 1;
             $subCategory->image = $image_name;
             $subCategory->save();

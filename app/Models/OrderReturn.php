@@ -10,6 +10,8 @@ class OrderReturn extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+
     public function details()
     {
         return $this->hasMany(OrderReturnDetail::class, 'order_return_id');

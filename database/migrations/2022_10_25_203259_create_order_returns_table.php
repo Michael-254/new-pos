@@ -26,6 +26,7 @@ class CreateOrderReturnsTable extends Migration
             $table->string('coupon_discount_title')->nullable();
             $table->foreignId('payment_id')->nullable();
             $table->string('transaction_reference')->nullable();
+            $table->unsignedBigInteger('company_id')->nullable();
             $table->timestamps();
         });
     }
