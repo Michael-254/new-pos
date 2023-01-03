@@ -26,49 +26,10 @@
                         @csrf
                         <input type="hidden" class="form-control" name="balance" value=0>
                         <div class="row pl-2">
-                            <div class="col-12 col-sm-4">
+                            <div class="col-12 col-sm-12">
                                 <div class="form-group">
                                     <label class="input-label">{{\App\CPU\translate('permission_name')}} <span class="input-label-secondary text-danger">*</span></label>
                                     <input type="text" name="name" class="form-control" value="{{ old('name') }}" placeholder="{{\App\CPU\translate('permission_name')}}" required>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-4">
-                                <div class="form-group">
-                                    <label class="input-label">{{\App\CPU\translate('mobile_no')}} <span class="input-label-secondary text-danger">*</span> </label>
-                                    <input type="number" id="mobile" name="mobile" class="form-control" value="{{ old('mobile') }}" placeholder="{{\App\CPU\translate('mobile_no')}}" required>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-4">
-                                <div class="form-group">
-                                    <label class="input-label">{{\App\CPU\translate('enroll_to_DUKAPAQ_Loyalty')}} <span class="input-label-secondary text-danger">*</span> </label>
-                                    <select name="is_loyalty_enrolled" class="form-control" required>
-                                        <option value="">-- Select --</option>
-                                        <option value="Yes">Yes</option>
-                                        <option value="No">No</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row pl-2">
-                            <div class="col-12 col-sm-12">
-                                <div class="form-group">
-                                    <label class="input-label">{{\App\CPU\translate('email')}}</label>
-                                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="{{\App\CPU\translate('Ex_:_ex@example.com')}}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row pl-2">
-                            <div class="col-12 col-sm-6">
-                                <label>{{\App\CPU\translate('image')}}</label><small> ( {{\App\CPU\translate('ratio_1:1')}} )( {{\App\CPU\translate('optional')}} )</small>
-                                <div class="custom-file">
-                                    <input type="file" name="image" id="customFileEg1" class="custom-file-input" accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*">
-                                    <label class="custom-file-label" for="customFileEg1">{{\App\CPU\translate('choose')}} {{\App\CPU\translate('file')}}</label>
-                                </div>
-                                <div class="form-group">
-                                    <hr>
-                                    <center>
-                                        <img class="img-one-ci" id="viewer" src="{{asset('assets/admin/img/400x400/img2.jpg')}}" alt="image" />
-                                    </center>
                                 </div>
                             </div>
                         </div>

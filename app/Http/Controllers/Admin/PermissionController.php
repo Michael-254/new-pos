@@ -25,7 +25,6 @@ class PermissionController extends Controller
         $company_id = auth('admin')->user()->company_id;
         $request->validate([
             'name' => 'required',
-            'mobile' => 'required',
         ]);
 
         if (!empty($request->file('image'))) {
@@ -72,15 +71,13 @@ class PermissionController extends Controller
 
     public function list(Request $request)
     {
-        $accounts = Account::orderBy('id')->get();
         $query_param = [];
         $search = $request['search'];
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
             $permissions = Permission::where(function ($q) use ($key) {
                 foreach ($key as $value) {
-                    $q->orWhere('name', 'like', "%{$value}%")
-                        ->orWhere('mobile', 'like', "%{$value}%");
+                    $q->orWhere('name', 'like', "%{$value}%");
                 }
             });
             $query_param = ['search' => $request['search']];
@@ -89,34 +86,7 @@ class PermissionController extends Controller
         }
         //$walk_permission = $permissions->where('type',0)->get();
         $permissions = $permissions->where('company_id', auth('admin')->user()->company_id)->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
-        return view('admin-views.permissions.list', compact('permissions', 'accounts', 'search'));
-    }
-
-    public function view(Request $request, $id)
-    {
-        $permission = Permission::where('id', $id)->first();
-
-        if (isset($permission)) {
-            $query_param = [];
-            $search = $request['search'];
-            if ($request->has('search')) {
-                $key = explode(' ', $request['search']);
-                $orders = Order::where(['user_id' => $id])
-                    ->where(function ($q) use ($key) {
-                        foreach ($key as $value) {
-                            $q->where('id', 'like', "%{$value}%");
-                        }
-                    });
-                $query_param = ['search' => $request['search']];
-            } else {
-                $orders = Order::where(['user_id' => $id]);
-            }
-
-            $orders = $orders->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
-            return view('admin-views.permissions.view', compact('permission', 'orders', 'search'));
-        }
-        Toastr::error('Permission not found!');
-        return back();
+        return view('admin-views.permissions.list', compact('permissions', 'search'));
     }
  
     public function edit(Request $request)
@@ -130,7 +100,6 @@ class PermissionController extends Controller
         $permission = Permission::where('id', $request->id)->first();
         $request->validate([
             'name' => 'required',
-            'mobile' => 'required',
         ]);
 
         $dukapaq_member = Permission::where(['phone' => $request->mobile])->first();

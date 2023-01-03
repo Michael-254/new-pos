@@ -57,11 +57,8 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>{{\App\CPU\translate('#')}}</th>
-                                <th>{{ \App\CPU\translate('image') }}</th>
                                 <th>{{\App\CPU\translate('name')}}</th>
-                                <th>{{\App\CPU\translate('phone')}}</th>
-                                <th>{{ \App\CPU\translate('orders') }}</th>
-                                <th class="text-center">{{ \App\CPU\translate('balance') }}</th>
+                                <th>{{\App\CPU\translate('created_at')}}</th>
                                 <th>{{\App\CPU\translate('action')}}</th>
                             </tr>
                         </thead>
@@ -71,50 +68,14 @@
                             <tr>
                                 <td>{{ $roles->firstItem()+$key+1 }}</td>
                                 <td>
-                                    <a href="{{route('admin.role.view',[$role['id']])}}">
-                                        <img class="img-one-cl" onerror="this.src='{{asset('assets/admin/img/160x160/img1.jpg')}}'" src="{{asset('storage/app/public/role')}}/{{ $role->image }}" alt="">
-                                    </a>
-                                </td>
-                                <td>
                                     <a class="text-primary" href="{{route('admin.role.view',[$role['id']])}}">
                                         {{ $role->name }}
                                     </a>
                                 </td>
                                 <td>
-                                    @if ($role->id != 1)
-                                    {{ $role->mobile }}
-                                    @else
-                                    {{\App\CPU\translate('no_phone')}}
-                                    @endif
-                                </td>
-                                <td>{{ $role->orders->count() }}</td>
-                                <td class="text-center p-5">
-                                    @if ($role->id != 1)
-                                    <div class="row">
-                                        <div class="col-5">
-                                            {{ $role->balance. ' ' . \App\CPU\Helpers::currency_symbol() }}
-                                        </div>
-                                        <div class="col-5">
-
-                                            <a class=" btn btn-info p-1 badge" id="{{ $role->id }}" onclick="update_role_balance_cl({{ $role->id }})" type="button" data-toggle="modal" data-target="#update-role-balance">
-                                                <i class="tio-add-circle"></i>
-                                                {{\App\CPU\translate('add_balance')}}</a>
-
-                                        </div>
-                                    </div>
-                                    @else
-                                    <div class="row">
-                                        <div class="col-6">
-                                            {{\App\CPU\translate('no_balance')}}
-                                        </div>
-                                    </div>
-
-                                    @endif
-
+                                    {{ \Carbon\Carbon::parse($role->created_at)->format('d/m/Y h:i:s') }}
                                 </td>
                                 <td>
-                                    @if ($role->name != "walking role")
-                                    <a class="btn btn-white mr-1" href="{{route('admin.role.view',[$role['id']])}}"><span class="tio-visible"></span></a>
                                     <a class="btn btn-white mr-1" href="{{route('admin.role.edit',[$role['id']])}}">
                                         <span class="tio-edit"></span>
                                     </a>
@@ -122,9 +83,6 @@
                                     <form action="{{route('admin.role.delete',[$role['id']])}}" method="post" id="role-{{$role['id']}}">
                                         @csrf @method('delete')
                                     </form>
-                                    @else
-                                    <a class="btn btn-white mr-1" href="{{route('admin.role.view',[$role['id']])}}"><span class="tio-visible"></span></a>
-                                    @endif
                                 </td>
                             </tr>
                             @endforeach

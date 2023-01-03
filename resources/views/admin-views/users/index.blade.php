@@ -40,11 +40,12 @@
                             </div>
                             <div class="col-12 col-sm-4">
                                 <div class="form-group">
-                                    <label class="input-label">{{\App\CPU\translate('enroll_to_DUKAPAQ_Loyalty')}} <span class="input-label-secondary text-danger">*</span> </label>
+                                    <label class="input-label">{{\App\CPU\translate('user_role')}} <span class="input-label-secondary text-danger">*</span> </label>
                                     <select name="is_loyalty_enrolled" class="form-control" required>
                                         <option value="">-- Select --</option>
-                                        <option value="Yes">Yes</option>
-                                        <option value="No">No</option>
+                                        @foreach($roles as $role)
+                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>

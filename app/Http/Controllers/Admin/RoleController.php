@@ -17,7 +17,8 @@ class RoleController extends Controller
 {
     public function index()
     {
-        $permissions = Permission::all();
+        $company_id = auth('admin')->user()->company_id;
+        $permissions = Permission::where('company_id', auth('admin')->user()->company_id ?? 1)->get();
         
         return view('admin-views.roles.index', compact('permissions'));
     }
@@ -27,7 +28,7 @@ class RoleController extends Controller
         $company_id = auth('admin')->user()->company_id;
         $request->validate([
             'name' => 'required',
-            'mobile' => 'required',
+            'permissions' => 'required',
         ]);
 
         if (!empty($request->file('image'))) {
@@ -74,57 +75,33 @@ class RoleController extends Controller
 
     public function list(Request $request)
     {
-        $accounts = Account::orderBy('id')->get();
+        $company_id = auth('admin')->user()->company_id;
+        $permissions = Permission::where('company_id', auth('admin')->user()->company_id ?? 1)->orderBy('id')->get();
         $query_param = [];
         $search = $request['search'];
         if ($request->has('search')) {
             $key = explode(' ', $request['search']);
             $roles = Role::where(function ($q) use ($key) {
                 foreach ($key as $value) {
-                    $q->orWhere('name', 'like', "%{$value}%")
-                        ->orWhere('mobile', 'like', "%{$value}%");
+                    $q->orWhere('name', 'like', "%{$value}%");
                 }
             });
             $query_param = ['search' => $request['search']];
         } else {
             $roles = new Role;
         }
-      
+
         $roles = $roles->where('company_id', auth('admin')->user()->company_id ?? 1)->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
-        return view('admin-views.roles.list', compact('roles', 'accounts', 'search'));
-    }
-
-    public function view(Request $request, $id)
-    {
-        $role = Role::where('id', $id)->first();
-
-        if (isset($role)) {
-            $query_param = [];
-            $search = $request['search'];
-            if ($request->has('search')) {
-                $key = explode(' ', $request['search']);
-                $orders = Order::where(['user_id' => $id])
-                    ->where(function ($q) use ($key) {
-                        foreach ($key as $value) {
-                            $q->where('id', 'like', "%{$value}%");
-                        }
-                    });
-                $query_param = ['search' => $request['search']];
-            } else {
-                $orders = Order::where(['user_id' => $id]);
-            }
-
-            $orders = $orders->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
-            return view('admin-views.roles.view', compact('role', 'orders', 'search'));
-        }
-        Toastr::error('Role not found!');
-        return back();
+        return view('admin-views.roles.list', compact('roles', 'permissions', 'search'));
     }
   
     public function edit(Request $request)
     {
+        $company_id = auth('admin')->user()->company_id;
+        $permissions = Permission::where('company_id', auth('admin')->user()->company_id ?? 1)->get();
+        
         $role = Role::where('id', $request->id)->first();
-        return view('admin-views.roles.edit', compact('role'));
+        return view('admin-views.roles.edit', compact('role', 'permissions'));
     }
 
     public function update(Request $request)
@@ -132,7 +109,7 @@ class RoleController extends Controller
         $role = Role::where('id', $request->id)->first();
         $request->validate([
             'name' => 'required',
-            'mobile' => 'required',
+            'permissions' => 'required',
         ]);
 
         $dukapaq_member = Role::where(['phone' => $request->mobile])->first();

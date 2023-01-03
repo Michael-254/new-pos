@@ -75,7 +75,7 @@
                                 </td>
                                 <td>
                                     <a class="text-primary" href="{{route('admin.user.view',[$user['id']])}}">
-                                        {{ $user->name }}
+                                        {{ $user->f_name.' '.$user->l_name }}
                                     </a>
                                 </td>
                                 <td>

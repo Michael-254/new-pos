@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin;
+use Spatie\Permission\Models\Role;
 use App\Models\Order;
 use Brian2694\Toastr\Facades\Toastr;
 use App\CPU\Helpers;
@@ -16,7 +17,10 @@ class UserController extends Controller
 {
     public function index()
     {
-        return view('admin-views.users.index');
+        $company_id = auth('admin')->user()->company_id;
+        $roles = Role::where('company_id', auth('admin')->user()->company_id ?? 1)->get();
+        
+        return view('admin-views.users.index', compact('roles'));
     }
     public function store(Request $request)
     {
@@ -69,7 +73,6 @@ class UserController extends Controller
     }
     public function list(Request $request)
     {
-        $accounts = Account::orderBy('id')->get();
         $query_param = [];
         $search = $request['search'];
         if ($request->has('search')) {
@@ -86,7 +89,7 @@ class UserController extends Controller
         }
         //$walk_user = $users->where('type',0)->get();
         $users = $users->where('company_id', auth('admin')->user()->company_id)->latest()->paginate(Helpers::pagination_limit())->appends($query_param);
-        return view('admin-views.users.list', compact('users', 'accounts', 'search'));
+        return view('admin-views.users.list', compact('users', 'search'));
     }
 
     public function listWithLoyalty(Request $request)
