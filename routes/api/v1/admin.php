@@ -116,6 +116,16 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('filter', [IncomeController::class, 'getFilter']);
         });
         /********************* Supplier Route Starts Here **************************/
+        Route::group(['prefix' => 'users'], function () {
+            Route::get('list', [UserController::class, 'getIndex']);
+            Route::post('store', [UserController::class, 'postStore']);
+            Route::get('details', [UserController::class, 'getDetails']);
+            Route::put('update', [UserController::class, 'postUpdate']);
+            Route::get('delete', [UserController::class, 'delete']);
+            Route::get('search', [UserController::class, 'getSearch']);
+            Route::get('filter', [UserController::class, 'filterByCity']);
+        });
+        /********************* Supplier Route Starts Here **************************/
         Route::group(['prefix' => 'supplier'], function () {
             Route::get('list', [SupplierController::class, 'getIndex']);
             Route::post('store', [SupplierController::class, 'postStore']);
