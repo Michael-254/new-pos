@@ -116,7 +116,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('filter', [IncomeController::class, 'getFilter']);
         });
         /********************* Supplier Route Starts Here **************************/
-        Route::group(['prefix' => 'users'], function () {
+        Route::group(['prefix' => 'user'], function () {
             Route::get('list', [UserController::class, 'getIndex']);
             Route::post('store', [UserController::class, 'postStore']);
             Route::get('details', [UserController::class, 'getDetails']);
