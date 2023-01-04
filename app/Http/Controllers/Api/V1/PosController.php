@@ -570,4 +570,19 @@ class PosController extends Controller
         ];
         return response()->json($data, 200);
     }
+
+    public function userOrders(Request $request)
+    {
+        $limit = $request['limit'] ?? 10;
+        $offset = $request['offset'] ?? 1;
+
+        $orders = Order::with('account')->where('user_id', auth()->id())->latest()->paginate($limit, ['*'], 'page', $offset);
+        $data = [
+            'total' => $orders->total(),
+            'limit' => $limit,
+            'offset' => $offset,
+            'orders' => $orders->items(),
+        ];
+        return response()->json($data, 200);
+    }
 }
