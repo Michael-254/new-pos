@@ -36,7 +36,7 @@
                         <hr>
                         <div class="row pl-2">
                             @foreach($permissions as $permission)
-                                <div class="col-12 col-sm-3">
+                                <div class="col-12 col-sm-4">
                                     <div class="form-group">
                                         <input type="checkbox" id="{{ $permission->id }}" name="permissions[]" value="{{ $permission->id }}">
                                         <label for="{{ $permission->id }}">{{ $permission->name }}</label><br>
