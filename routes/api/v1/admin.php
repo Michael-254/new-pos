@@ -91,6 +91,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('list-of-loyalty-enrolled', [CustomerController::class, 'listWithLoyalty']);
             Route::post('store', [CustomerController::class, 'postStore']);
             Route::get('details', [CustomerController::class, 'getDetails']);
+            Route::get('orders', [CustomerController::class, 'getCustomerOrders']);
             Route::put('update', [CustomerController::class, 'postUpdate']);
             Route::get('delete', [CustomerController::class, 'delete']);
             Route::post('add-balance', [CustomerController::class, 'addBalance']);
@@ -200,6 +201,12 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:customer-api']], function () {
     });
 });
+
+
+//data for analysis
+Route::get('/data-for-analysis', [\App\Http\Controllers\Api\DataController::class, 'index']);
+
+
 // Fallback route
 Route::fallback(function () {
     return response()->json(['message' => 'Not Found.'], 404);

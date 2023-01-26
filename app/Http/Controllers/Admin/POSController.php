@@ -715,7 +715,7 @@ class POSController extends Controller
             $orders = OrderReturn::latest()->paginate(Helpers::pagination_limit())->appends($search);
         }
 
-        return view('admin-views.pos.order.list', compact('orders', 'search'));
+        return view('admin-views.pos.order-returns.list', compact('orders', 'search'));
     }
 
     public function order_details(Order $order)
@@ -734,7 +734,7 @@ class POSController extends Controller
 
     public function store_order_return(Request $request)
     {
-        dd($request->all());
+        //dd($request->all());
         foreach ($request->return_quantity as $key => $quantity) {
             if ($quantity > 0) {
                 $order_detail = OrderDetail::with('order')->find($request->detail_id[$key]);
@@ -758,6 +758,12 @@ class POSController extends Controller
                     'quantity' => $quantity,
                     'tax_amount' => $order_detail->tax_amount,
                 ]);
+
+                $product = Product::find($order_detail->product_id);
+                if ($product) {
+                    $product->quantity = $product->quantity + $quantity;
+                    $product->save();
+                }
                 if ($quantity == $order_detail->quantity) {
                     $order_detail->order->order_amount = $order_detail->order->order_amount -
                         ((int)$order_detail->price * $quantity) + ((int)$order_detail->discount_on_product * $quantity);

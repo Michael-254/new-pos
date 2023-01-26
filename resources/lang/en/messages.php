@@ -1,4 +1,4 @@
-<?php return array (
+<?php return array(
   'category' => 'Category',
   'sub_category' => 'Sub category',
   'add' => 'Add',
@@ -603,9 +603,5 @@
   'add_new_permission' => 'Add new permission',
   'user_name' => 'User name',
   'role_name' => 'Role name',
-  'created_at' => 'Created at',
-  'user_role' => 'User role',
   'permission_name' => 'Permission name',
-  'update_permission' => 'Update permission',
-  'update_role' => 'Update role',
 );

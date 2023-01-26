@@ -47,7 +47,6 @@
                                     <th>{{ \App\CPU\translate('DESC') }}</th>
                                     <th>{{ \App\CPU\translate('QTY') }}</th>
                                     <th>{{ \App\CPU\translate('Price') }}</th>
-                                    <!-- <th>QTY to return to stock</th> -->
                                 </tr>
                             </thead>
 
@@ -75,10 +74,6 @@
                                         @php($amount = ($detail['price'] - $detail['discount_on_product']) * $detail['quantity'])
                                         {{ $amount . ' ' . \App\CPU\Helpers::currency_symbol() }}
                                     </td>
-                                    <!-- <td>
-                                        <input name="return_quantity[]" type="number" class="style-two-cart qty-width" value="0" max="{{ $detail->quantity }}">
-                                        <input type="hidden" name="detail_id[]" value="{{ $detail->id }}">
-                                    </td> -->
                                 </tr>
                                 @php($sub_total += $amount)
                                 @php($total_tax += $detail['tax_amount'] * $detail['quantity'])

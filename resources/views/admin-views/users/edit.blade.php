@@ -1,6 +1,6 @@
 @extends('layouts.admin.app')
 
-@section('title',\App\CPU\translate('update_customer'))
+@section('title',\App\CPU\translate('update_user'))
 
 @push('css_or_js')
 <link rel="stylesheet" href="{{asset('assets/admin')}}/css/custom.css" />
@@ -12,7 +12,7 @@
     <div class="page-header">
         <div class="row align-items-center">
             <div class="col-sm mb-2 mb-sm-0">
-                <h1 class="page-header-title text-capitalize"><i class="tio-edit"></i> {{\App\CPU\translate('update_customer')}}
+                <h1 class="page-header-title text-capitalize"><i class="tio-edit"></i> {{\App\CPU\translate('update_user')}}
                 </h1>
             </div>
         </div>
@@ -22,38 +22,31 @@
         <div class="col-sm-12 col-lg-12 mb-3 mb-lg-2">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{route('admin.customer.update',[$customer->id])}}" method="post" id="product_form" enctype="multipart/form-data">
+                    <form action="{{route('admin.user.update',[$user->id])}}" method="post" id="product_form" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" class="form-control" name="balance" min="0" step="0.01" value="{{ $customer->balance }}">
-                        <div class="row pl-2">
-                            <div class="col-12 col-sm-4">
-                                <div class="form-group">
-                                    <label class="input-label">{{\App\CPU\translate('customer_name')}} <span class="input-label-secondary text-danger">*</span></label>
-                                    <input type="text" name="name" class="form-control" value="{{ $customer->name }}" placeholder="{{\App\CPU\translate('customer_name')}}" required>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-4">
-                                <div class="form-group">
-                                    <label class="input-label">{{\App\CPU\translate('mobile_no')}} <span class="input-label-secondary text-danger">*</span></label>
-                                    <input type="number" id="mobile" name="mobile" class="form-control" value="{{ $customer->mobile }}" placeholder="{{\App\CPU\translate('mobile_no')}}" required>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-4">
-                                <div class="form-group">
-                                    <label class="input-label">{{\App\CPU\translate('enroll_to_DUKAPAQ_Loyalty')}} <span class="input-label-secondary text-danger">*</span> </label>
-                                    <select name="is_loyalty_enrolled" class="form-control" required>
-                                        <option value="">-- Select --</option>
-                                        <option value="Yes" {{ $customer->member->is_loyalty_enrolled == 'Yes'  ? 'selected' : '' }}>Yes</option>
-                                        <option value="No" {{ $customer->member->is_loyalty_enrolled == 'No'  ? 'selected' : '' }}>No</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
                         <div class="row pl-2">
                             <div class="col-12 col-sm-6">
                                 <div class="form-group">
+                                    <label class="input-label">First name <span class="input-label-secondary text-danger">*</span></label>
+                                    <input type="text" name="f_name" class="form-control" value="{{ $user->f_name }}" placeholder="First name" required>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+                                    <label class="input-label">Last name<span class="input-label-secondary text-danger">*</span></label>
+                                    <input type="text" name="l_name" class="form-control" value="{{ $user->l_name }}" placeholder="Last name" required>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+                                    <label class="input-label">{{\App\CPU\translate('mobile_no')}} <span class="input-label-secondary text-danger">*</span></label>
+                                    <input type="number" id="mobile" name="mobile" class="form-control" value="{{ $user->mobile }}" placeholder="{{\App\CPU\translate('mobile_no')}}" required>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
                                     <label class="input-label">{{\App\CPU\translate('email')}}</label>
-                                    <input type="email" name="email" class="form-control" value="{{ $customer->email }}" placeholder="{{\App\CPU\translate('Ex_:_ex@example.com')}}">
+                                    <input type="email" name="email" class="form-control" value="{{ $user->email }}" placeholder="{{\App\CPU\translate('Ex_:_ex@example.com')}}">
                                 </div>
                             </div>
                         </div>
@@ -67,14 +60,3 @@
 </div>
 
 @endsection
-
-@push('script_2')
-<script>
-    "use strict";
-    $(document).on('ready', function() {
-        @php($country = $customer->country)
-        $("#country option[value='{{$country}}']").attr('selected', 'selected').change();
-    })
-</script>
-<script src={{asset("public/assets/admin/js/global.js")}}></script>
-@endpush

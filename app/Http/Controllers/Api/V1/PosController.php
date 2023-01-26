@@ -115,8 +115,8 @@ class PosController extends Controller
                 return response()->json(['message' => 'Cart empty'], 403);
             }
         }
-        
-		$user_id = $request->user_id;
+
+        $user_id = $request->user_id;
 
         //$cart = session($cart_id);
         $coupon_code = 0;
@@ -131,12 +131,12 @@ class PosController extends Controller
         //if (Order::find($order_id)) {
         //    $order_id = Order::orderBy('id', 'DESC')->first()->id + 1;
         //}
-		$order_id = Carbon::now()->timestamp;
+        $order_id = Carbon::now()->timestamp;
 
         $customer = Customer::where('id', $user_id)->first();
-		if($customer == null) {
-			$customer = Customer::find(5001);
-		}
+        if ($customer == null) {
+            $customer = Customer::find(5001);
+        }
 
         $member_details = CustomerLogin::where('id', $customer->member_id)->first();
 
@@ -196,7 +196,7 @@ class PosController extends Controller
         }
 
         $total_tax_amount = $product_tax;
-			
+
         try {
             $order->total_tax = $total_tax_amount;
             $order->order_amount = $total_price;
@@ -294,7 +294,7 @@ class PosController extends Controller
 
                 $customer->save();
             }
-			
+
             //transaction start
             /* if ($request->type != 0) {
                 $account = Account::find($request->type);
@@ -317,7 +317,7 @@ class PosController extends Controller
                 $account->total_in = ($account->total_in ?? 0) + $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
                 $account->save();
             } */
-			
+
             foreach ($order_details as $key => $item) {
                 $order_details[$key]['order_id'] = $order->id;
             }

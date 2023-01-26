@@ -57,63 +57,79 @@ class CustomerController extends Controller
         ];
         return response()->json($data, 200);
     }
+
+    //customer orders
+    public function getCustomerOrders(Request $request)
+    {
+        $limit = $request['limit'] ?? 10;
+        $offset = $request['offset'] ?? 1;
+
+        $orders = Order::with('account')->where('user_id', $request->id)->latest()->paginate($limit, ['*'], 'page', $offset);
+        $data = [
+            'total' => $orders->total(),
+            'limit' => $limit,
+            'offset' => $offset,
+            'orders' => $orders->items(),
+        ];
+        return response()->json($data, 200);
+    }
+
     //Save Category
     public function postStore(Request $request, Customer $customer)
     {
         //try {
-            dd(Auth::guard('admin-api')->user()->id);
-            $company_id = auth()->user()->company_id;
-            $request->validate([
-                'name' => 'required',
-                'mobile' => 'required|unique:customers',
-            ]);
-            if (!empty($request->file('image'))) {
-                $image_name = Helpers::upload('customer/', 'png', $request->file('image'));
-            } else {
-                $image_name = 'def.png';
+        $company_id = auth()->user()->company_id;
+        $request->validate([
+            'name' => 'required',
+            'mobile' => 'required|unique:customers',
+        ]);
+        if (!empty($request->file('image'))) {
+            $image_name = Helpers::upload('customer/', 'png', $request->file('image'));
+        } else {
+            $image_name = 'def.png';
+        }
+
+        $split_name = explode(" ", $request->name);
+        $dukapaq_member = CustomerLogin::where(['phone' => $request->mobile])->first();
+
+        if (!$dukapaq_member) {
+            $dukapaq_member = CustomerLogin::Create(
+                [
+                    'phone' => $request->mobile,
+                    'email' => $request->email ?? '',
+                    'f_name' => (string)$split_name[0],
+                    'l_name' => $split_name[1] ? (string)$split_name[1] : '',
+                    'password' => bcrypt(123456),
+                    'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
+                ]
+            );
+
+            if ($request->is_loyalty_enrolled == 'Yes') {
+                $dukapaq_member->update([
+                    'loyalty_points' => 100,
+                ]);
             }
 
-            $split_name = explode(" ", $request->name);
-            $dukapaq_member = CustomerLogin::where(['phone' => $request->mobile])->first();
-
-            if (!$dukapaq_member) {
-                $dukapaq_member = CustomerLogin::Create(
-                    [
-                        'phone' => $request->mobile,
-                        'email' => $request->email ?? '',
-                        'f_name' => (string)$split_name[0],
-                        'l_name' => $split_name[1] ? (string)$split_name[1] : '',
-                        'password' => bcrypt(123456),
-                        'is_loyalty_enrolled' => $request->is_loyalty_enrolled,
-                    ]
-                );
-
-				if ($request->is_loyalty_enrolled == 'Yes') {
-					$dukapaq_member->update([
-						'loyalty_points' => 100,
-					]);
-				}
-
-				$customer = new Customer;
-				$customer->member_id = $dukapaq_member->id;
-				$customer->name = $request->name;
-				$customer->mobile = $request->mobile;
-				$customer->email = $request->email;
-				$customer->image = $image_name;
-				$customer->balance = $request->balance;
-				$customer->company_id = auth()->user()->company_id;
-				$customer->save();
-				
-				return response()->json([
-					'success' => true,
-					'message' => 'Customer saved successfully',
-				], 200);
-			}
+            $customer = new Customer;
+            $customer->member_id = $dukapaq_member->id;
+            $customer->name = $request->name;
+            $customer->mobile = $request->mobile;
+            $customer->email = $request->email;
+            $customer->image = $image_name;
+            $customer->balance = $request->balance;
+            $customer->company_id = auth()->user()->company_id;
+            $customer->save();
 
             return response()->json([
-                'success' => false,
-                'message' => 'Customer already exists!',
+                'success' => true,
+                'message' => 'Customer saved successfully',
             ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Customer already exists!',
+        ], 200);
         // } catch (\Throwable $th) {
         //     return response()->json([
         //         'success' => false,

@@ -93,8 +93,9 @@ Route::group(['namespace' => 'Admin', 'as' => 'admin.', 'prefix' => 'admin'], fu
             Route::post('order', 'POSController@place_order')->name('order');
             Route::get('orders', 'POSController@order_list')->name('orders');
             Route::get('order-details/{order}', 'POSController@order_details')->name('order-details');
-            Route::get('order-return-details/{order}', 'POSController@order_details')->name('order-return-details');
-            Route::post('order-returns', 'POSController@order_return_list')->name('order-return');
+            Route::get('order-returns', 'POSController@order_return_list')->name('order-return');
+            Route::get('order-return-details/{order}', 'POSController@order_return_details')->name('order-return-details');
+            Route::post('order-returns', 'POSController@store_order_return')->name('store-order-return');
             Route::get('invoice/{id}', 'POSController@generate_invoice');
             Route::get('search-products', 'POSController@search_product')->name('search-products');
             Route::get('search-by-add', 'POSController@search_by_add_product')->name('search-by-add');

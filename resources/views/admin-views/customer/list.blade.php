@@ -221,5 +221,11 @@
 @endsection
 
 @push('script_2')
-<script src={{asset("public/assets/admin/js/global.js")}}></script>
+<script>
+    function update_customer_balance_cl(val) {
+        $("#customer_id").val(val);
+        console.log(val);
+    }
+</script>
+<script src="{{asset('public/assets/admin/js/global.js')}}"></script>
 @endpush

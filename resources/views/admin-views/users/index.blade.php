@@ -24,34 +24,26 @@
                 <div class="card-body">
                     <form action="{{route('admin.user.store')}}" method="post" id="product_form" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" class="form-control" name="balance" value=0>
                         <div class="row pl-2">
-                            <div class="col-12 col-sm-4">
+                            <div class="col-12 col-sm-6">
                                 <div class="form-group">
-                                    <label class="input-label">{{\App\CPU\translate('user_name')}} <span class="input-label-secondary text-danger">*</span></label>
-                                    <input type="text" name="name" class="form-control" value="{{ old('name') }}" placeholder="{{\App\CPU\translate('user_name')}}" required>
+                                    <label class="input-label">First name <span class="input-label-secondary text-danger">*</span></label>
+                                    <input type="text" name="f_name" class="form-control" value="{{ old('f_name') }}" placeholder="First name" required>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-4">
+                            <div class="col-12 col-sm-6">
                                 <div class="form-group">
-                                    <label class="input-label">{{\App\CPU\translate('mobile_no')}} <span class="input-label-secondary text-danger">*</span> </label>
+                                    <label class="input-label">Last name<span class="input-label-secondary text-danger">*</span></label>
+                                    <input type="text" name="l_name" class="form-control" value="{{ old('l_name') }}" placeholder="Last name" required>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+                                    <label class="input-label">{{\App\CPU\translate('mobile_no')}} <span class="input-label-secondary text-danger">*</span></label>
                                     <input type="number" id="mobile" name="mobile" class="form-control" value="{{ old('mobile') }}" placeholder="{{\App\CPU\translate('mobile_no')}}" required>
                                 </div>
                             </div>
-                            <div class="col-12 col-sm-4">
-                                <div class="form-group">
-                                    <label class="input-label">{{\App\CPU\translate('user_role')}} <span class="input-label-secondary text-danger">*</span> </label>
-                                    <select name="is_loyalty_enrolled" class="form-control" required>
-                                        <option value="">-- Select --</option>
-                                        @foreach($roles as $role)
-                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row pl-2">
-                            <div class="col-12 col-sm-12">
+                            <div class="col-12 col-sm-6">
                                 <div class="form-group">
                                     <label class="input-label">{{\App\CPU\translate('email')}}</label>
                                     <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="{{\App\CPU\translate('Ex_:_ex@example.com')}}">
@@ -86,5 +78,5 @@
 @endsection
 
 @push('script_2')
-<script src={{asset("public/assets/admin/js/global.js")}}></script>
+<script src="{{asset('public/assets/admin/js/global.js')}}"></script>
 @endpush

@@ -76,7 +76,7 @@
                                         {{ $amount . ' ' . \App\CPU\Helpers::currency_symbol() }}
                                     </td>
                                     <td>
-                                        <input name="return_quantity[]" type="number" class="style-two-cart qty-width" value="0">
+                                        <input name="return_quantity[]" type="number" class="style-two-cart qty-width" value="0" max="{{ $detail['quantity'] }}" min="0">
                                         <input type="hidden" name="detail_id[]" value="{{ $detail->id }}">
                                     </td>
                                 </tr>
