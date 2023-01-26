@@ -31,7 +31,7 @@ class CustomerResource extends JsonResource
             "company_id" => $this->company_id,
             "member_id" => $this->member_id,
             "orders_count" => $this->orders_count,
-            "loyalty_points" => $this->member->loyalty_points
+            "loyalty_points" => $this->member?->loyalty_points
         ];
     }
 }
