@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\CPU\Helpers;
 use App\Models\Admin;
+use App\Models\Company;
+use App\Models\BusinessSetting;
 use App\Models\CustomerLogin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -29,20 +31,42 @@ class AuthController extends Controller
             return response()->json(['errors' => Helpers::error_processor($validator)], 403);
         }
 
-        $customer = CustomerLogin::create([
-            'f_name' => $request->f_name,
-            'l_name' => $request->l_name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'password' => Hash::make($request->password)
-        ]);
+		if($request->usertype == 'admin') {
+			$company = Company::create(['company_name' => $request->f_name]);
+			BusinessSetting::create(['company_id' => $company->id]);
+			
+			$admin = Admin::create([
+				'f_name' => $request->f_name,
+				'l_name' => $request->l_name,
+				'email' => $request->email,
+				'phone' => $request->phone,
+				'password' => Hash::make($request->password),
+				'company_id' => $company->id
+			]);
 
-        $token = $customer->createToken('LaravelPassportClient')->accessToken;
+			$token = $admin->createToken('LaravelPassportClient')->accessToken;
 
-        return response()->json(
-            ['message' => 'You are logged in', 'token' => $token, 'user_id' => $customer->id, 'user_type' => $request->usertype, 'fname' => $customer->f_name, 'lname' => $customer->l_name, 'phone' => $customer->phone],
-            200
-        );
+			return response()->json(
+				['message' => 'You are logged in', 'token' => $token, 'user_id' => $admin->id, 'user_type' => $request->usertype, 'fname' => $admin->f_name, 'lname' => $admin->l_name, 'phone' => $admin->phone],
+				200
+			);
+		}
+		else {
+			$customer = CustomerLogin::create([
+				'f_name' => $request->f_name,
+				'l_name' => $request->l_name,
+				'email' => $request->email,
+				'phone' => $request->phone,
+				'password' => Hash::make($request->password)
+			]);
+
+			$token = $customer->createToken('LaravelPassportClient')->accessToken;
+
+			return response()->json(
+				['message' => 'You are logged in', 'token' => $token, 'user_id' => $customer->id, 'user_type' => $request->usertype, 'fname' => $customer->f_name, 'lname' => $customer->l_name, 'phone' => $customer->phone],
+				200
+			);
+		}
     }
 
     //Admin Login
