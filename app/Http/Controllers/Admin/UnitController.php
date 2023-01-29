@@ -24,6 +24,7 @@ class UnitController extends Controller
 
         $unit = new Unit;
         $unit->unit_type = $request->unit_type;
+        $unit->company_id = auth('admin')->user()->company_id;
 
         $unit->save();
         Toastr::success(translate('New Unit Type added'));

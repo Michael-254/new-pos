@@ -211,7 +211,10 @@ class CustomerController extends Controller
         $offset = $request['offset'] ?? 1;
         $search = $request->name;
         // if (!empty($search)) {
-        $result = Customer::where('name', 'like', '%' . $search . '%')->orWhere('mobile', 'like', '%' . $search . '%')->where('company_id', auth()->user()->company_id)->latest()->paginate($limit, ['*'], 'page', $offset);
+        $result = CustomerResource::collection(Customer::with('member')
+            ->where('name', 'like', '%' . $search . '%')
+            ->orWhere('mobile', 'like', '%' . $search . '%')
+            ->latest()->paginate($limit, ['*'], 'page', $offset));
         $data = [
             'total' => $result->total(),
             'limit' => $limit,

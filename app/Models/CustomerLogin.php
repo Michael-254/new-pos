@@ -20,6 +20,11 @@ class CustomerLogin extends Model
         'f_name', 'l_name', 'email', 'phone', 'password', 'loyalty_points', 'is_loyalty_enrolled',
     ];
 
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
     public function orders()
     {
         return $this->hasMany(Order::class, 'member_id');
