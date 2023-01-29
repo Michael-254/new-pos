@@ -44,6 +44,20 @@ class AuthController extends Controller
 				'company_id' => $company->id
 			]);
 
+            if($request->can_make_sales == true) { $admin->givePermissionTo('can_make_sales'); }
+            if($request->can_give_discounts == true) { $admin->givePermissionTo('can_give_discounts'); }
+            if($request->can_add_stock_in == true) { $admin->givePermissionTo('can_add_stock-in'); }
+            if($request->can_add_new_products == true) { $admin->givePermissionTo('can_add_new_products'); }
+            if($request->can_add_expenses == true) { $admin->givePermissionTo('can_add_expenses'); }
+            if($request->can_view_manage_customers == true) { $admin->givePermissionTo('can_view & manage_customers'); }
+            if($request->can_view_manage_suppliers == true) { $admin->givePermissionTo('can_view & manage_suppliers'); }
+            if($request->can_view_stock_balance == true) { $admin->givePermissionTo('can_view_stock_balance'); }
+            if($request->can_view_other_shops_stock_balance == true) { $admin->givePermissionTo('can_view_other_shops_stock_balance'); }
+            if($request->can_count_and_update_stock_balance == true) { $admin->givePermissionTo('can_count_and_update_stock_balance'); }
+            if($request->can_edit_daily_entries == true) { $admin->givePermissionTo('can_edit_daily_entries'); }
+            if($request->can_delete_daily_entries == true) { $admin->givePermissionTo('can_delete_daily_entries'); }
+            if($request->can_back_date_entries == true) { $admin->givePermissionTo('can_back_date_entries'); }
+
 			$token = $admin->createToken('LaravelPassportClient')->accessToken;
 
 			return response()->json(
@@ -83,14 +97,14 @@ class AuthController extends Controller
 
         if ($request->usertype == 'admin') {
             //Get authenticated admin
-            $admin = Admin::where('email', $request->email)->first();
+            $admin = Admin::where('email', $request->email)->with('permissions')->first();
 
             //Check Above Admin
             if ($admin) {
                 if (Hash::check($request->password, $admin->password)) {
                     $token = $admin->createToken('LaravelPassportClient')->accessToken;
                     return response()->json(
-                        ['message' => 'You are logged in', 'token' => $token, 'user_id' => $admin->id, 'user_type' => $request->usertype, 'fname' => $admin->f_name, 'lname' => $admin->l_name, 'phone' => $admin->phone],
+                        ['message' => 'You are logged in', 'token' => $token, 'user_id' => $admin->id, 'user_type' => $request->usertype, 'fname' => $admin->f_name, 'lname' => $admin->l_name, 'phone' => $admin->phone, 'permissions' => $admin->permissions],
                         200
                     );
                 } else {
