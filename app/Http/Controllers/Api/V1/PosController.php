@@ -561,7 +561,7 @@ class PosController extends Controller
         $limit = $request['limit'] ?? 10;
         $offset = $request['offset'] ?? 1;
 
-        $orders = Order::with('account')->where('member_id', auth()->id())->latest()->paginate($limit, ['*'], 'page', $offset);
+        $orders = Order::with('account')->where('user_id', $request->customer_id)->latest()->paginate($limit, ['*'], 'page', $offset);
         $data = [
             'total' => $orders->total(),
             'limit' => $limit,

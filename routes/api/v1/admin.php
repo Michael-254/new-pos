@@ -165,7 +165,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('order/list', [PosController::class, 'orderList']);
             Route::get('invoice', [PosController::class, 'invoiceGenerate']);
             Route::get('order/search', [PosController::class, 'orderGetSearch']);
-            Route::get('customer/orders', [PosController::class, 'customerOrders']);
+            Route::get('customer/orders', [PosController::class, 'customerOrders']); 
             Route::get('user/orders', [PosController::class, 'userOrders']);
         });
         Route::group(['prefix' => 'returns'], function () {
