@@ -296,7 +296,7 @@ class PosController extends Controller
             }
 
             //transaction start
-            /* if ($request->type != 0) {
+            if ($request->type != 0) {
                 $account = Account::find($request->type);
                 $transaction = new Transaction;
                 $transaction->tran_type = 'Income';
@@ -316,7 +316,7 @@ class PosController extends Controller
                 $account->balance = ($account->balance ?? 0) + $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
                 $account->total_in = ($account->total_in ?? 0) + $total_price + $total_tax_amount - $ext_discount - $coupon_discount;
                 $account->save();
-            } */
+            }
 
             foreach ($order_details as $key => $item) {
                 $order_details[$key]['order_id'] = $order->id;
