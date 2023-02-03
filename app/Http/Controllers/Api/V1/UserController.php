@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\CPU\Helpers;
 use App\Models\Account;
-use App\Models\User;
+use App\Models\Admin as User;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -53,6 +53,21 @@ class UserController extends Controller
             $user->due_amount = $request->due_amount;
             $user->company_id = auth()->user()->company_id;
             $user->save();
+
+            if($request->can_make_sales == true) { $user->givePermissionTo('can_make_sales'); }
+            if($request->can_give_discounts == true) { $user->givePermissionTo('can_give_discounts'); }
+            if($request->can_add_stock_in == true) { $user->givePermissionTo('can_add_stock-in'); }
+            if($request->can_add_new_products == true) { $user->givePermissionTo('can_add_new_products'); }
+            if($request->can_add_expenses == true) { $user->givePermissionTo('can_add_expenses'); }
+            if($request->can_view_manage_customers == true) { $user->givePermissionTo('can_view & manage_customers'); }
+            if($request->can_view_manage_suppliers == true) { $user->givePermissionTo('can_view & manage_suppliers'); }
+            if($request->can_view_stock_balance == true) { $user->givePermissionTo('can_view_stock_balance'); }
+            if($request->can_view_other_shops_stock_balance == true) { $user->givePermissionTo('can_view_other_shops_stock_balance'); }
+            if($request->can_count_and_update_stock_balance == true) { $user->givePermissionTo('can_count_and_update_stock_balance'); }
+            if($request->can_edit_daily_entries == true) { $user->givePermissionTo('can_edit_daily_entries'); }
+            if($request->can_delete_daily_entries == true) { $user->givePermissionTo('can_delete_daily_entries'); }
+            if($request->can_back_date_entries == true) { $user->givePermissionTo('can_back_date_entries'); }
+
             return response()->json([
                 'success' => true,
                 'message' => 'User saved successfully',

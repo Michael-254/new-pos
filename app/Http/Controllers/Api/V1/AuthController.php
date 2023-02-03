@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
     //Customer Register
-    public function customerRegister(Request $request)
+    public function customerRegister(Request $request, Company $company, BusinessSetting $busSettings)
     {
         $validator = Validator::make($request->all(), [
             'f_name' => 'required',
@@ -32,8 +32,11 @@ class AuthController extends Controller
         }
 
 		if($request->usertype == 'admin') {
-			$company = Company::create(['company_name' => $request->f_name]);
-			BusinessSetting::create(['company_id' => $company->id]);
+			$company->company_name = $request->f_name;
+            $company->save();
+
+			$busSettings->company_id = $company->id;
+            $busSettings->save();
 			
 			$admin = Admin::create([
 				'f_name' => $request->f_name,
@@ -44,19 +47,19 @@ class AuthController extends Controller
 				'company_id' => $company->id
 			]);
 
-            if($request->can_make_sales == true) { $admin->givePermissionTo('can_make_sales'); }
-            if($request->can_give_discounts == true) { $admin->givePermissionTo('can_give_discounts'); }
-            if($request->can_add_stock_in == true) { $admin->givePermissionTo('can_add_stock-in'); }
-            if($request->can_add_new_products == true) { $admin->givePermissionTo('can_add_new_products'); }
-            if($request->can_add_expenses == true) { $admin->givePermissionTo('can_add_expenses'); }
-            if($request->can_view_manage_customers == true) { $admin->givePermissionTo('can_view & manage_customers'); }
-            if($request->can_view_manage_suppliers == true) { $admin->givePermissionTo('can_view & manage_suppliers'); }
-            if($request->can_view_stock_balance == true) { $admin->givePermissionTo('can_view_stock_balance'); }
-            if($request->can_view_other_shops_stock_balance == true) { $admin->givePermissionTo('can_view_other_shops_stock_balance'); }
-            if($request->can_count_and_update_stock_balance == true) { $admin->givePermissionTo('can_count_and_update_stock_balance'); }
-            if($request->can_edit_daily_entries == true) { $admin->givePermissionTo('can_edit_daily_entries'); }
-            if($request->can_delete_daily_entries == true) { $admin->givePermissionTo('can_delete_daily_entries'); }
-            if($request->can_back_date_entries == true) { $admin->givePermissionTo('can_back_date_entries'); }
+            $admin->givePermissionTo('can_make_sales');
+            $admin->givePermissionTo('can_give_discounts');
+            $admin->givePermissionTo('can_add_stock-in');
+            $admin->givePermissionTo('can_add_new_products');
+            $admin->givePermissionTo('can_add_expenses');
+            $admin->givePermissionTo('can_view & manage_customers');
+            $admin->givePermissionTo('can_view & manage_suppliers');
+            $admin->givePermissionTo('can_view_stock_balance');
+            $admin->givePermissionTo('can_view_other_shops_stock_balance');
+            $admin->givePermissionTo('can_count_and_update_stock_balance');
+            $admin->givePermissionTo('can_edit_daily_entries');
+            $admin->givePermissionTo('can_delete_daily_entries');
+            $admin->givePermissionTo('can_back_date_entries');
 
 			$token = $admin->createToken('LaravelPassportClient')->accessToken;
 
@@ -77,7 +80,7 @@ class AuthController extends Controller
 			$token = $customer->createToken('LaravelPassportClient')->accessToken;
 
 			return response()->json(
-				['message' => 'You are logged in', 'token' => $token, 'user_id' => $customer->id, 'user_type' => $request->usertype, 'fname' => $customer->f_name, 'lname' => $customer->l_name, 'phone' => $customer->phone],
+				['message' => 'You are logged in', 'token' => $token, 'user_id' => $customer->id, 'user_type' => $request->usertype, 'fname' => $customer->f_name, 'lname' => $customer->l_name, 'phone' => $customer->phone, 'permissions' => $admin->permissions],
 				200
 			);
 		}
