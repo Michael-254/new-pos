@@ -54,6 +54,7 @@ class AuthController extends Controller
             $admin->givePermissionTo('can_add_expenses');
             $admin->givePermissionTo('can_view & manage_customers');
             $admin->givePermissionTo('can_view & manage_suppliers');
+            $admin->givePermissionTo('can_view & manage_users');
             $admin->givePermissionTo('can_view_stock_balance');
             $admin->givePermissionTo('can_view_other_shops_stock_balance');
             $admin->givePermissionTo('can_count_and_update_stock_balance');
@@ -101,13 +102,14 @@ class AuthController extends Controller
         if ($request->usertype == 'admin') {
             //Get authenticated admin
             $admin = Admin::where('email', $request->email)->with('permissions')->first();
+			$permissions = $admin->getPermissionNames();
 
             //Check Above Admin
             if ($admin) {
                 if (Hash::check($request->password, $admin->password)) {
                     $token = $admin->createToken('LaravelPassportClient')->accessToken;
                     return response()->json(
-                        ['message' => 'You are logged in', 'token' => $token, 'user_id' => $admin->id, 'user_type' => $request->usertype, 'fname' => $admin->f_name, 'lname' => $admin->l_name, 'phone' => $admin->phone, 'permissions' => $admin->permissions],
+                        ['message' => 'You are logged in', 'token' => $token, 'user_id' => $admin->id, 'user_type' => $request->usertype, 'fname' => $admin->f_name, 'lname' => $admin->l_name, 'phone' => $admin->phone, 'permissions' => $permissions],
                         200
                     );
                 } else {
